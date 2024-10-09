@@ -57,8 +57,8 @@ public class UserDB {
         Scanner scanner = new Scanner(System.in);
         String newPassword = "";
 
+        System.out.print("\nFirst time login Detected! ");
         while (true) {
-            System.out.print("\nFirst time login Detected! ");
             System.out.println("Please enter a new password: ");
             newPassword = scanner.nextLine().trim();
 
