@@ -1,4 +1,5 @@
 package sc2002;
+
 public class User{
     public enum Role {
         DOCTOR,
@@ -8,25 +9,15 @@ public class User{
     }
 
     private String hospitalID;
-    private String password;
     private Role role;
 
-    User(String hospitalID, String password){
+    User(String hospitalID){
         this.hospitalID = hospitalID;
-        this.password = password;
         this.role=determineRole(hospitalID);
     }
 
     public String getHospitalID(){
         return this.hospitalID;
-    }
-
-    public String getPassword(){
-        return this.password;
-    }
-
-    public void setPassword(String newPassword) { // This is for first login
-        this.password = newPassword;
     }
 
     public Role getRole() {
@@ -37,11 +28,7 @@ public class User{
 
     }
 
-    public void login(String hospitalID, String password){
-        this.hospitalID=hospitalID;
-        this.password=password;
-    }
-
+/////////////////////////////////// Detremine Role based on hospitalID ///////////////////////////////////////////
     private Role determineRole(String hospitalID) {
         if (hospitalID.matches("[PDA]\\d{3}")) { // 3 digits for staff
             if (hospitalID.startsWith("P")) {
@@ -53,6 +40,20 @@ public class User{
             }
         } else {
             return Role.PATIENT; 
+        }
+    }
+
+/////////////////////////////////// Return file path based on role ///////////////////////////////////////////
+    public String getFilePath() {
+        switch (this.role) {
+            case DOCTOR:
+            case PHARMACIST:
+            case ADMINISTRATOR:
+                return "Staff_List.xlsx"; // File for staff roles
+            case PATIENT:
+                return "Patient_List.xlsx"; // File for patient role
+            default:
+                throw new IllegalStateException("Unexpected value: " + this.role);
         }
     }
 }

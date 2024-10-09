@@ -4,23 +4,27 @@ import java.util.Scanner;
 
 class Main {
     public static void main(String[] args) {
-
 ////////////////////////////////////// LOGIN ////////////////////////////////////// 
         boolean login = false;
-        User loggedInUser = null;
         Scanner inputScanner = new Scanner(System.in);
+        User user = null;
+        String filePath = ""; // This is to access either Patient_List.xlsx or Staff_List.xlsx depending on the HospitalID.
+
         while (!login){ // Make sure the user is logged-in before continuing
             try {
                 System.out.print("Enter Hospital ID: ");
-                String hospitalId = inputScanner.nextLine().trim();
+                String hospitalID = inputScanner.nextLine().trim();
 
-                System.out.print("Enter Password: ");
+                System.out.flush();
                 String password = inputScanner.nextLine().trim();
 
                 // Validate the login credentials
-                login = UserDB.validateLogin(hospitalId, password);
+                login = UserDB.validateLogin(hospitalID, password);
                 if (login) {
                     System.out.println("\n\nLogin successful!");
+                    user = new User(hospitalID); // Create an instance of User when logged in.
+                    filePath = user.getFilePath();
+                    System.out.println("Welcome back " + user.getRole() + " " + UserDB.getNameByHospitalID(hospitalID, filePath));
                     login=true;
                 } else {
                     System.out.println("Invalid Hospital ID or Password.");
@@ -30,7 +34,7 @@ class Main {
             }
         }
         inputScanner.close();
-    }
+
 ////////////////////////////////////// ROLE SPECIFIC MENUS ////////////////////////////////////// 
 
 //         switch (loggedInUser.getRole()) {
@@ -55,4 +59,5 @@ class Main {
 //                 break;
 //         }
 //     }
+    }
 }
