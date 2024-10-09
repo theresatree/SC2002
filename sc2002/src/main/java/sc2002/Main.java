@@ -35,29 +35,34 @@ class Main {
         }
         inputScanner.close();
 
-////////////////////////////////////// ROLE SPECIFIC MENUS ////////////////////////////////////// 
-
-//         switch (loggedInUser.getRole()) {
-//             case DOCTOR:
-//                 System.out.println("Redirecting to Doctor's dashboard...");
-//                 // Code specific to doctor's functionality
-//                 break;
-//             case PHARMACIST:
-//                 System.out.println("Redirecting to Pharmacist's dashboard...");
-//                 // Code specific to pharmacist's functionality
-//                 break;
-//             case PATIENT:
-//                 System.out.println("Redirecting to Patient's dashboard...");
-//                 // Code specific to patient's functionality
-//                 break;
-//             case ADMINISTRATOR:
-//                 System.out.println("Redirecting to Administrator's dashboard...");
-//                 // Code specific to administrator's functionality
-//                 break;
-//             default:
-//                 System.out.println("Unknown role.");
-//                 break;
-//         }
-//     }
+///////////////////////////////////// ROLE-SPECIFIC FUNCTIONS ////////////////////////////////////
+        
+    switch (user.getRole()) {
+            case DOCTOR:
+                System.out.println("Redirecting to Doctor's dashboard...");
+                // Code specific to doctor's functionality
+                break;
+            case PHARMACIST:
+                System.out.println("Redirecting to Pharmacist's dashboard...");
+                // Code specific to pharmacist's functionality
+                break;
+            case ADMINISTRATOR:
+                System.out.println("Redirecting to Administrator's dashboard...");
+                // Code specific to administrator's functionality
+                break;
+            case PATIENT:
+                System.out.println("Redirecting to Patient's dashboard...");
+                try{
+                    MedicalRecord medicalRecord = PatientDB.getPatientDetails(user.getHospitalID());
+                    medicalRecord.viewMedicalRecord();
+                } catch (IOException e) {
+                    // Handle the exception
+                    System.out.println("An error occurred while fetching patient details: " + e.getMessage());
+                }
+                break;
+            default:
+                System.out.println("Unknown role.");
+                break;
+        }
     }
 }
