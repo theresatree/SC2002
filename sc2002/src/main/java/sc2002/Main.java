@@ -15,7 +15,7 @@ class Main {
                 System.out.print("Enter Hospital ID: ");
                 String hospitalID = inputScanner.nextLine().trim();
 
-                System.out.flush();
+                System.out.print("Enter Password: ");
                 String password = inputScanner.nextLine().trim();
 
                 // Validate the login credentials
