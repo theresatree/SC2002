@@ -1,4 +1,4 @@
-package javaclasses;
+package sc2002;
 public class User{
     public enum Role {
         DOCTOR,

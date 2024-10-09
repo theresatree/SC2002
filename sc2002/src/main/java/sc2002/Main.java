@@ -1,9 +1,9 @@
-package javaclasses;
+package sc2002;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
-import static javaclasses.UserTextDB.*;
+import static sc2002.UserTextDB.*;
 
 class Main {
     public static void main(String[] args) {
