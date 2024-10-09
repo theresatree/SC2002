@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
-import static sc2002.UserTextDB.*;
+import static sc2002.Reference.*;
 
 class Main {
     public static void main(String[] args) {
@@ -11,7 +11,7 @@ class Main {
 ////////////////////////////////////// LOGIN ////////////////////////////////////// 
         String currentDir = System.getProperty("user.dir");
         String filename = Paths.get(currentDir, "Database", "User.txt").toString(); // To get to User.txxt in database
-        UserTextDB.setFilePath(filename);
+        Reference.setFilePath(filename);
         boolean login = false;
         User loggedInUser = null;
         Scanner inputScanner = new Scanner(System.in);
@@ -26,7 +26,7 @@ class Main {
                 String password = inputScanner.nextLine().trim();
 
                 // Validate the login credentials
-                loggedInUser = UserTextDB.validateUser(userDB, userId, password, inputScanner);
+                loggedInUser = Reference.validateUser(userDB, userId, password, inputScanner);
                 if (loggedInUser != null) {
                     System.out.println("\n\nLogin successful!");
                     System.out.println("Welcome back " + loggedInUser.getRole());

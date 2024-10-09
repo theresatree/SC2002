@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class UserTextDB {
+public class Reference {
     public static final String SEPARATOR = "|";
     private static String filePath;
 
