@@ -38,7 +38,7 @@ public class MedicalRecord {
     public String printDiagnoses() {
         StringBuilder diagnosisList = new StringBuilder(); 
         if (diagnoses.isEmpty()) {
-            return("No diagnoses found for patient");
+            return("No diagnoses found for patient\n\n");
 
         }
         for (Diagnosis diagnosis : diagnoses) {
@@ -51,7 +51,7 @@ public class MedicalRecord {
     public String printTreaments() {
         StringBuilder treatmentList = new StringBuilder(); 
         if (treatments.isEmpty()) {
-            return("No Treatments found for patient");
+            return("No Treatments found for patient\n\n");
 
         }
         for (Treatment treatment : treatments) {
@@ -64,7 +64,7 @@ public class MedicalRecord {
     public String printMedications() {
         StringBuilder MedicationList = new StringBuilder(); 
         if (medications.isEmpty()) {
-            return("No Medications found for patient");
+            return("No Medications found for patient\n\n");
 
         }
         for (Medication medication : medications) {
