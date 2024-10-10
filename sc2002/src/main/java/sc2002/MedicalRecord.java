@@ -54,7 +54,7 @@ public class MedicalRecord {
 
         }
         for (Treatment treatment : treatments) {
-            treatmentList.append(treatment.printDiagnosis()).append("\n\n"); // Append each diagnosis and a newline
+            treatmentList.append(treatment.printTreatment()).append("\n\n"); // Append each diagnosis and a newline
         }
         return treatmentList.toString();
     }
