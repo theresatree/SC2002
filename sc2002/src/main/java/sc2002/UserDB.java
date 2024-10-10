@@ -71,7 +71,6 @@ public class UserDB {
                 System.out.println("New password cannot be 'password' or empty. Please try again.");
             }
         }
-        scanner.close();
     }
 
 /////////////////////////////////////// Update the "User.xlsx" after changing password ///////////////////////////////////////////

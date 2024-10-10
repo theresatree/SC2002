@@ -177,6 +177,7 @@ class Main {
                             waitForEnter(inputScanner);
                             break;
                         case 2:
+                            patient.updatePersonalInfo(inputScanner);
                             break;
                         case 3:
                             break;  
@@ -209,7 +210,7 @@ class Main {
 
 
 ///////////////////////////////////// Function to check valid input for dashboard ////////////////////////////////////
-    private static int getValidChoice(Scanner scanner, int maxChoice) {
+    public static int getValidChoice(Scanner scanner, int maxChoice) {
         while (true) {
             if (scanner.hasNextInt()) {
                 int choice = scanner.nextInt();
@@ -227,7 +228,7 @@ class Main {
     }
 
 ///////////////////////////////////// Function to wait after displaying information ////////////////////////////////////
-    private static void waitForEnter(Scanner scanner) {
+    public static void waitForEnter(Scanner scanner) {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }
