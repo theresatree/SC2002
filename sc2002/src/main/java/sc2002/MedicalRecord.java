@@ -12,7 +12,7 @@ public class MedicalRecord {
     private String bloodType;
     private List<Diagnosis> diagnoses;
     private List<Treatment> treatments;
-    // private List<Medication> medications; // Create a Medication Class for this
+    private List<Medication> medications;
 
     MedicalRecord(String patientID, String name, String dateOfBirth, String gender, String bloodType) throws IOException {
         this.patientID = patientID;
@@ -23,6 +23,7 @@ public class MedicalRecord {
         this.contactInformation = PatientDB.getPatientContactDetails(patientID);
         this.diagnoses = DiagnosisDB.getDiagnosis(patientID);
         this.treatments = TreatmentDB.getTreatment(patientID);
+        this.medications = MedicationDB.getMedication(patientID);
     }
 
     public int getPhoneNumber(){
@@ -50,14 +51,27 @@ public class MedicalRecord {
     public String printTreaments() {
         StringBuilder treatmentList = new StringBuilder(); 
         if (treatments.isEmpty()) {
-            return("No diagnoses found for patient");
+            return("No Treatments found for patient");
 
         }
         for (Treatment treatment : treatments) {
-            treatmentList.append(treatment.printTreatment()).append("\n\n"); // Append each diagnosis and a newline
+            treatmentList.append(treatment.printTreatment()).append("\n\n"); // Append each treatment and a newline
         }
         return treatmentList.toString();
     }
+
+    // Method to print all Medication
+    public String printMedications() {
+        StringBuilder MedicationList = new StringBuilder(); 
+        if (medications.isEmpty()) {
+            return("No Medications found for patient");
+
+        }
+        for (Medication medication : medications) {
+            MedicationList.append(medication.printMedication()).append("\n\n"); // Append each medication and a newline
+        }
+        return MedicationList.toString();
+        }
 
 
     public void viewMedicalRecord(){
@@ -77,9 +91,13 @@ public class MedicalRecord {
                 "============================" + "\n" +
                 printDiagnoses() +
                 "============================" + "\n" +
-                "     List of Treamtents"+ "\n" +
+                "     List of Treatments"+ "\n" +
                 "============================" + "\n" +
-                printTreaments());
+                printTreaments() +
+                "============================" + "\n" +
+                "     List of Medications"+ "\n" +
+                "============================" + "\n" +
+                printMedications());
     }
 
     public void updatePersonalInfo(String email, int phoneNumber){
