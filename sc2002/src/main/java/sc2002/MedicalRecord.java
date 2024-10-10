@@ -11,7 +11,7 @@ public class MedicalRecord {
     private ContactInformation contactInformation; 
     private String bloodType;
     private List<Diagnosis> diagnoses;
-    // private List<Treatment> treatments; // Create a Treatment Class for this
+    private List<Treatment> treatments;
     // private List<Medication> medications; // Create a Medication Class for this
 
     MedicalRecord(String patientID, String name, String dateOfBirth, String gender, String bloodType) throws IOException {
@@ -22,6 +22,7 @@ public class MedicalRecord {
         this.bloodType = bloodType;
         this.contactInformation = PatientDB.getPatientContactDetails(patientID);
         this.diagnoses = DiagnosisDB.getDiagnosis(patientID);
+        this.treatments = TreatmentDB.getTreatment(patientID);
     }
 
     public int getPhoneNumber(){
@@ -45,11 +46,24 @@ public class MedicalRecord {
         return diagnosisList.toString();
     }
 
+    // Method to print all Treatments
+    public String printTreaments() {
+        StringBuilder treatmentList = new StringBuilder(); 
+        if (treatments.isEmpty()) {
+            return("No diagnoses found for patient");
+
+        }
+        for (Treatment treatment : treatments) {
+            treatmentList.append(treatment.printDiagnosis()).append("\n\n"); // Append each diagnosis and a newline
+        }
+        return treatmentList.toString();
+    }
+
 
     public void viewMedicalRecord(){
         System.out.println( "\n" +
                 "============================" + "\n" +
-                "       Medical Record" + "\n" +
+                "       Patient Details" + "\n" +
                 "============================" + "\n" +
                 "ID: " + patientID + "\n" +
                 "Name: " + name + "\n" +
@@ -57,11 +71,15 @@ public class MedicalRecord {
                 "Gender: " + gender + "\n" +
                 "Blood Type: " + bloodType + "\n" +
                 "Phone Number: " + contactInformation.getPhoneNumber() + "\n" +
-                "Email: " + contactInformation.getEmailAddress() + "\n" +
+                "Email: " + contactInformation.getEmailAddress() + "\n\n" +
                 "============================" + "\n" +
                 "     List of Diagnoses"+ "\n" +
                 "============================" + "\n" +
-                printDiagnoses());
+                printDiagnoses() +
+                "============================" + "\n" +
+                "     List of Treamtents"+ "\n" +
+                "============================" + "\n" +
+                printTreaments());
     }
 
     public void updatePersonalInfo(String email, int phoneNumber){

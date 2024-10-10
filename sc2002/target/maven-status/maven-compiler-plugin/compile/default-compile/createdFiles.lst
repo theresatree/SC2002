@@ -8,5 +8,7 @@ sc2002/User$Role.class
 sc2002/Main$1.class
 sc2002/ContactInformation.class
 sc2002/Main.class
+sc2002/Treatment.class
 sc2002/User.class
+sc2002/TreatmentDB.class
 sc2002/DiagnosisDB.class
