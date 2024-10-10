@@ -17,7 +17,7 @@ public class Treatment {
         this.additionalNotes = additionalNotes;
     }
 
-    public String printDiagnosis(){
+    public String printTreatment(){
         return(
             "Diagnosis code: " + diagnosisCode + "\n" +
             "Date: " + dateOfTreatment + "\n" +
