@@ -24,8 +24,9 @@ public class User{
         return this.role; 
     }
 
-    public void logOut(){
-
+    public boolean logOut(){
+        System.out.println("\nLogout successful!");
+        return true;
     }
 
 /////////////////////////////////// Detremine Role based on hospitalID ///////////////////////////////////////////

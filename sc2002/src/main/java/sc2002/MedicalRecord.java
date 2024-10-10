@@ -21,11 +21,15 @@ public class MedicalRecord {
 
 
     public void viewMedicalRecord(){
-        System.out.println(
+        System.out.println( "\n" +
+                "============================" + "\n" +
+                "       Medical Record" + "\n" +
+                "============================" + "\n" +
                 "ID: " + patientID + "\n" +
                 "Name: " + name + "\n" +
                 "Date of birth: " + dateOfBirth + "\n" +
                 "Gender: " + gender + "\n" +
-                "Blood Type: " + bloodType);
+                "Blood Type: " + bloodType + "\n" +
+                "============================");
     }
 }
