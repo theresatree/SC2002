@@ -81,7 +81,7 @@ public class PatientDB {
         return null;
     }
 
-    //////////////////////////////////////// Get Contact Information of Patient////////////////////////////////////////
+    //////////////////////////////////////// Update Contact Information of Patient////////////////////////////////////////
     public static void updateContactInformation(String hospitalID, String email, int phoneNumber) {
         try (InputStream is = PatientDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
             Workbook workbook = new XSSFWorkbook(is)) {

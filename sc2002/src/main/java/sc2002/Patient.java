@@ -82,4 +82,5 @@ public class Patient extends User{
         }
         medicalRecord.updatePersonalInfo(email, phoneNumber);
     }
+
 }
