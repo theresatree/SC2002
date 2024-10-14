@@ -233,5 +233,6 @@ class Main {
         scanner.nextLine();
         System.out.println("suck my balls");
         System.out.println("gay boy");
+        System.out.println("Pussy");
     }
 }
