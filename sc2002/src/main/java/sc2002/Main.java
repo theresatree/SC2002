@@ -231,8 +231,5 @@ class Main {
     public static void waitForEnter(Scanner scanner) {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
-        System.out.println("suck my balls");
-        System.out.println("gay boy");
-        System.out.println("Pussy");
     }
 }
