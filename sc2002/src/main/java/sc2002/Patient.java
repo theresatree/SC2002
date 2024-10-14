@@ -83,4 +83,18 @@ public class Patient extends User{
         medicalRecord.updatePersonalInfo(email, phoneNumber);
     }
 
+    public void viewAvailableAppointmentSlots(){}
+
+    public void scheduleAppointment(){}
+
+    public void viewStatusOfAppointmen(){}
+
+    public void rescheduleAppointment(){}
+
+    public void cancelAppointment(){}
+
+    public void viewScheduledAppointments(){}
+
+    public void viewPastAppointmentOutcomeRecords(){}
+
 }
