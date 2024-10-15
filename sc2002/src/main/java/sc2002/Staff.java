@@ -14,6 +14,19 @@ public class Staff {
         this.age = age;
         this.role = role;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+    
     public String printStaffList(){
         return(
             "Staff ID: " + staffID + "\n" +

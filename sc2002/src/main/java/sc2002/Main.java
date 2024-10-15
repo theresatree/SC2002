@@ -135,7 +135,7 @@ class Main {
 
                     switch (choice){
                         case 1: 
-                            admin.viewAndManageHospitalStaff();
+                            admin.viewHospitalStaff();
                             waitForEnter(inputScanner);
                             break;
                         case 2:

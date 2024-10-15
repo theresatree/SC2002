@@ -25,7 +25,7 @@ public class StaffDB {
      * @return
      * @throws IOException
      */
-    public static List<Staff> getStaff() throws IOException {
+    public static List<Staff> getStaff(StaffFilter selectedFilter) throws IOException {
         List<Staff> staffs = new ArrayList<>(); 
         try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             if (is == null) {
@@ -53,7 +53,10 @@ public class StaffDB {
                         String gender = genderCell.getStringCellValue();
                         int age = (int) ageCell.getNumericCellValue();
                         Staff staff = new Staff(staffID, name, gender, age, role);
-                        staffs.add(staff);
+
+                        if (selectedFilter == null || selectedFilter.filter(staff)) {
+                            staffs.add(staff);
+                        }
                     }
                 }
             }
