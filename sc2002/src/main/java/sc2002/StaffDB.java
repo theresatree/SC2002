@@ -1,5 +1,6 @@
 package sc2002;
 
+import sc2002.StaffFiltering.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
