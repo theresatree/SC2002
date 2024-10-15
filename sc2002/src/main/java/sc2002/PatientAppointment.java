@@ -1,8 +1,6 @@
 package sc2002;
 
 public class PatientAppointment implements Appointment{
-        
-
     public void viewAvailableAppointmentSlots(){}
 
     public void scheduleAppointment(){}

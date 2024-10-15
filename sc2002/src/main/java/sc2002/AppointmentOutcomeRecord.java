@@ -1,36 +1,37 @@
 package sc2002;
 
-import java.util.List;
-
-import sc2002.AppointmentOutcomeRecord.PrescriptionStatus;
 
 public class AppointmentOutcomeRecord {
-    public enum Service{
-        CONSULTATION,
-        XRAY,
-        BLOODTEST;
-    }
-
-    public enum PrescriptionStatus{
-        PENDING,
-        COMPLETED;
-    }
 
     private String patientID;
     private String doctorID;
-    private Date dateOfAppointment;
+    private int appointmentID;
+    private String dateOfAppointment;
     private Service service;
-    private List<Medicine> medications; 
+    private Medicine medications; 
     private PrescriptionStatus prescriptionStatus;
     private String consultationNotes;
 
-    AppointmentOutcomeRecord(String patientID, String doctorID, Date dateOfAppointment, Service service, String consultationNotes){
+    AppointmentOutcomeRecord(String patientID, String doctorID, int appointmentID, String dateOfAppointment, Service service, Medicine medications, PrescriptionStatus prescriptionStatus, String consultationNotes){
         this.patientID = patientID;
         this.doctorID = doctorID;
+        this.appointmentID = appointmentID;
         this.dateOfAppointment = dateOfAppointment;
         this.service = service;
+        this.medications = medications;
+        this.prescriptionStatus=prescriptionStatus;
         this.consultationNotes=consultationNotes;
-        this.prescriptionStatus=PrescriptionStatus.PENDING;
+    }
+
+    public String printAppointmentOutcome(){
+        return(
+            "Appointment ID: " + appointmentID + "\n" +
+            "By Doctor ID: " + doctorID + "\n" +
+            "Date and Time: " + dateOfAppointment + "\n" +
+            "Services given: " + service + "\n" +
+            "Medication given: " + medications + "\n" +
+            "Prescription Status: " + prescriptionStatus + "\n" +
+            "Additional Notes: " + consultationNotes);
     }
 
 }

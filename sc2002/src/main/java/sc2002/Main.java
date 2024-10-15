@@ -194,6 +194,8 @@ class Main {
                         case 7:
                             break;    
                         case 8:
+                            patient.viewPastAppointmentOutcomeRecords();
+                            waitForEnter(inputScanner);
                             break;
                         case 9: 
                             logout = user.logOut();
