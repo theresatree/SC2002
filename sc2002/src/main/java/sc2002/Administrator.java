@@ -1,5 +1,6 @@
 package sc2002;
 
+import sc2002.StaffFiltering.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -87,6 +88,10 @@ public class Administrator extends User {
         } catch (Exception e) {
             System.out.println("An unexpected error occurred: " + e.getMessage());
         }
+
+    }
+
+    public void manageHospitalStaff(){
 
     }
 
