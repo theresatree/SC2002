@@ -84,6 +84,8 @@ class Main {
             break;
 ///////////////////////////////////// PHARMACIST ////////////////////////////////////
             case PHARMACIST:
+
+                Pharmacist pharmacist = new Pharmacist(user.getHospitalID());
                 while (!logout){
                     System.out.println("Redirecting to Pharmacist's dashboard...");
                     System.out.println("=========================================");
@@ -103,6 +105,7 @@ class Main {
                         case 2:
                             break;
                         case 3:
+                            pharmacist.viewMedicationInventory();
                             break;  
                         case 4:
                             break;
