@@ -108,7 +108,8 @@ public class Patient extends User{
 
             StringBuilder appointmentOutcomeRecordList = new StringBuilder(); 
             if (appointmentOutcomeRecord.isEmpty()) {
-                System.out.println("No diagnoses found for patient\n\n");
+                System.out.println("\n\n==============================================");
+                System.out.println("No diagnosis found for patient");
 
             }
             System.out.println("==============================================");
