@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -24,7 +26,7 @@ public class DoctorScheduledDatesDB {
 
     //////////////////////////////////////// Get DoctorSchedule ////////////////////////////////////////
     public static List<DoctorScheduledDates> getScheduledDates(String hospitalID, LocalDate filterDate) throws IOException {
-        List<DoctorScheduledDates> scheduledDates = new ArrayList<>(); // List to hold multiple diagnoses
+        List<DoctorScheduledDates> scheduledDates = new ArrayList<>(); // List to hold multiple dates
         // Use try-with-resources to ensure the stream is closed automatically
         try (InputStream is = DoctorScheduledDatesDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             if (is == null) {
@@ -82,7 +84,7 @@ public class DoctorScheduledDatesDB {
             row.createCell(3).setCellValue(date.format(dateFormat)); // Column 3 for Date (String format)
             row.createCell(4).setCellValue(startTime.format(timeFormat)); // Column 4 for Time Start
             row.createCell(5).setCellValue(endTime.format(timeFormat)); // Column 5 for Time End
-            row.createCell(6).setCellValue("Pending"); 
+            row.createCell(6).setCellValue("Available"); 
             // Write the changes back to the Excel file
 
         try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
@@ -110,4 +112,40 @@ public class DoctorScheduledDatesDB {
         return maxID + 1; // Increment the max ID for the new appointment
     }
 
+    /////////////////////////////////////// getting Appointment ID///////////////////////////////////////////
+    public static List<String> getPatients(String hospitalID) throws IOException {
+        Set<String> patientIDs = new HashSet<>(); // Make a set to filter out duplicate IDs
+        // Use try-with-resources to ensure the stream is closed automatically
+        try (InputStream is = DoctorScheduledDatesDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (is == null) {
+                throw new IOException("File not found in resources: " + FILE_NAME);
+            }
+
+            // Load the workbook from the input stream
+            try (Workbook workbook = new XSSFWorkbook(is)) {
+                Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+                for (Row row : sheet) {
+                    Cell patientIDCell = row.getCell(0);
+                    Cell doctorIDCell = row.getCell(1);
+
+                    if (row.getRowNum() == 0) continue;                    // Skip header row
+                    
+                    // Check if the doctorID, then extract the patientID.
+                    if (doctorIDCell != null && doctorIDCell.getStringCellValue().equals(hospitalID)) {
+                        String patientID = patientIDCell != null ? patientIDCell.getStringCellValue() : "";
+
+                        // Filter out empty strings and only add non-empty IDs to the set
+                        if (!patientID.isEmpty()) {
+                            patientIDs.add(patientID); // Set will automatically handle duplicates
+                        }
+
+                    }
+                }
+            }
+        }
+        return new ArrayList<>(patientIDs);
+    }
 }
+
+

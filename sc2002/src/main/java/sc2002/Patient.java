@@ -108,14 +108,16 @@ public class Patient extends User{
 
             StringBuilder appointmentOutcomeRecordList = new StringBuilder(); 
             if (appointmentOutcomeRecord.isEmpty()) {
-                System.out.println("\n\n==============================================");
+                System.out.println("\n\n=========================================");
                 System.out.println("No diagnosis found for patient");
 
             }
-            System.out.println("==============================================");
+            System.out.println("\n\n=========================================");
+            System.out.println("    Past Appointment Outcome Records");
+            System.out.println("=========================================");
             for (AppointmentOutcomeRecord outcome : appointmentOutcomeRecord) {
                 System.out.println(outcome.printAppointmentOutcome());
-                System.out.println("==============================================");
+                System.out.println("=========================================");
             }
      }
 }

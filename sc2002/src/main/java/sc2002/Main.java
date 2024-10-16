@@ -62,13 +62,17 @@ class Main {
 
                     switch (choice){
                         case 1: 
+                            doctor.viewPatientMedicalRecord(inputScanner);
+                            waitForEnter(inputScanner);
                             break;
                         case 2:
+                            doctor.updatePatientMedicalRecord(inputScanner);
                             break;
                         case 3:
                             break;  
                         case 4:
                             doctor.setAvailabilityDate(inputScanner);
+                            waitForEnter(inputScanner);
                             break;
                         case 5:
                             break;     
@@ -110,6 +114,7 @@ class Main {
                             break;
                         case 3:
                             pharmacist.viewMedicationInventory();
+                            waitForEnter(inputScanner);
                             break;  
                         case 4:
                             break;
@@ -242,6 +247,9 @@ class Main {
 
 ///////////////////////////////////// Function to wait after displaying information ////////////////////////////////////
     public static void waitForEnter(Scanner scanner) {
+        if (scanner.hasNextLine()) {
+            scanner.nextLine(); // Consume the leftover newline
+        }
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }

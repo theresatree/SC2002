@@ -22,7 +22,7 @@ public class DoctorAppointment implements Appointment {
         availableSlots = new HashMap<>();
         this.doctorID=doctorID;
     }
-
+//////////////////////////////This 5 functions are used together to generate and book dates////////////////
     // Function to generate from 9AM to 6PM daily
     private List<TimeSlot> generateDailySlots(LocalDate date) { // This date will help us map which day to print out.
         List<TimeSlot> dailySlots = new ArrayList<>();
@@ -70,6 +70,7 @@ public class DoctorAppointment implements Appointment {
         bookAvailableSlotForDate(slots, date, scanner); // Call the booking method
     }
 
+    // Function to allow us to actually book the timeslot
     private void bookAvailableSlotForDate(List<TimeSlot> slots, LocalDate date, Scanner scanner) {
         int choice;
 
@@ -148,7 +149,7 @@ public class DoctorAppointment implements Appointment {
         }
 
     }
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void viewAppointmentStatus(){}
 
