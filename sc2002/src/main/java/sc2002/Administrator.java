@@ -1,9 +1,14 @@
 package sc2002;
 
-import sc2002.StaffFiltering.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
+
+import sc2002.StaffFiltering.StaffAgeFilter;
+import sc2002.StaffFiltering.StaffFilter;
+import sc2002.StaffFiltering.StaffGenderFilter;
+import sc2002.StaffFiltering.StaffIDFilter;
+import sc2002.StaffFiltering.StaffRoleFilter;
 
 public class Administrator extends User {
 
@@ -71,6 +76,7 @@ public class Administrator extends User {
                     break;
                 default:
                     System.out.println("\nInvalid option. Please try again!\n");
+                    break;
             }
         } while (choice < 1 || choice > 7);
 
@@ -130,6 +136,7 @@ public class Administrator extends User {
                     break;
                 default:
                     System.out.println("\nInvalid option. Please try again!\n");
+                    break;
             }
         } while (roleChoice < 1 || roleChoice > 3);
 
@@ -149,12 +156,20 @@ public class Administrator extends User {
                     break;
                 default:
                     System.out.println("\nInvalid option. Please try again!\n");
+                    break;
             }
         } while (genderChoice != 1 && genderChoice != 2);
 
         System.out.print("Enter Age: ");
         int newAge = scanner.nextInt();
         scanner.nextLine();
+
+        System.out.print("Enter Phone Number: ");
+        int newPhoneNumber = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Enter Email: ");
+        String newEmail = scanner.nextLine();
 
         try {
             this.staffs = StaffDB.getStaff(null);
@@ -174,16 +189,21 @@ public class Administrator extends User {
 
         int newIdNumber = idNumber + 1;
 
-        if (newRole == Role.ADMINISTRATOR)
-            newStaffIDPrefix = "A";
-        else if (newRole == Role.DOCTOR)
-            newStaffIDPrefix = "D";
-        else
-            newStaffIDPrefix = "P";
+        switch(newRole) {
+            case ADMINISTRATOR:
+                newStaffIDPrefix = "A";
+                break;
+            case DOCTOR:
+                newStaffIDPrefix = "D";
+                break;
+            default:
+                newStaffIDPrefix = "P";
+                break;
+        }
 
         String newStaffID = String.format("%s%03d", newStaffIDPrefix, newIdNumber);
 
-        Staff newStaff = new Staff(newStaffID, newName, newGender, newAge, newRole);
+        Staff newStaff = new Staff(newStaffID, newName, newRole, newGender, newAge, newPhoneNumber, newEmail);
 
         try {
             StaffDB.addStaff(newStaff);
@@ -205,7 +225,7 @@ public class Administrator extends User {
         System.out.println("============================");
 
         do {
-            System.out.print("Enter StaffID: ");
+            System.out.print("Enter StaffID to update: ");
             staffID = scanner.nextLine();
             selectedFilter = new StaffIDFilter(staffID);
             try {
@@ -221,48 +241,86 @@ public class Administrator extends User {
 
         Staff selectedStaff = staffs.get(0);
 
-        System.out.println("\n============================");
+        System.out.println("============================");
+        System.out.print(selectedStaff.printStaffList());
+        System.out.println("============================");
         System.out.println("1. Name");
         System.out.println("2. Age");
         System.out.println("3. Phone Number");
         System.out.println("4. Email");
 
         do {
-            System.out.print("Select what to update for " + staffID + ": ");
+            System.out.print("Select what to update: ");
             choice = scanner.nextInt();
             scanner.nextLine();
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter new Name: ");
+                    System.out.print("Enter new name: ");
                     String newName = scanner.nextLine();
                     selectedStaff.setName(newName);
                     break;
                 case 2:
-                    System.out.print("Enter new Age: ");
+                    System.out.print("Enter new age: ");
                     int newAge = scanner.nextInt();
                     scanner.nextLine();
                     selectedStaff.setAge(newAge);
                     break;
                 case 3:
-
+                    System.out.print("Enter new phone number: ");
+                    int newPhoneNumber = scanner.nextInt();
+                    scanner.nextLine();
+                    selectedStaff.setPhoneNumber(newPhoneNumber);
+                    break;
+                case 4:
+                    System.out.print("Enter new email: ");
+                    String newEmail = scanner.nextLine();
+                    selectedStaff.setEmail(newEmail);
                     break;
                 default:
                     System.out.println("Invalid option. Please try again!");
+                    break;
             }
-        } while (choice < 1 || choice > 3);
+        } while (choice < 1 || choice > 4);
 
         try {
             StaffDB.updateStaff(staffID, selectedStaff);
         } catch (IOException e) {
-            System.out.println("An error occurred while fetching staff details: " + e.getMessage());
+            System.out.println("An error occurred while updating staff details: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
 
     public void removeHospitalStaff() {
+        String staffID;
 
+        System.out.println("\n============================");
+        System.out.println("       Removing Staff");
+        System.out.println("============================");
+
+        do {
+            System.out.print("Enter StaffID to remove: ");
+            staffID = scanner.nextLine();
+            selectedFilter = new StaffIDFilter(staffID);
+            try {
+                this.staffs = StaffDB.getStaff(selectedFilter);
+            } catch (IOException e) {
+                System.out.println("An error occurred while fetching staff details: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+            }
+            if (staffs.isEmpty())
+                System.out.println("\nStaff not found. Please try again!\n");
+        } while (staffs.isEmpty());
+
+        try {
+            StaffDB.removeStaff(staffID);
+        } catch (IOException e) {
+            System.out.println("An error occurred while removing staff: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
     }
 
     public void viewAppointmentDetails() {

@@ -3,16 +3,20 @@ package sc2002;
 public class Staff {
     private String staffID;
     private String name;
+    private Role role;
     private String gender;
     private int age;
-    private Role role;
+    private int phoneNumber;
+    private String email;
 
-    Staff(String staffID, String name, String gender, int age, Role role) {
+    Staff(String staffID, String name, Role role, String gender, int age, int phoneNumber, String email) {
         this.staffID = staffID;
         this.name = name;
+        this.role = role;
         this.gender = gender;
         this.age = age;
-        this.role = role;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
     }
 
     public String getStaffID() {
@@ -54,6 +58,22 @@ public class Staff {
     public void setAge(int age) {
         this.age = age;
     }
+
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
     public String printStaffList(){
         return(
@@ -61,6 +81,8 @@ public class Staff {
             "Name: " + name + "\n" +
             "Role: " + role + "\n" +
             "Gender: " + gender + "\n" +
-            "Age: " + age + "\n");
+            "Age: " + age + "\n" +
+            "Phone Number: " + phoneNumber + "\n" +
+            "Email: " + email + "\n");
     }
 }

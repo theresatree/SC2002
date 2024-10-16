@@ -1,10 +1,12 @@
 package sc2002;
+
 import java.io.IOException;
 import java.util.Scanner;
 
 class Main {
+
     public static void main(String[] args) {
-////////////////////////////////////// LOGIN ////////////////////////////////////// 
+        ////////////////////////////////////// LOGIN ////////////////////////////////////// 
         boolean login = false;
         Scanner inputScanner = new Scanner(System.in);
         User user = null;
@@ -12,7 +14,7 @@ class Main {
         int choice; // This is for the dashboard later.
         String filePath = ""; // This is to access either Patient_List.xlsx or Staff_List.xlsx depending on the HospitalID.
 
-        while (!login){ // Make sure the user is logged-in before continuing
+        while (!login) { // Make sure the user is logged-in before continuing
             try {
                 System.out.print("Enter Hospital ID: ");
                 String hospitalID = inputScanner.nextLine().trim();
@@ -27,7 +29,7 @@ class Main {
                     user = new User(hospitalID); // Create an instance of User when logged in.
                     filePath = user.getFilePath();
                     System.out.println("Welcome back " + user.getRole() + " " + UserDB.getNameByHospitalID(hospitalID, filePath));
-                    login=true;
+                    login = true;
                 } else {
                     System.out.println("Invalid Hospital ID or Password.");
                 }
@@ -36,12 +38,12 @@ class Main {
             }
         }
 
-///////////////////////////////////// ROLE-SPECIFIC FUNCTIONS ////////////////////////////////////
+        ///////////////////////////////////// ROLE-SPECIFIC FUNCTIONS ////////////////////////////////////
         
     switch (user.getRole()) {
-///////////////////////////////////// DOCTOR ////////////////////////////////////
+            ///////////////////////////////////// DOCTOR ////////////////////////////////////
             case DOCTOR:
-                while (!logout){
+                while (!logout) {
                     System.out.println("Redirecting to Doctor's dashboard...");
                     System.out.println("=========================================");
                     System.out.println("1. View Patient Medical Records");
@@ -55,36 +57,36 @@ class Main {
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
 
-                    choice = getValidChoice(inputScanner,8);
+                    choice = getValidChoice(inputScanner, 8);
 
-                    switch (choice){
-                        case 1: 
+                    switch (choice) {
+                        case 1:
                             break;
                         case 2:
                             break;
                         case 3:
-                            break;  
+                            break;
                         case 4:
                             break;
                         case 5:
-                            break;     
+                            break;
                         case 6:
                             break;
                         case 7:
-                            break;    
-                        case 8: 
+                            break;
+                        case 8:
                             logout = user.logOut();
-                            break;  
+                            break;
                         default:
                             System.out.println("Unexpected error occurred.");
-                            break;  
+                            break;
                     }
                 }
 
-            break;
-///////////////////////////////////// PHARMACIST ////////////////////////////////////
+                break;
+            ///////////////////////////////////// PHARMACIST ////////////////////////////////////
             case PHARMACIST:
-                while (!logout){
+                while (!logout) {
                     System.out.println("Redirecting to Pharmacist's dashboard...");
                     System.out.println("=========================================");
                     System.out.println("1. View Appointment Outcome Record");
@@ -95,83 +97,100 @@ class Main {
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
 
-                    choice = getValidChoice(inputScanner,5);
+                    choice = getValidChoice(inputScanner, 5);
 
-                    switch (choice){
-                        case 1: 
+                    switch (choice) {
+                        case 1:
                             break;
                         case 2:
                             break;
                         case 3:
-                            break;  
+                            break;
                         case 4:
                             break;
                         case 5:
                             logout = user.logOut();
-                            break;  
+                            break;
                         default:
                             System.out.println("Unexpected error occurred.");
                             break;
-                        }
+                    }
                 }
 
-            break;
-///////////////////////////////////// ADMININSTRATOR ////////////////////////////////////
+                break;
+            ///////////////////////////////////// ADMININSTRATOR ////////////////////////////////////
             case ADMINISTRATOR:
-                
+
                 Administrator admin = new Administrator(user.getHospitalID());
-                while (!logout){
+                while (!logout) {
                     System.out.println("Redirecting to Administrator's dashboard...");
                     System.out.println("=========================================");
                     System.out.println("1. View Hospital Staff");
-                    System.out.println("2. Add Hospital Staff");
-                    System.out.println("3. Update Hospital Staff");
-                    System.out.println("4. Remove Hospital Staff");
-                    System.out.println("5. View Appointment Details");
-                    System.out.println("6. View and Manage Medication Inventory");
-                    System.out.println("7. Approve Replenishment Requests");
-                    System.out.println("8. Logout");
+                    System.out.println("2. Manage Hospital Staff");
+                    System.out.println("3. View Appointment Details");
+                    System.out.println("4. View and Manage Medication Inventory");
+                    System.out.println("5. Approve Replenishment Requests");
+                    System.out.println("6. Logout");
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
 
-                    choice = getValidChoice(inputScanner,8);
+                    choice = getValidChoice(inputScanner, 6);
 
-                    switch (choice){
-                        case 1: 
+                    switch (choice) {
+                        case 1:
                             admin.viewHospitalStaff();
                             waitForEnter(inputScanner);
                             break;
                         case 2:
-                            admin.addHospitalStaff();
-                            waitForEnter(inputScanner);
+                            System.out.println("\n=========================================");
+                            System.out.println("          Manage Hospital Staff");
+                            System.out.println("=========================================");
+                            System.out.println("1. Add Hospital Staff");
+                            System.out.println("2. Update Hospital Staff");
+                            System.out.println("3. Remove Hospital Staff");
+                            System.out.println("=========================================");
+                            System.out.print("Select a choice: ");
+                            choice = getValidChoice(inputScanner, 3);
+
+                            switch (choice) {
+                                case 1:
+                                    admin.addHospitalStaff();
+                                    waitForEnter(inputScanner);
+                                    break;
+                                case 2:
+                                    admin.updateHospitalStaff();
+                                    waitForEnter(inputScanner);
+                                    break;
+                                case 3:
+                                    admin.removeHospitalStaff();
+                                    waitForEnter(inputScanner);
+                                    break;
+                                default:
+                                    System.out.println("Unexpected error occurred.");
+                                    break;
+                            }
                             break;
                         case 3:
-                            admin.updateHospitalStaff();
-                            waitForEnter(inputScanner);
-                            break;  
+                            break;
                         case 4:
                             break;
                         case 5:
                             break;
                         case 6:
-                            break;  
-                        case 7:
-                            break;
-                        case 8:
                             logout = user.logOut();
-                            break;  
+                            break;
                         default:
                             System.out.println("Unexpected error occurred.");
                             break;
-                        }
+                    }
                 }
 
-            break;
-///////////////////////////////////// PATIENT ////////////////////////////////////
+                break;
+            ///////////////////////////////////// PATIENT ////////////////////////////////////
             case PATIENT:
                 Patient patient = new Patient(user.getHospitalID());
 
-                while (!logout){
+                while (!logout) {
                     System.out.println("\nRedirecting to Patient's dashboard...");
                     System.out.println("=========================================");
                     System.out.println("1. View Medical Record");
@@ -186,10 +205,10 @@ class Main {
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
 
-                    choice = getValidChoice(inputScanner,9);
+                    choice = getValidChoice(inputScanner, 9);
 
-                    switch (choice){
-                        case 1: 
+                    switch (choice) {
+                        case 1:
                             patient.viewMedicalRecord();
                             waitForEnter(inputScanner);
                             break;
@@ -197,36 +216,35 @@ class Main {
                             patient.updatePersonalInfo(inputScanner);
                             break;
                         case 3:
-                            break;  
+                            break;
                         case 4:
                             break;
                         case 5:
-                            break;     
+                            break;
                         case 6:
                             break;
                         case 7:
-                            break;    
+                            break;
                         case 8:
                             break;
-                        case 9: 
+                        case 9:
                             logout = user.logOut();
-                            break;  
+                            break;
                         default:
                             System.out.println("Unexpected error occurred.");
                             break;
-                        }
+                    }
                 }
 
-            break;
-///////////////////////////////////// UNKNOWN ROLE ////////////////////////////////////
+                break;
+            ///////////////////////////////////// UNKNOWN ROLE ////////////////////////////////////
             default:
                 System.out.println("Unknown role.");
                 break;
         }
     }
 
-
-///////////////////////////////////// Function to check valid input for dashboard ////////////////////////////////////
+    ///////////////////////////////////// Function to check valid input for dashboard ////////////////////////////////////
     public static int getValidChoice(Scanner scanner, int maxChoice) {
         while (true) {
             if (scanner.hasNextInt()) {
@@ -244,7 +262,7 @@ class Main {
         }
     }
 
-///////////////////////////////////// Function to wait after displaying information ////////////////////////////////////
+    ///////////////////////////////////// Function to wait after displaying information ////////////////////////////////////
     public static void waitForEnter(Scanner scanner) {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();

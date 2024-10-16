@@ -16,6 +16,7 @@ sc2002\Administrator.class
 sc2002\Role.class
 sc2002\Staff.class
 sc2002\StaffDB.class
+sc2002\Administrator$1.class
 sc2002\Diagnosis.class
 sc2002\Patient.class
 sc2002\AppointmentOutcomeRecord$PrescriptionStatus.class
