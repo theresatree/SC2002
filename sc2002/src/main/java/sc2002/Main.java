@@ -41,6 +41,9 @@ class Main {
     switch (user.getRole()) {
 ///////////////////////////////////// DOCTOR ////////////////////////////////////
             case DOCTOR:
+
+                Doctor doctor = new Doctor(user.getHospitalID());
+
                 while (!logout){
                     System.out.println("Redirecting to Doctor's dashboard...");
                     System.out.println("=========================================");
@@ -65,6 +68,7 @@ class Main {
                         case 3:
                             break;  
                         case 4:
+                            doctor.setAvailabilityDate(inputScanner);
                             break;
                         case 5:
                             break;     

@@ -1,3 +1,4 @@
+/Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/DoctorScheduledDatesDB.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/PatientDB.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/AppointmentOutcomeRecord.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/StaffFiltering/StaffRoleFilter.java
@@ -6,7 +7,12 @@
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/StaffFiltering/StaffFilter.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/PatientAppointmentOutcomeDB.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/Administrator.java
+/Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/TimeSlot.java
+/Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/DoctorAppointment.java
+/Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/DoctorScheduledDates.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/DiagnosisDB.java
+/Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/Doctor.java
+/Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/AppointmentStatus.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/StaffDB.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/ContactInformation.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/StaffFiltering/StaffGenderFilter.java
@@ -14,7 +20,6 @@
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/Main.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/MedicationInventory.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/MedicalRecord.java
-/Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/Date.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/Appointment.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/PatientAppointment.java
 /Users/hayes/Documents/GitHub/SC2002/sc2002/src/main/java/sc2002/StaffFiltering/StaffAgeFilter.java
