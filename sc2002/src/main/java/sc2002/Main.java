@@ -9,7 +9,7 @@ class Main {
         Scanner inputScanner = new Scanner(System.in);
         User user = null;
         boolean logout = false; // This is to facilitate logout
-        int choice; // This is for the dashboard later.
+        int choice; // This is for tDhe dashboard later.
         String filePath = ""; // This is to access either Patient_List.xlsx or Staff_List.xlsx depending on the HospitalID.
 
         while (!login){ // Make sure the user is logged-in before continuing
@@ -196,6 +196,8 @@ class Main {
                             patient.updatePersonalInfo(inputScanner);
                             break;
                         case 3:
+                            patient.viewAvailableAppointmentSlots();
+                            waitForEnter(inputScanner);
                             break;  
                         case 4:
                             break;
@@ -247,9 +249,6 @@ class Main {
 
 ///////////////////////////////////// Function to wait after displaying information ////////////////////////////////////
     public static void waitForEnter(Scanner scanner) {
-        if (scanner.hasNextLine()) {
-            scanner.nextLine(); // Consume the leftover newline
-        }
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }

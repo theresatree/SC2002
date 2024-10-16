@@ -23,8 +23,7 @@ public class Doctor extends User{
 
     }
 
-
-///////////////////////// This two functions are used together///////////
+/////////////////////////////////////////////////////////////////////////
     public void viewPatientMedicalRecord(Scanner scanner){
         // Get Patients under Doctor
 
@@ -67,8 +66,7 @@ public class Doctor extends User{
             }
         }
     }
-/////////////////////////////////////////////////////////////////////////
-
+    /////////////////////////////////////////////////////////////////////////
     public void updatePatientMedicalRecord(Scanner scanner){
         boolean exit=false;
 
@@ -97,7 +95,6 @@ public class Doctor extends User{
         }
     }
     /////////////////////////////////////////////////////////////////////////
-
     private void createNewDiagnosis(String patientID, Scanner scanner){
         // Clear the newline character left over from a previous nextInt() or similar call
         if (scanner.hasNextLine()) {
@@ -112,9 +109,7 @@ public class Doctor extends User{
 
         DiagnosisDB.addDiagnosis(patientID, this.doctorID, descriptionOfDiagnosis, descriptionOfTreatmtent, additionalNotes);
     }
-
     /////////////////////////////////////////////////////////////////////////
-
     private void updateDiagnosis(String patientID, Scanner scanner){
         try{
             medicalRecord = PatientDB.getPatientDetails(patientID);
@@ -211,7 +206,6 @@ public class Doctor extends User{
         }
 
     }
-
     /////////////////////////////////////////////////////////////////////////
 
     public void setAvailabilityDate(Scanner scanner){
