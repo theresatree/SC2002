@@ -121,6 +121,8 @@ class Main {
             break;
 ///////////////////////////////////// ADMININSTRATOR ////////////////////////////////////
             case ADMINISTRATOR:
+                
+                Administrator admin = new Administrator(user.getHospitalID());
                 while (!logout){
                     System.out.println("Redirecting to Administrator's dashboard...");
                     System.out.println("=========================================");
@@ -136,6 +138,8 @@ class Main {
 
                     switch (choice){
                         case 1: 
+                            admin.viewHospitalStaff();
+                            waitForEnter(inputScanner);
                             break;
                         case 2:
                             break;
@@ -193,6 +197,8 @@ class Main {
                         case 7:
                             break;    
                         case 8:
+                            patient.viewPastAppointmentOutcomeRecords();
+                            waitForEnter(inputScanner);
                             break;
                         case 9: 
                             logout = user.logOut();

@@ -1,10 +1,12 @@
 package sc2002;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Patient extends User{
     private String patientID;
     private MedicalRecord medicalRecord;
+    private List<AppointmentOutcomeRecord> appointmentOutcomeRecord;
 
     Patient(String patientID){
         super(patientID);
@@ -83,4 +85,36 @@ public class Patient extends User{
         medicalRecord.updatePersonalInfo(email, phoneNumber);
     }
 
+    public void viewAvailableAppointmentSlots(){}
+
+    public void scheduleAppointment(){}
+
+    public void viewStatusOfAppointmen(){}
+
+    public void rescheduleAppointment(){}
+
+    public void cancelAppointment(){}
+
+    public void viewScheduledAppointments(){}
+
+    public void viewPastAppointmentOutcomeRecords(){
+        try {
+            appointmentOutcomeRecord = PatientAppointmentOutcomeDB.getAppointmentOutcome(patientID);
+        }
+        catch (Exception e) {
+            // Handle the exception
+            System.out.println("An error occurred while fetching Appointment Details: " + e.getMessage());
+        }
+
+            StringBuilder appointmentOutcomeRecordList = new StringBuilder(); 
+            if (appointmentOutcomeRecord.isEmpty()) {
+                System.out.println("No diagnoses found for patient\n\n");
+
+            }
+            System.out.println("==============================================");
+            for (AppointmentOutcomeRecord outcome : appointmentOutcomeRecord) {
+                System.out.println(outcome.printAppointmentOutcome());
+                System.out.println("==============================================");
+            }
+     }
 }

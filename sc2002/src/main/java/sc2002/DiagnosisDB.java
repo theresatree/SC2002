@@ -31,9 +31,10 @@ public class DiagnosisDB {
                     Cell idCell = row.getCell(0);
                     Cell diagnosisCodeCell = row.getCell(1);
                     Cell doctorIDCell = row.getCell(2);
-                    Cell descriptionCell = row.getCell(3);
-                    Cell dateCell = row.getCell(4);
-                    Cell notesCell = row.getCell(5);
+                    Cell diagnosisCell = row.getCell(3);
+                    Cell treatmentCell = row.getCell(4);
+                    Cell dateCell = row.getCell(5);
+                    Cell notesCell = row.getCell(6);
 
                     if (row.getRowNum() == 0) continue;                    // Skip header row
                     
@@ -41,11 +42,12 @@ public class DiagnosisDB {
                         String patientID = idCell.getStringCellValue();
                         int diagnosisCode = (int) diagnosisCodeCell.getNumericCellValue();
                         String doctorID = doctorIDCell.getStringCellValue();
-                        String description = descriptionCell.getStringCellValue();
+                        String patientDiagnosis = diagnosisCell.getStringCellValue();
+                        String treatment = treatmentCell.getStringCellValue();
                         String date = dateCell.getStringCellValue();
                         String notes = notesCell.getStringCellValue();
 
-                        Diagnosis diagnosis = new Diagnosis(patientID, diagnosisCode, doctorID, description, date, notes);
+                        Diagnosis diagnosis = new Diagnosis(patientID, diagnosisCode, doctorID, patientDiagnosis, treatment, date, notes);
                         diagnoses.add(diagnosis);
                     }
                 }

@@ -11,8 +11,6 @@ public class MedicalRecord {
     private ContactInformation contactInformation; 
     private String bloodType;
     private List<Diagnosis> diagnoses;
-    private List<Treatment> treatments;
-    private List<Medication> medications;
 
     MedicalRecord(String patientID, String name, String dateOfBirth, String gender, String bloodType) throws IOException {
         this.patientID = patientID;
@@ -22,8 +20,6 @@ public class MedicalRecord {
         this.bloodType = bloodType;
         this.contactInformation = PatientDB.getPatientContactDetails(patientID);
         this.diagnoses = DiagnosisDB.getDiagnosis(patientID);
-        this.treatments = TreatmentDB.getTreatment(patientID);
-        this.medications = MedicationDB.getMedication(patientID);
     }
 
     public int getPhoneNumber(){
@@ -47,33 +43,6 @@ public class MedicalRecord {
         return diagnosisList.toString();
     }
 
-    // Method to print all Treatments
-    public String printTreaments() {
-        StringBuilder treatmentList = new StringBuilder(); 
-        if (treatments.isEmpty()) {
-            return("No Treatments found for patient\n\n");
-
-        }
-        for (Treatment treatment : treatments) {
-            treatmentList.append(treatment.printTreatment()).append("\n\n"); // Append each treatment and a newline
-        }
-        return treatmentList.toString();
-    }
-
-    // Method to print all Medication
-    public String printMedications() {
-        StringBuilder MedicationList = new StringBuilder(); 
-        if (medications.isEmpty()) {
-            return("No Medications found for patient\n\n");
-
-        }
-        for (Medication medication : medications) {
-            MedicationList.append(medication.printMedication()).append("\n\n"); // Append each medication and a newline
-        }
-        return MedicationList.toString();
-        }
-
-
     public void viewMedicalRecord(){
         System.out.println( "\n" +
                 "============================" + "\n" +
@@ -87,17 +56,9 @@ public class MedicalRecord {
                 "Phone Number: " + contactInformation.getPhoneNumber() + "\n" +
                 "Email: " + contactInformation.getEmailAddress() + "\n\n" +
                 "============================" + "\n" +
-                "     List of Diagnoses"+ "\n" +
+                " Diagnoses and Treatments"+ "\n" +
                 "============================" + "\n" +
-                printDiagnoses() +
-                "============================" + "\n" +
-                "     List of Treatments"+ "\n" +
-                "============================" + "\n" +
-                printTreaments() +
-                "============================" + "\n" +
-                "     List of Medications"+ "\n" +
-                "============================" + "\n" +
-                printMedications());
+                printDiagnoses());
     }
 
     public void updatePersonalInfo(String email, int phoneNumber){
