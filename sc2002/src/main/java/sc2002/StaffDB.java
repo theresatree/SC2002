@@ -1,6 +1,8 @@
 package sc2002;
 
 import sc2002.StaffFiltering.*;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,14 +22,15 @@ public class StaffDB {
     /**
      * fixed file location for Staff_List.xlsx
      */
-    private static final String FILE_NAME = "Staff_List.xlsx";   
+    private static final String FILE_NAME = "Staff_List.xlsx";
+
     /**
      * 
      * @return
      * @throws IOException
      */
     public static List<Staff> getStaff(StaffFilter selectedFilter) throws IOException {
-        List<Staff> staffs = new ArrayList<>(); 
+        List<Staff> staffs = new ArrayList<>();
         try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             if (is == null) {
                 throw new IOException("File not found in resources: " + FILE_NAME);
@@ -65,4 +68,120 @@ public class StaffDB {
         return staffs;
     }
 
+    public static void addStaff(Staff newStaff) throws IOException {
+        // Load the existing workbook
+        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (is == null) {
+                throw new IOException("File not found in resources: " + FILE_NAME);
+            }
+
+            try (Workbook workbook = new XSSFWorkbook(is)) {
+
+                // Get the existing sheet (assuming it's the first sheet)
+                Sheet sheet = workbook.getSheetAt(0);
+                // Add the new staff member
+                Row newRow = sheet.createRow(sheet.getLastRowNum() + 1);
+                String formattedRole = newStaff.getRole().toString().charAt(0)
+                        + newStaff.getRole().toString().substring(1).toLowerCase();
+                newRow.createCell(0).setCellValue(newStaff.getStaffID());
+                newRow.createCell(1).setCellValue(newStaff.getName());
+                newRow.createCell(2).setCellValue(formattedRole);
+                newRow.createCell(3).setCellValue(newStaff.getGender());
+                newRow.createCell(4).setCellValue(newStaff.getAge());
+
+                String absolutePath = new File("src/main/resources/" + FILE_NAME).getAbsolutePath();
+                try (FileOutputStream fos = new FileOutputStream(absolutePath)) {
+                    workbook.write(fos);
+                    System.out.println("Successfully added new staff details to: " + absolutePath);
+                } catch (IOException e) {
+                    System.err.println("Error writing to the file: " + e.getMessage());
+                    throw e; // Re-throw to notify the caller
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("An error occurred while processing the Excel file: " + e.getMessage());
+            throw e; // Re-throw to notify the caller
+        }
+
+        // Update the User.xlsx and put the password as the default "password"
+        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx")) {
+            if (is == null) {
+                throw new IOException("File not found in resources: User.xlsx");
+            }
+
+            try (Workbook workbook = new XSSFWorkbook(is)) {
+
+                // Get the existing sheet (assuming it's the first sheet)
+                Sheet sheet = workbook.getSheetAt(0);
+                // Add the new staff member
+                Row newRow = sheet.createRow(sheet.getLastRowNum() + 1);
+                newRow.createCell(0).setCellValue(newStaff.getStaffID());
+                newRow.createCell(1).setCellValue("password");
+
+                String absolutePath = new File("src/main/resources/User.xlsx").getAbsolutePath();
+                try (FileOutputStream fos = new FileOutputStream(absolutePath)) {
+                    workbook.write(fos);
+                } catch (IOException e) {
+                    System.err.println("Error writing to the file: " + e.getMessage());
+                    throw e; // Re-throw to notify the caller
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("An error occurred while processing the Excel file: " + e.getMessage());
+            throw e; // Re-throw to notify the caller
+        }
+    }
+
+    // Update an existing staff member
+    public static void updateStaff(String staffID, Staff updatedStaff) throws IOException {
+        List<Staff> staffs = getStaff(null);
+        for (int i = 0; i < staffs.size(); i++) {
+            if (staffs.get(i).getStaffID().equals(staffID)) {
+                staffs.set(i, updatedStaff); // Update the staff member
+
+                // Save back to the file
+                if(saveStaffs(staffs)==1)
+                    System.out.println("Successfully updated the staff member");
+                return;
+            }
+        }
+    }
+
+    // // Remove a staff member
+    // public static void removeStaff(String staffID) throws IOException {
+    // List<Staff> staffs = getStaff(null);
+    // staffs.removeIf(staff -> staff.getStaffID().equals(staffID)); // Remove the
+    // staff member
+
+    // // Save back to the file
+    // saveStaffs(staffs);
+    // }
+
+    // Save all staff members back to the file
+    private static int saveStaffs(List<Staff> staffs) throws IOException {
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Staff");
+
+            // Write existing staff to the new sheet
+            for (Staff staff : staffs) {
+                Row row = sheet.createRow(staffs.indexOf(staff) + 1);
+                String formattedRole = staff.getRole().toString().charAt(0)
+                + staff.getRole().toString().substring(1).toLowerCase();
+                row.createCell(0).setCellValue(staff.getStaffID());
+                row.createCell(1).setCellValue(staff.getName());
+                row.createCell(2).setCellValue(formattedRole);
+                row.createCell(3).setCellValue(staff.getGender());
+                row.createCell(4).setCellValue(staff.getAge());
+            }
+
+            String absolutePath = new File("src/main/resources/" + FILE_NAME).getAbsolutePath();
+            try (FileOutputStream fos = new FileOutputStream(absolutePath)) {
+                workbook.write(fos);
+                return 1;
+            } catch (IOException e) {
+                System.err.println("Error writing to the file: " + e.getMessage());
+                throw e; // Re-throw to notify the caller
+            }
+        }
+    }
 }
