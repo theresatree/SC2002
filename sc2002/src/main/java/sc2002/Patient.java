@@ -98,9 +98,6 @@ public class Patient extends User{
     }
 
     public void cancelAppointment(Scanner scanner){
-        System.out.println("\n\n=========================================");
-        System.out.println("     Choose an appointment to cancel");
-        System.out.println("=========================================");
         patientAppointment.cancelAppointment(scanner);
     }
 

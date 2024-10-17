@@ -236,7 +236,6 @@ public class PatientAppointment implements Appointment{
         }
     }
 
-    @Override
     public void viewPastAppointmentOutcome(){
         try {
             appointmentOutcomeRecord = PatientAppointmentOutcomeDB.getAppointmentOutcome(this.patientID);
