@@ -157,7 +157,6 @@ public class DoctorAppointment implements Appointment {
     @Override
     public void cancelAppointment(Scanner scanner){};
 
-    @Override
-    public void viewPastAppointmentOutcome(){}
+    public void recordAppointmentOutcome(){}
 
 }
