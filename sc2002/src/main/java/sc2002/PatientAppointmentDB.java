@@ -65,7 +65,7 @@ public class PatientAppointmentDB {
         }
     }
 
-    //////////////////////////////////////// FETCH PATIENT'S SCHEDULED APPOINTMENTs  ///////////////////////////////////////
+    //////////////////////////////////////// FETCH PATIENT'S SCHEDULED APPOINTMENTS  ///////////////////////////////////////
     public static List<PatientScheduledAppointment> patientScheduledAppointments(String patientID) throws IOException{
         List<PatientScheduledAppointment> listOfSchedule = new ArrayList<>(); // List to hold multiple dates
         try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
@@ -98,6 +98,36 @@ public class PatientAppointmentDB {
         }
     }
 
+    //////////////////////////////////////// RESCHEDULE PATIENT APPOINTMENT  ///////////////////////////////////////
+    public static void reschedulePatientAppointment(int appointmentID, String patientID) throws IOException{
+        try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+        Workbook workbook = new XSSFWorkbook(is)) {
+        Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+
+        for (Row row : sheet) {
+            Cell patientIDCell = row.getCell(0);
+            Cell appointmentIDCell = row.getCell(2);
+            if (appointmentIDCell!=null && appointmentIDCell.getCellType() == CellType.NUMERIC){
+                int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
+                if (currentAppointmentID == appointmentID && patientIDCell.getStringCellValue().equals(patientID)) {
+                    // Update existing row
+                    row.getCell(0).setCellValue("");
+                    row.getCell(6).setCellValue("Available");
+                    break; // Exit the loop after updating
+                }
+            }
+        }
+
+        try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+                workbook.write(fos);
+        }
+
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception as appropriateå
+        }
+    }
+
     //////////////////////////////////////// FOR PATIENTS TO SCHEDULE  ///////////////////////////////////////
     public static void updateScheduleForPatients(int appointmentID, String patientID) throws IOException{
         try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
@@ -111,8 +141,8 @@ public class PatientAppointmentDB {
                 int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
                 if (currentAppointmentID == appointmentID) {
                     // Update existing row
-                    row.getCell(0).setCellValue(patientID);  // Update diagnosis description if not empty
-                    row.getCell(6).setCellValue("Pending");;
+                    row.getCell(0).setCellValue(patientID);
+                    row.getCell(6).setCellValue("Pending");
                     break; // Exit the loop after updating
                 }
             }

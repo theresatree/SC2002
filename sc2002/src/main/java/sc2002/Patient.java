@@ -95,15 +95,17 @@ public class Patient extends User{
 
     public void viewStatusOfAppointmen(){}
 
-    public void rescheduleAppointment(){}
+    public void rescheduleAppointment(Scanner scanner){
+        patientAppointment.rescheduleAppointment(scanner);
+    }
 
     public void cancelAppointment(){}
 
     public void viewScheduledAppointments(){
-        System.out.println("=========================================");
+        System.out.println("\n\n=========================================");
         System.out.println("     List of Scheduled Appointments");
         System.out.println("=========================================");
-        patientAppointment.viewScheduledAppointments();
+        patientAppointment.viewAppointmentStatus();
     }
 
     public void viewPastAppointmentOutcomeRecords(){

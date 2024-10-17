@@ -203,6 +203,7 @@ class Main {
                             patient.scheduleAppointment(inputScanner);
                             break;
                         case 5:
+                            patient.rescheduleAppointment(inputScanner);
                             break;     
                         case 6:
                             break;
