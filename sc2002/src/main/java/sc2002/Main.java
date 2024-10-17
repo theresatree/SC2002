@@ -206,6 +206,7 @@ class Main {
                             patient.rescheduleAppointment(inputScanner);
                             break;     
                         case 6:
+                            patient.cancelAppointment(inputScanner);
                             break;
                         case 7:
                             patient.viewScheduledAppointments();

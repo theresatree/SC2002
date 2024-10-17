@@ -89,7 +89,6 @@ public class PatientAppointment implements Appointment{
 
     }
 
-
     public void rescheduleAppointment (Scanner scanner){
         int choice=-1;
         char proceed;
@@ -154,7 +153,67 @@ public class PatientAppointment implements Appointment{
     }
 
     @Override
-    public void cancelAppointment(){};
+    public void cancelAppointment(Scanner scanner){
+        int choice=-1;
+        char proceed;
+
+        while (choice!=0){
+            System.out.println("\n\n=========================================");
+            System.out.println("     Choose an appointment to cancel");
+            System.out.println("=========================================");
+            viewAppointmentStatus();
+            System.out.println("Choose an appointment ID (or 0 to exit): ");
+
+            // This try-catch is to catch if user input something else other than numbers.
+            try {
+                choice = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("\nInvalid input! Please enter a valid appointment ID.\n");
+                scanner.nextLine(); // Clear the invalid input from the scanner
+                continue; // Skip the rest of the loop and ask for input again
+            }
+
+            if (choice == 0) {
+                System.out.println("\nExiting cancelling process.\n\n");
+                break;
+            }
+
+            // Search for the selected appointment ID in the availableDatesToChoose list
+            PatientScheduledAppointment selectedAppointment = null;
+            for (PatientScheduledAppointment selected : patientScheduledAppointments) {
+                if (selected.getAppointmentID() == choice) {  // Check if the appointment ID matches
+                    selectedAppointment = selected;  // If found, set the selectedSlot
+                    break;
+                }
+            }
+
+            if (selectedAppointment==null) {
+                System.out.println("\nInvalid! Please select a valid appointment ID.");
+            }
+            else{
+                System.out.println("\n\n=========================================");
+                System.out.println("          You have selected:");
+                System.out.println("      " +selectedAppointment.getDate().format(dateFormat) + " - " + selectedAppointment.getTimeStart().format(timeFormat) + " to " + selectedAppointment.getTimeEnd().format(timeFormat));
+                System.out.println("=========================================");
+                System.out.println("         Cancel Appointment?");
+                System.out.println("=========================================");
+                System.out.println("Enter 'y' to cancel: ");
+                proceed = scanner.next().toUpperCase().charAt(0);
+
+                // If the user confirms booking
+                if (proceed == 'Y') {
+                    try {
+                        PatientAppointmentDB.reschedulePatientAppointment(selectedAppointment.getAppointmentID(), this.patientID);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                    break; // Exit loop after successful booking
+                } else {
+                    System.out.println("\nCancellation cancelled.");
+                }
+            }
+        }
+    }
 
     @Override
     public void viewAppointmentStatus(){
