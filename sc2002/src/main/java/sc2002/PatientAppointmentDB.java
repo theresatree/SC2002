@@ -17,7 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class PatientAppointmentDB {
         private static final String FILE_NAME = "Appointment.xlsx"; //fixed file location for Patient_List.xlsx
         static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+        static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
      //////////////////////////////////////// Get AvailableSlots ////////////////////////////////////////
     public static List<AvailableDatesToChoose> getAvailableSlots() throws IOException {

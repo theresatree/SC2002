@@ -22,7 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class DoctorScheduledDatesDB {
         private static final String FILE_NAME = "Appointment.xlsx"; //fixed file location for Patient_List.xlsx
         static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+        static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
     //////////////////////////////////////// Get DoctorSchedule ////////////////////////////////////////
     public static List<DoctorScheduledDates> getScheduledDates(String hospitalID, LocalDate filterDate) throws IOException {

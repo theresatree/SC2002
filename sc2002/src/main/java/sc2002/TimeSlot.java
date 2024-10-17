@@ -7,6 +7,7 @@ class TimeSlot {
     LocalTime startTime;
     LocalTime endTime;
     boolean isAvailable;
+    
 
     public TimeSlot(LocalTime startTime, LocalTime endTime) {
         this.startTime = startTime;
@@ -23,7 +24,7 @@ class TimeSlot {
     }
 
     public String getTimeSlotString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return formatter.format(startTime) + " to " + formatter.format(endTime) + (isAvailable ? "" : " [Booked]");
     }
 }

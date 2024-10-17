@@ -14,7 +14,8 @@ public class DoctorAppointment implements Appointment {
     // Create a hashmap that makes each date to a List of timeslot
     Map<LocalDate, List<TimeSlot>> availableSlots;
     List<DoctorScheduledDates> scheduledDates;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Set the desired date format
+    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Set the desired date format
+    DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
     private String doctorID;
 
@@ -61,7 +62,7 @@ public class DoctorAppointment implements Appointment {
         List<TimeSlot> slots = generateDailySlots(date);
         availableSlots.put(date, slots); //Update the availabeSlots map
 
-        System.out.println("\n\nAvailable Slots for " + date.format(formatter) + ":");
+        System.out.println("\n\nAvailable Slots for " + date.format(dateFormat) + ":");
         System.out.println("=============================================");
         for (int i = 0; i < slots.size(); i++) {
             System.out.println((i + 1) + ". " + slots.get(i).getTimeSlotString());
@@ -96,7 +97,7 @@ public class DoctorAppointment implements Appointment {
                 try {
                     DoctorScheduledDatesDB.setDoctorSchedule(this.doctorID, date, selectedSlot.getStartTime(), selectedSlot.getEndTime());
                     selectedSlot.isAvailable = false; // Mark the slot as booked
-                    System.out.println("Successfully booked the slot: " + selectedSlot.getStartTime() + " to " + selectedSlot.getEndTime() + " on " + date.format(formatter) + "\n\n");
+                    System.out.println("Successfully booked the slot: " + selectedSlot.getStartTime().format(timeFormat) + " to " + selectedSlot.getEndTime().format(timeFormat) + " on " + date.format(dateFormat) + "\n\n");
                     break; // Exit after successful booking
                 } catch (Exception e) {
                     System.out.println("Error occurred while booking the slot. Please try again.");
@@ -123,7 +124,7 @@ public class DoctorAppointment implements Appointment {
         System.out.println("\n\nPlease select a date from the following options:");
         System.out.println("================================================");
         for (int i = 0; i < selectableDates.size(); i++) {
-            System.out.println((i + 1) + ". " + selectableDates.get(i).format(formatter));
+            System.out.println((i + 1) + ". " + selectableDates.get(i).format(dateFormat));
         }
         System.out.println("================================================");
 
