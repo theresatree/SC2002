@@ -25,4 +25,5 @@ sc2002\Appointment$AppointmentStatus.class
 sc2002\Main$1.class
 sc2002\Appointment.class
 sc2002\User.class
+sc2002\UserAccount.class
 sc2002\UserDB.class

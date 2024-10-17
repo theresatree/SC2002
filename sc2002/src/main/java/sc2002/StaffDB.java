@@ -115,7 +115,7 @@ public class StaffDB {
                 staffs.set(i, updatedStaff); // Update the staff member
 
                 // Save back to the file
-                if (newFile(staffs) == 1) {
+                if (newStaffFile(staffs) == 1) {
                     System.out.println("Successfully updated the staff member");
                 }
                 return;
@@ -127,12 +127,40 @@ public class StaffDB {
     public static void removeStaff(String staffID) throws IOException {
         List<Staff> staffs = getStaff(null);
         staffs.removeIf(staff -> staff.getStaffID().equals(staffID)); 
-        if (newFile(staffs) == 1) {
+        if (newStaffFile(staffs) == 1) {
             System.out.println("Successfully removed the staff member");
+        }
+
+        // Get the existing User.xlsx and rewrite new User.xlsx without the removed staff member
+        List<UserAccount> userAccs = new ArrayList<>();
+        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx"); Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+            for (Row row : sheet) {
+                Cell hospitalIDCell = row.getCell(0);
+                Cell passwordCell = row.getCell(1);
+
+                if (row.getRowNum() == 0) {
+                    continue; // Skip header row
+                }
+
+                if (hospitalIDCell != null) {
+                    String hospitalID = hospitalIDCell.getStringCellValue();
+                    String password = passwordCell.getStringCellValue();
+                    UserAccount userAcc = new UserAccount(hospitalID, password);
+                    userAccs.add(userAcc);
+                }
+            }
+
+            userAccs.removeIf(userAcc -> userAcc.getHospitalID().equals(staffID)); 
+            newUserAccFile(userAccs);
+
+        } catch (IOException e) {
+            System.err.println("Error writing to the file User.xlsx: " + e.getMessage());
         }
     }
 
-    private static int newFile(List<Staff> staffs) throws IOException {
+    private static int newStaffFile(List<Staff> staffs) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Staff");
 
@@ -163,6 +191,33 @@ public class StaffDB {
             try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
                 workbook.write(fos);
                 return 1;
+            } catch (IOException e) {
+                System.err.println("Error writing to the file: " + e.getMessage());
+                throw e; // Re-throw to notify the caller
+            }
+        }
+    }
+
+
+    private static void newUserAccFile(List<UserAccount> userAccs) throws IOException {
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("User");
+
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Hospital ID");
+            headerRow.createCell(1).setCellValue("Password");
+
+            // Write existing staff to the new sheet
+            int rowNum = 1;
+            for (UserAccount userAcc : userAccs) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(userAcc.getHospitalID());
+                row.createCell(1).setCellValue(userAcc.getPassword());
+            }
+
+            try (FileOutputStream fos = new FileOutputStream("src/main/resources/User.xlsx")) {
+                workbook.write(fos);
+
             } catch (IOException e) {
                 System.err.println("Error writing to the file: " + e.getMessage());
                 throw e; // Re-throw to notify the caller
