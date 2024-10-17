@@ -112,8 +112,8 @@ public class DoctorScheduledDatesDB {
         return maxID + 1; // Increment the max ID for the new appointment
     }
 
-    /////////////////////////////////////// getting Appointment ID///////////////////////////////////////////
-    public static List<String> getPatients(String hospitalID) throws IOException {
+    /////////////////////////////////////// get List of Patients///////////////////////////////////////////
+    public static List<String> getPatients(String doctorID) throws IOException {
         Set<String> patientIDs = new HashSet<>(); // Make a set to filter out duplicate IDs
         // Use try-with-resources to ensure the stream is closed automatically
         try (InputStream is = DoctorScheduledDatesDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
@@ -132,7 +132,7 @@ public class DoctorScheduledDatesDB {
                     if (row.getRowNum() == 0) continue;                    // Skip header row
                     
                     // Check if the doctorID, then extract the patientID.
-                    if (doctorIDCell != null && doctorIDCell.getStringCellValue().equals(hospitalID)) {
+                    if (doctorIDCell != null && doctorIDCell.getStringCellValue().equals(doctorID)) {
                         String patientID = patientIDCell != null ? patientIDCell.getStringCellValue() : "";
 
                         // Filter out empty strings and only add non-empty IDs to the set

@@ -2,6 +2,7 @@ package sc2002;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class AvailableDatesToChoose {
     private String doctorID;
@@ -9,6 +10,9 @@ public class AvailableDatesToChoose {
     private LocalDate date;
     private LocalTime timeStart;
     private LocalTime timeEnd;
+    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+
 
     AvailableDatesToChoose(String doctorID, int appointmentID, LocalDate date, LocalTime timeStart, LocalTime timeEnd){
         this.doctorID=doctorID;
@@ -20,8 +24,24 @@ public class AvailableDatesToChoose {
 
     public void printString(){
         System.out.println("Appointment ID: " + appointmentID + "\n" +
-                            "Date: " + date + "\n" +
-                            "Time: " + timeStart + " to " + timeEnd + "\n" +
+                            "Date: " + date.format(dateFormat) + "\n" +
+                            "Time: " + timeStart.format(timeFormat) + " to " + timeEnd.format(timeFormat) + "\n" +
                             "By Doctor ID: " + doctorID);
+    }
+
+    public LocalDate getDate(){
+        return this.date;
+    }
+
+    public LocalTime getTimeStart(){
+        return this.timeStart;
+    }
+
+    public LocalTime getTimeEnd(){
+        return this.timeEnd;
+    }
+
+    public int getAppointmentID(){
+        return this.appointmentID;
     }
 }

@@ -42,7 +42,7 @@ public class Doctor extends User{
     /// This function is just to get the patient that are under this doctor
     private String choosePatientString(List<String> patientIDs, Scanner scanner){
         int choice;
-        System.out.println("\n==========================================");
+        System.out.println("\n\n==========================================");
         System.out.println("          Patients under " + this.doctorID);
         System.out.println("==========================================");
         for (int i = 0; i < patientIDs.size(); i++) {
@@ -72,7 +72,9 @@ public class Doctor extends User{
 
         String patientID = choosePatientString(patientIDs, scanner);
         while (!exit && patientID!=null){
-            System.out.println("\n==========================================");
+            System.out.println("\n\n==========================================");
+            System.out.println("            Choose an option");
+            System.out.println("==========================================");
             System.out.println("1. Add new diagnosis for " + patientID);
             System.out.println("2. Update existing diagnosis for " + patientID);
             System.out.println("==========================================");
@@ -80,6 +82,7 @@ public class Doctor extends User{
             int choice = scanner.nextInt();
             switch (choice){
                 case 0: 
+                    System.out.println("Exiting viewing process.\n\n");
                     exit=true;
                     break;
                 case 1: 
@@ -115,9 +118,10 @@ public class Doctor extends User{
             medicalRecord = PatientDB.getPatientDetails(patientID);
             List<Diagnosis> diagnoses = medicalRecord.getDiagnosis(); //Get all existing diagnosis of the patient.
 
-            System.out.println("\n==========================================");
             if (diagnoses.isEmpty()) {
+                System.out.println("\n\n==========================================");
                 System.out.println("No diagnoses found for patient ID: " + patientID);
+                System.out.println("==========================================");
                 return;
             }
 
@@ -127,6 +131,8 @@ public class Doctor extends User{
                     Diagnosis diagnosis = diagnoses.get(i);
                     System.out.println((i + 1) + ". Diagnosis ID: " + diagnosis.getDiagnosisCode());
                 }
+                System.out.println("\n\n==========================================");
+                System.out.println("            Choose an option");
                 System.out.println("==========================================");
                 System.out.print("Choose an option (or enter 0 to exit):");
                 choice = scanner.nextInt();
@@ -162,7 +168,7 @@ public class Doctor extends User{
         }
 
         while (!exit){
-            System.out.println("==========================================");
+            System.out.println("\n\n==========================================");
             System.out.println("            Diagnosis code: " + selectedDiagnosisID);
             System.out.println("        Choose a data to update");
             System.out.println("==========================================");
@@ -181,17 +187,17 @@ public class Doctor extends User{
                     exit=true;
                     break;
                 case 1: 
-                    System.out.print("Enter Diagnosis: ");
+                    System.out.print("\nEnter Diagnosis: ");
                     diagnosis = scanner.nextLine();
                     System.out.println("\nDiagnosis updated!\n");
                     break;
                 case 2:
-                    System.out.print("Enter Treatment: ");
+                    System.out.print("\nEnter Treatment: ");
                     treatment = scanner.nextLine();
                     System.out.println("\nTreatment updated!\n");
                     break;
                 case 3:
-                    System.out.print("Enter Notes: ");
+                    System.out.print("\nEnter Notes: ");
                     notes = scanner.nextLine();
                     System.out.println("\nNotes updated!\n");
                     break;

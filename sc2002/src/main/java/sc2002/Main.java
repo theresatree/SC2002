@@ -200,6 +200,7 @@ class Main {
                             waitForEnter(inputScanner);
                             break;  
                         case 4:
+                            patient.scheduleAppointment(inputScanner);
                             break;
                         case 5:
                             break;     

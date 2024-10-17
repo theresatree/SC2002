@@ -1,5 +1,6 @@
 package sc2002;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -62,4 +64,34 @@ public class PatientAppointmentDB {
             return availableSlots;
         }
     }
+
+    //////////////////////////////////////// FOR PATIENTS TO SCHEDULE  ///////////////////////////////////////
+    public static void updateScheduleForPatients(int appointmentID, String patientID) throws IOException{
+        try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+        Workbook workbook = new XSSFWorkbook(is)) {
+        Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+
+        for (Row row : sheet) {
+            Cell appointmentIDCell = row.getCell(2);
+            if (appointmentIDCell!=null && appointmentIDCell.getCellType() == CellType.NUMERIC){
+                int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
+                if (currentAppointmentID == appointmentID) {
+                    // Update existing row
+                    row.getCell(0).setCellValue(patientID);  // Update diagnosis description if not empty
+                    row.getCell(6).setCellValue("Pending");;
+                    break; // Exit the loop after updating
+                }
+            }
+        }
+
+        try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+                workbook.write(fos);
+        }
+
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception as appropriateå
+        }
+    }
 }
+

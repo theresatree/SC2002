@@ -89,12 +89,8 @@ public class Patient extends User{
         patientAppointment.viewAvailableAppointmentSlots();
     }
 
-    public void scheduleAppointment(){
-        System.out.println("\n==========================================");
-        System.out.println("1. Add new diagnosis for " + patientID);
-        System.out.println("2. Update existing diagnosis for " + patientID);
-        System.out.println("==========================================");
-        System.out.print("Choose an option (or enter 0 to exit): ");
+    public void scheduleAppointment(Scanner scanner){
+        patientAppointment.scheduleAppointment(scanner);
     }
 
     public void viewStatusOfAppointmen(){}
