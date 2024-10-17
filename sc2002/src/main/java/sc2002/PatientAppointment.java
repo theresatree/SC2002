@@ -8,6 +8,7 @@ public class PatientAppointment implements Appointment{
     private String patientID;
     private List<AvailableDatesToChoose> availableDatesToChoose;
     private List<AppointmentOutcomeRecord> appointmentOutcomeRecord;
+    private List<PatientScheduledAppointment> patientScheduledAppointments;
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -96,7 +97,25 @@ public class PatientAppointment implements Appointment{
     public void cancelAppointment(){};
 
 
-    public void viewScheduledAppointments(){}
+    public void viewScheduledAppointments(){
+        try {
+            patientScheduledAppointments = PatientAppointmentDB.patientScheduledAppointments(this.patientID);
+            if (!patientScheduledAppointments.isEmpty()){
+                for (PatientScheduledAppointment schedule : patientScheduledAppointments) {
+                    schedule.printScheduledAppointment();
+                    System.out.println("=========================================");
+                }
+            }
+            else{
+                System.out.println("     No Scheduled Appointment Found!");
+            }   
+            System.out.println("=========================================");
+        }
+        catch (Exception e) {
+            // Handle the exception
+            System.out.println("An error occurred while fetching Appointment Details: " + e.getMessage());
+        }
+    }
 
 
     @Override

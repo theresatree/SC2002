@@ -65,6 +65,39 @@ public class PatientAppointmentDB {
         }
     }
 
+    //////////////////////////////////////// FETCH PATIENT'S SCHEDULED APPOINTMENTs  ///////////////////////////////////////
+    public static List<PatientScheduledAppointment> patientScheduledAppointments(String patientID) throws IOException{
+        List<PatientScheduledAppointment> listOfSchedule = new ArrayList<>(); // List to hold multiple dates
+        try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+        Workbook workbook = new XSSFWorkbook(is)) {
+        Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+        for (Row row : sheet) {
+            Cell patientIDCell = row.getCell(0);
+            Cell doctorIDCell = row.getCell(1);
+            Cell appointmentIDCell = row.getCell(2);
+            Cell dateCell = row.getCell(3);
+            Cell timeStartCell = row.getCell(4);
+            Cell timeEndCell = row.getCell(5);
+            Cell statusCell = row.getCell(6);
+            if (patientIDCell!=null && patientIDCell.getStringCellValue().equals(patientID)){
+                if (statusCell.getStringCellValue().equals("Confirmed") || statusCell.getStringCellValue().equals("Pending")){
+                    int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
+                    String doctorID = doctorIDCell.getStringCellValue();
+                    LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
+                    LocalTime timeStart = LocalTime.parse(timeStartCell.getStringCellValue(), timeFormat);
+                    LocalTime timeEnd = LocalTime.parse(timeEndCell.getStringCellValue(), timeFormat);
+                    AppointmentStatus status = AppointmentStatus.valueOf(statusCell.getStringCellValue().toUpperCase()); 
+
+                    PatientScheduledAppointment schedule = new PatientScheduledAppointment(currentAppointmentID, doctorID, date, timeStart, timeEnd, status);
+                    listOfSchedule.add(schedule);
+                }
+            }
+        }
+        return listOfSchedule;
+        }
+    }
+
     //////////////////////////////////////// FOR PATIENTS TO SCHEDULE  ///////////////////////////////////////
     public static void updateScheduleForPatients(int appointmentID, String patientID) throws IOException{
         try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);

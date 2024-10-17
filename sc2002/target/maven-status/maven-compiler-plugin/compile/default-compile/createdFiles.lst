@@ -1,5 +1,6 @@
 sc2002/TimeSlot.class
 sc2002/DoctorScheduledDatesDB.class
+sc2002/PatientScheduledAppointment.class
 sc2002/AppointmentStatus.class
 sc2002/Staff.class
 sc2002/StaffFiltering/StaffAgeFilter.class

@@ -207,6 +207,8 @@ class Main {
                         case 6:
                             break;
                         case 7:
+                            patient.viewScheduledAppointments();
+                            waitForEnter(inputScanner);
                             break;    
                         case 8:
                             patient.viewPastAppointmentOutcomeRecords();
