@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import sc2002.StaffFiltering.StaffFilter;
+import sc2002.StaffFiltering.StaffNoFilter;
 
 /**
  * Represents the staff database
@@ -55,7 +56,7 @@ public class StaffDB {
                     String email = emailCell.getStringCellValue();
                     Staff staff = new Staff(staffID, name, role, gender, age, phoneNumber, email);
 
-                    if (selectedFilter == null || selectedFilter.filter(staff)) {
+                    if (selectedFilter.filter(staff)) {
                         staffs.add(staff);
                     }
                 }
@@ -109,7 +110,8 @@ public class StaffDB {
 
 // Update an existing staff member
     public static void updateStaff(String staffID, Staff updatedStaff) throws IOException {
-        List<Staff> staffs = getStaff(null);
+        StaffFilter noFilter = new StaffNoFilter();
+        List<Staff> staffs = getStaff(noFilter);
         for (int i = 0; i < staffs.size(); i++) {
             if (staffs.get(i).getStaffID().equals(staffID)) {
                 staffs.set(i, updatedStaff); // Update the staff member
@@ -125,7 +127,8 @@ public class StaffDB {
 
     // Remove a staff member
     public static void removeStaff(String staffID) throws IOException {
-        List<Staff> staffs = getStaff(null);
+        StaffFilter noFilter = new StaffNoFilter();
+        List<Staff> staffs = getStaff(noFilter);
         staffs.removeIf(staff -> staff.getStaffID().equals(staffID)); 
         if (newStaffFile(staffs) == 1) {
             System.out.println("Successfully removed the staff member");

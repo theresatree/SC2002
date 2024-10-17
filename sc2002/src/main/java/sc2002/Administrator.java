@@ -8,6 +8,7 @@ import sc2002.StaffFiltering.StaffAgeFilter;
 import sc2002.StaffFiltering.StaffFilter;
 import sc2002.StaffFiltering.StaffGenderFilter;
 import sc2002.StaffFiltering.StaffIDFilter;
+import sc2002.StaffFiltering.StaffNoFilter;
 import sc2002.StaffFiltering.StaffRoleFilter;
 
 public class Administrator extends User {
@@ -48,6 +49,7 @@ public class Administrator extends User {
 
             switch (choice) {
                 case 1:
+                    selectedFilter = new StaffNoFilter();
                     break;
                 case 2:
                     selectedFilter = new StaffRoleFilter(Role.ADMINISTRATOR);

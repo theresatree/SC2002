@@ -126,15 +126,16 @@ class Main {
                 while (!logout){
                     System.out.println("Redirecting to Administrator's dashboard...");
                     System.out.println("=========================================");
-                    System.out.println("1. View and Manage Hospital Staff");
-                    System.out.println("2. View Appointment Details");
-                    System.out.println("3. View and Manage Medication Inventory");
-                    System.out.println("4. Approve Replenishment Requests");
-                    System.out.println("5. Logout");
+                    System.out.println("1. View Hospital Staff");
+                    System.out.println("2. Manage Hospital Staff");
+                    System.out.println("3. View Appointment Details");
+                    System.out.println("4. View and Manage Medication Inventory");
+                    System.out.println("5. Approve Replenishment Requests");
+                    System.out.println("6. Logout");
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
 
-                    choice = getValidChoice(inputScanner,5);
+                    choice = getValidChoice(inputScanner,6);
 
                     switch (choice){
                         case 1: 
@@ -142,12 +143,41 @@ class Main {
                             waitForEnter(inputScanner);
                             break;
                         case 2:
+                            System.out.println("=========================================");
+                            System.out.println("          Manage Hospital Staff");
+                            System.out.println("=========================================");
+                            System.out.println("1. Add Hospital Staff");
+                            System.out.println("2. Update Hospital Staff");
+                            System.out.println("3. Remove Hospital Staff");
+                            System.out.println("=========================================");
+                            System.out.print("Select a choice: ");
+                            choice = getValidChoice(inputScanner,3);
+
+                            switch (choice){
+                                case 1:
+                                    admin.addHospitalStaff();
+                                    waitForEnter(inputScanner);
+                                    break;
+                                case 2:
+                                    admin.updateHospitalStaff();
+                                    waitForEnter(inputScanner);
+                                    break;
+                                case 3:
+                                    admin.removeHospitalStaff();
+                                    waitForEnter(inputScanner);
+                                    break;
+                                default:
+                                    System.out.println("Unexpected error occurred.");
+                                    break;
+                            }
                             break;
                         case 3:
                             break;  
                         case 4:
-                            break;
+                            break;  
                         case 5:
+                            break;
+                        case 6:
                             logout = user.logOut();
                             break;  
                         default:
