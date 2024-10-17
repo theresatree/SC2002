@@ -1,6 +1,6 @@
 package sc2002.StaffFiltering;
 
-import sc2002.Staff;
+import sc2002.*;
 
 public class StaffNoFilter implements StaffFilter{
 
