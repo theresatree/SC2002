@@ -219,35 +219,36 @@ public class DoctorAppointmentDB {
     }
 
     /////////////////////////////////////// ACCEPT/DECLINE ///////////////////////////////////////////
-    public static void acceptDeclineAppointment(String doctorID, int appointmentID, String patientID, boolean status) {
+    public static void acceptDeclineAppointment(String doctorID, int appointmentID, String patientID, boolean status) throws IOException {
         try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-            Workbook workbook = new XSSFWorkbook(is)) {
+             Workbook workbook = new XSSFWorkbook(is)) {
+            
             Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
-
             boolean appointmentFound = false; // Flag to track if the appointment was found
-
+    
             for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Skip header
+    
                 Cell patientIDCell = row.getCell(0);
                 Cell doctorIDCell = row.getCell(1);
                 Cell appointmentIDCell = row.getCell(2);
                 Cell statusCell = row.getCell(6);
-
-                if (row.getRowNum() == 0) continue;
-
+    
                 // Check if the appointment ID, doctor ID, and patient ID match
                 if (appointmentIDCell != null && doctorIDCell != null && patientIDCell != null) {
                     int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
                     String currentDoctorID = doctorIDCell.getStringCellValue();
                     String currentPatientID = patientIDCell.getStringCellValue();
-
+    
                     if (currentAppointmentID == appointmentID && currentDoctorID.equals(doctorID) && currentPatientID.equals(patientID)) {
                         // Update the status
                         statusCell.setCellValue(status ? "Confirmed" : "Declined");
-                        appointmentFound = true; // Mark that the appointment was found
-                        break; // Exit the loop after updating the status
+                        appointmentFound = true;
+                        break;
                     }
                 }
             }
+    
             if (!appointmentFound) {
                 System.out.println("No matching appointment found for the provided details.");
             } else {
@@ -255,12 +256,11 @@ public class DoctorAppointmentDB {
                 try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
                     workbook.write(fos);
                 }
+                System.out.println("Appointment status updated successfully.");
             }
+    
         } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception as appropriate
+            e.printStackTrace();
         }
     }
 }
-
-
-

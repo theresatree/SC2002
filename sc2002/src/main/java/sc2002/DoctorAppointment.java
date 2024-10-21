@@ -217,30 +217,35 @@ public class DoctorAppointment implements Appointment {
         int choice=-1;
         int proceed=-1;
 
-        try {
+        try{
             while (choice!=0) {
-                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
-                if (appointments.isEmpty()) {
+                    appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
+                List<PatientScheduledAppointment> pendingAppointments = new ArrayList<>();
+        
+                for (PatientScheduledAppointment appointment : appointments) { //Get all pending only.
+                    if (appointment.getStatus() == AppointmentStatus.PENDING) {
+                        pendingAppointments.add(appointment);
+                    }
+                }
+                
+                if (pendingAppointments.isEmpty()) {
                     System.out.println("\n\n=========================================");
                     System.out.println("         Pending Appointments");
                     System.out.println("=========================================");
                     System.out.println("      No pending appointment found!");
                     System.out.println("=========================================\n\n");
                     break;
-                }
-                else{
+                } else {
                     System.out.println("\n\n=========================================");
                     System.out.println("         Pending Appointments");
                     System.out.println("=========================================");
-                    for (PatientScheduledAppointment appointment : appointments) {
-                        if (appointment.getStatus()==AppointmentStatus.PENDING){
-                            appointment.printDoctorScheduledAppointment();
-                            System.out.println("=========================================");
-                        }
+                    for (PatientScheduledAppointment appointment : pendingAppointments) {
+                        appointment.printDoctorScheduledAppointment();
+                        System.out.println("=========================================");
                     }
                     System.out.println("Choose an appointment ID (or 0 to exit): ");
                 }
-
+            
 
                 try {
                     choice = scanner.nextInt();
@@ -253,9 +258,10 @@ public class DoctorAppointment implements Appointment {
                     System.out.println("\nExiting process.\n\n");
                     break;
                 }
+
                 PatientScheduledAppointment selectedAppointment = null;
-                for (PatientScheduledAppointment selected : appointments) {
-                    if (selected.getAppointmentID() == choice && selected.getStatus()==AppointmentStatus.PENDING) {  // Check if the appointment ID and status matches
+                for (PatientScheduledAppointment selected : pendingAppointments) {
+                    if (selected.getAppointmentID() == choice) {  // Check if the appointment ID and status matches
                         selectedAppointment = selected;  // If found, set the selectedSlot
                         break;
                     }
@@ -281,14 +287,14 @@ public class DoctorAppointment implements Appointment {
                             case 1:
                                 updateAppointment(scanner, selectedAppointment.getAppointmentID(), this.doctorID, selectedAppointment.getPatientID(), true);
                                 System.out.println("Appointment accepted.");
-                                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID); // Update the appointments list
                                 proceed=0;
+                                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
                                 break; 
                             case 2:
                                 updateAppointment(scanner, selectedAppointment.getAppointmentID(), this.doctorID, selectedAppointment.getPatientID(), false);
                                 System.out.println("Appointment declined.");
-                                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID); // Update the appointments list
                                 proceed=0;
+                                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
                                 break;
                             case 0:
                                 System.out.println("\nSelection cancelled.");
@@ -297,16 +303,23 @@ public class DoctorAppointment implements Appointment {
                                 System.out.println("\nPlease choose a valid option!");
                                 break;
                         }
+                        appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
                     }
                 }
             }
-        } catch (IOException e) {
+        }
+        catch(IOException e){
             e.printStackTrace();
         }
+
     }
 
     private void updateAppointment(Scanner scanner, int appointmentID, String doctorID, String patientID, boolean accept){
-        DoctorAppointmentDB.acceptDeclineAppointment(doctorID, appointmentID, patientID, accept);
+        try {
+            DoctorAppointmentDB.acceptDeclineAppointment(doctorID, appointmentID, patientID, accept);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     };
 
 

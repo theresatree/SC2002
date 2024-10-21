@@ -67,4 +67,8 @@ public class PatientScheduledAppointment {
         return this.patientID;
     }
 
+    public void setStatus(AppointmentStatus status){
+        this.status=status;
+    }
+
 }
