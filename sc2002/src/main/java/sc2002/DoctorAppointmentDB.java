@@ -19,8 +19,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
-public class DoctorScheduledDatesDB {
-        private static final String FILE_NAME = "Appointment.xlsx"; //fixed file location for Patient_List.xlsx
+public class DoctorAppointmentDB {
+        private static final String FILE_NAME = "Appointment.xlsx"; //fixed file location for Appointment.xlsx
         static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -28,7 +28,7 @@ public class DoctorScheduledDatesDB {
     public static List<DoctorScheduledDates> getScheduledDates(String hospitalID, LocalDate filterDate) throws IOException {
         List<DoctorScheduledDates> scheduledDates = new ArrayList<>(); // List to hold multiple dates
         // Use try-with-resources to ensure the stream is closed automatically
-        try (InputStream is = DoctorScheduledDatesDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             if (is == null) {
                 throw new IOException("File not found in resources: " + FILE_NAME);
             }
@@ -67,7 +67,7 @@ public class DoctorScheduledDatesDB {
     /////////////////////////////////////// set new doctor schedule ///////////////////////////////////////////
 
     public static void setDoctorSchedule(String doctorID, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        try (InputStream is = DoctorScheduledDatesDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
             Workbook workbook = new XSSFWorkbook(is)) {
             Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
 
@@ -116,7 +116,7 @@ public class DoctorScheduledDatesDB {
     public static List<String> getPatients(String doctorID) throws IOException {
         Set<String> patientIDs = new HashSet<>(); // Make a set to filter out duplicate IDs
         // Use try-with-resources to ensure the stream is closed automatically
-        try (InputStream is = DoctorScheduledDatesDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
             if (is == null) {
                 throw new IOException("File not found in resources: " + FILE_NAME);
             }

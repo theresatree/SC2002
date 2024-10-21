@@ -31,7 +31,7 @@ public class DoctorAppointment implements Appointment {
         LocalTime end = LocalTime.of(18,0);
         
         try {
-            scheduledDates = DoctorScheduledDatesDB.getScheduledDates(doctorID, date); // Fetch scheduled dates from the database
+            scheduledDates = DoctorAppointmentDB.getScheduledDates(doctorID, date); // Fetch scheduled dates from the database
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception as appropriate
             return new ArrayList<>(); // Return an empty list in case of an error
@@ -95,7 +95,7 @@ public class DoctorAppointment implements Appointment {
                 System.out.println("This slot is already booked. Please choose another slot.\n");
             } else {
                 try {
-                    DoctorScheduledDatesDB.setDoctorSchedule(this.doctorID, date, selectedSlot.getStartTime(), selectedSlot.getEndTime());
+                    DoctorAppointmentDB.setDoctorSchedule(this.doctorID, date, selectedSlot.getStartTime(), selectedSlot.getEndTime());
                     selectedSlot.isAvailable = false; // Mark the slot as booked
                     System.out.println("Successfully booked the slot: " + selectedSlot.getStartTime().format(timeFormat) + " to " + selectedSlot.getEndTime().format(timeFormat) + " on " + date.format(dateFormat) + "\n\n");
                     break; // Exit after successful booking
@@ -151,8 +151,18 @@ public class DoctorAppointment implements Appointment {
 
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void showPersonalSchedule(){
+        // try {
+        //     scheduledDates
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+    }
+
     @Override
-    public void viewAppointmentStatus(){}
+    public void viewAppointmentStatus(){
+    }
 
     @Override
     public void cancelAppointment(Scanner scanner){};

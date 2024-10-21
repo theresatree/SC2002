@@ -16,7 +16,7 @@ public class Doctor extends User{
         docotorAppointment = new DoctorAppointment(doctorID);
 
         try {
-            patientIDs = DoctorScheduledDatesDB.getPatients(doctorID);
+            patientIDs = DoctorAppointmentDB.getPatients(doctorID);
         }catch(IOException e) {
             e.printStackTrace(); // Handle the exception as appropriate
         }
@@ -67,6 +67,12 @@ public class Doctor extends User{
         }
     }
     /////////////////////////////////////////////////////////////////////////
+    
+    public void viewPersonalSchedule(){
+        docotorAppointment.showPersonalSchedule();
+    }
+    
+    /////////////////////////////////////////////////////////////////////////
     public void updatePatientMedicalRecord(Scanner scanner){
         boolean exit=false;
 
@@ -97,7 +103,7 @@ public class Doctor extends User{
             }
         }
     }
-    /////////////////////////////////////////////////////////////////////////
+
     private void createNewDiagnosis(String patientID, Scanner scanner){
         // Clear the newline character left over from a previous nextInt() or similar call
         if (scanner.hasNextLine()) {
@@ -112,7 +118,7 @@ public class Doctor extends User{
 
         DiagnosisDB.addDiagnosis(patientID, this.doctorID, descriptionOfDiagnosis, descriptionOfTreatmtent, additionalNotes);
     }
-    /////////////////////////////////////////////////////////////////////////
+
     private void updateDiagnosis(String patientID, Scanner scanner){
         try{
             medicalRecord = PatientDB.getPatientDetails(patientID);
