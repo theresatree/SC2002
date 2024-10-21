@@ -254,4 +254,41 @@ public class DoctorAppointmentDB {
             e.printStackTrace();
         }
     }
+
+     /////////////////////////////////////// SET TO COMPLETE ///////////////////////////////////////////
+     public static void completeAppointment(String doctorID, int appointmentID, String patientID) throws IOException {
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+             Workbook workbook = new XSSFWorkbook(is)) {
+            
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+    
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; // Skip header
+    
+                Cell patientIDCell = row.getCell(0);
+                Cell doctorIDCell = row.getCell(1);
+                Cell appointmentIDCell = row.getCell(2);
+                Cell statusCell = row.getCell(6);
+    
+                // Check if the appointment ID, doctor ID, and patient ID match
+                if (appointmentIDCell != null && doctorIDCell != null && patientIDCell != null) {
+                    int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
+                    String currentDoctorID = doctorIDCell.getStringCellValue();
+                    String currentPatientID = patientIDCell.getStringCellValue();
+    
+                    if (currentAppointmentID == appointmentID && currentDoctorID.equals(doctorID) && currentPatientID.equals(patientID)) {
+                        // Update the status
+                        statusCell.setCellValue("Completed");
+                        break;
+                    }
+                }
+            }
+    
+        try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+            workbook.write(fos);
+        }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

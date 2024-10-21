@@ -1,6 +1,8 @@
 package sc2002;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -228,10 +230,151 @@ public class Doctor extends User{
         docotorAppointment.acceptDeclineAppointment(scanner);
     }
 
-
     /////////////////////////////////////////////////////////////////////////
     public void viewAppointmentStatus(){
         docotorAppointment.viewAppointmentStatus();
     }
 
+
+
+    /////////////////////////////////////////////////////////////////////////
+    public void createAppointmentRecord(Scanner scanner){
+        boolean exit=false;
+        int choice=-1;
+        int medicineChoice=-1;
+        int serviceChoice = -1;
+        Medicine medication=null;
+        Service service = null;
+        String patientID = choosePatientString(patientIDs, scanner);
+
+        try{
+            while (!exit && patientID!=null){
+                List<PatientScheduledAppointment> appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
+                List<PatientScheduledAppointment> confirmedAppointments = new ArrayList<>();
+
+                for (PatientScheduledAppointment appointment : appointments) {
+                    if (appointment.getStatus() == AppointmentStatus.CONFIRMED && appointment.getPatientID().equals(patientID)) {
+                        confirmedAppointments.add(appointment);
+                    }
+                }
+                
+                if (confirmedAppointments.isEmpty()){
+                    System.out.println("\n\n==========================================");
+                    System.out.println("Select Appointment ID with Patient: " + patientID);
+                    System.out.println("==========================================");
+                    System.out.println("\nThere is no available appointments to record!\n\n");
+                    System.out.println("Press Enter to continue...");
+                    scanner.nextLine(); // Clear the invalid input from the scanner
+                    break;
+                }
+                System.out.println("\n\n==========================================");
+                System.out.println("Select Appointment ID with Patient: " + patientID);
+                System.out.println("==========================================");
+
+                for (PatientScheduledAppointment appointment : confirmedAppointments){
+                    System.out.println("ID: " + appointment.getAppointmentID());
+                }
+                System.out.println("==========================================");
+                System.out.print("Choose an option (or enter 0 to exit): ");
+
+                try {
+                    choice = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nInvalid input! Please enter a valid appointment ID.\n");
+                    scanner.nextLine(); // Clear the invalid input from the scanner
+                    continue; // Skip the rest of the loop and ask for input again
+                }
+    
+                if (choice == 0) {
+                    System.out.println("\nExiting process.\n\n");
+                    break;
+                }
+    
+                PatientScheduledAppointment selectedAppointment = null;
+                for (PatientScheduledAppointment selected : confirmedAppointments) {
+                    if (selected.getAppointmentID() == choice) {
+                        selectedAppointment = selected;
+                        break;
+                    }
+                }
+
+                if (selectedAppointment == null) {
+                    System.out.println("\nInvalid! Please select a valid appointment ID.");
+                } else {
+                    System.out.println("\n\n==========================================");
+                    System.out.println("  Appointment ID " + selectedAppointment.getAppointmentID() + " with Patient: " + patientID);
+                    System.out.println("   Date: " + selectedAppointment.getDate() + " - " + selectedAppointment.getTimeStart() + " to " + selectedAppointment.getTimeEnd());
+                    System.out.println("==========================================\n");
+
+                    //SERVICES
+                    while (serviceChoice < 1 || serviceChoice > Service.values().length) {
+                        System.out.println("==========================================");
+                        System.out.println("            Services provided");
+                        System.out.println("==========================================");
+                        // Start displaying services from index 1
+                        for (int i = 1; i <= Service.values().length; i++) {
+                            System.out.println(i + ": " + Service.values()[i - 1]); // Display index with the service name
+                        }
+                        System.out.println("==========================================");
+                        System.out.print("Choose service provided: ");
+                    
+                        serviceChoice = scanner.nextInt();
+                        scanner.nextLine(); // Consume the newline character
+                    
+                        // Adjust the condition to check for the range starting from 1
+                        if (serviceChoice >= 1 && serviceChoice <= Service.values().length) {
+                            service = Service.values()[serviceChoice - 1]; // Access the enum by index
+                            System.out.println("You selected: " + service);
+                        } else {
+                            System.out.println("Invalid choice! Please enter a number between 1 and " + Service.values().length);
+                        }
+                    }
+
+                    //MEDICINE
+                    while (medicineChoice < 1 || medicineChoice > Medicine.values().length) {
+                        System.out.println("\n==========================================");
+                        System.out.println("            Medicine provided");
+                        System.out.println("==========================================");
+                        // Start displaying medicines from index 1
+                        for (int i = 1; i <= Medicine.values().length; i++) {
+                            System.out.println(i + ": " + Medicine.values()[i - 1]); // Display index with the medicine name
+                        }
+                        System.out.println("==========================================");
+                        System.out.print("Choose medication prescribed: ");
+                        
+                        medicineChoice = scanner.nextInt();
+                        scanner.nextLine(); // Consume the newline character
+                    
+                        // Adjust the condition to check for the range starting from 1
+                        if (medicineChoice >= 1 && medicineChoice <= Medicine.values().length) {
+                            medication = Medicine.values()[medicineChoice - 1]; // Access the enum by index
+                            System.out.println("You selected: " + medication);
+                        } else {
+                            System.out.println("Invalid choice! Please enter a number between 1 and " + Medicine.values().length);
+                        }
+                    }
+
+                    System.out.print("\n\nConsultation notes for patient: ");
+                    String notes = scanner.nextLine();
+                    PatientAppointmentOutcomeDB.setAppointmentOutcome(patientID,doctorID,selectedAppointment.getAppointmentID(),selectedAppointment.getDate(),service,medication,notes);
+                    DoctorAppointmentDB.completeAppointment(doctorID,selectedAppointment.getAppointmentID(),patientID);
+
+                    System.out.println("\nUpdating Patient's Record. Please wait...");
+                    for (int i = 5; i > 0; i--) {
+                        System.out.print("*");
+                        try {
+                            Thread.sleep(200); // Sleep for 0.2 second
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            System.out.println("\nUpdate process interrupted.");
+                        }
+                    }
+                    System.out.println("\nAppointment Outcome Recorded!");
+                }
+            }
+            }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }

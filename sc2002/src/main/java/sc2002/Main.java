@@ -84,6 +84,7 @@ class Main {
                             waitForEnter(inputScanner);
                             break;
                         case 7:
+                            doctor.createAppointmentRecord(inputScanner);
                             break;    
                         case 8: 
                             logout = user.logOut();
