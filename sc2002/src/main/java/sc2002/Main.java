@@ -69,14 +69,20 @@ class Main {
                             doctor.updatePatientMedicalRecord(inputScanner);
                             break;
                         case 3:
+                            doctor.viewPersonalSchedule();
+                            waitForEnter(inputScanner);
                             break;  
                         case 4:
                             doctor.setAvailabilityDate(inputScanner);
                             waitForEnter(inputScanner);
                             break;
                         case 5:
+                            doctor.acceptDeclineAppointment(inputScanner);
+                            waitForEnter(inputScanner);
                             break;     
                         case 6:
+                            doctor.viewAppointmentStatus();
+                            waitForEnter(inputScanner);
                             break;
                         case 7:
                             break;    

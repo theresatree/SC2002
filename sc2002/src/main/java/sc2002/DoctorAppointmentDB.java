@@ -42,6 +42,7 @@ public class DoctorAppointmentDB {
                     Cell dateCell = row.getCell(3);
                     Cell timeStartCell = row.getCell(4);
                     Cell timeEndCell = row.getCell(5);
+                    Cell statusCell = row.getCell(6);
 
                     if (row.getRowNum() == 0) continue;                    // Skip header row
                     
@@ -51,10 +52,11 @@ public class DoctorAppointmentDB {
                         LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
                         LocalTime timeStart = LocalTime.parse(timeStartCell.getStringCellValue(), timeFormat);
                         LocalTime timeEnd = LocalTime.parse(timeEndCell.getStringCellValue(), timeFormat);
+                        AppointmentStatus status = AppointmentStatus.valueOf(statusCell.getStringCellValue().toUpperCase());
 
                         // Check if the date matches the filter date before adding to scheduled dates
                         if (date.equals(filterDate)) {
-                            DoctorScheduledDates scheduleDate = new DoctorScheduledDates(doctorID, date, timeStart, timeEnd);
+                            DoctorScheduledDates scheduleDate = new DoctorScheduledDates(doctorID, date, timeStart, timeEnd, status);
                             scheduledDates.add(scheduleDate);
                         }
                     }
@@ -65,7 +67,6 @@ public class DoctorAppointmentDB {
     }
 
     /////////////////////////////////////// set new doctor schedule ///////////////////////////////////////////
-
     public static void setDoctorSchedule(String doctorID, LocalDate date, LocalTime startTime, LocalTime endTime) {
         try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
             Workbook workbook = new XSSFWorkbook(is)) {
@@ -146,6 +147,120 @@ public class DoctorAppointmentDB {
         }
         return new ArrayList<>(patientIDs);
     }
+
+    //////////////////////////////////////// Get getAllPersonalSchedule ////////////////////////////////////////
+    public static List<DoctorScheduledDates> getAllPersonalSchedule(String hospitalID) throws IOException {
+        List<DoctorScheduledDates> scheduledDates = new ArrayList<>(); // List to hold multiple dates
+        // Use try-with-resources to ensure the stream is closed automatically
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (is == null) {
+                throw new IOException("File not found in resources: " + FILE_NAME);
+            }
+
+            // Load the workbook from the input stream
+            try (Workbook workbook = new XSSFWorkbook(is)) {
+                Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+                for (Row row : sheet) {
+                    Cell doctorIDCell = row.getCell(1);
+                    Cell dateCell = row.getCell(3);
+                    Cell timeStartCell = row.getCell(4);
+                    Cell timeEndCell = row.getCell(5);
+                    Cell statusCell = row.getCell(6);
+
+                    if (row.getRowNum() == 0) continue;                    // Skip header row
+                    
+                    // Check if the doctorID and if the date matches, add to the scheduled dates
+                    if (doctorIDCell != null && doctorIDCell.getStringCellValue().equals(hospitalID)) {
+                        String doctorID = doctorIDCell.getStringCellValue();
+                        LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
+                        LocalTime timeStart = LocalTime.parse(timeStartCell.getStringCellValue(), timeFormat);
+                        LocalTime timeEnd = LocalTime.parse(timeEndCell.getStringCellValue(), timeFormat);
+                        AppointmentStatus status = AppointmentStatus.valueOf(statusCell.getStringCellValue().toUpperCase());
+
+                        DoctorScheduledDates scheduleDate = new DoctorScheduledDates(doctorID, date, timeStart, timeEnd, status);
+                        scheduledDates.add(scheduleDate);
+                    }
+                }
+            }
+            return scheduledDates;
+        }
+    }
+
+    //////////////////////////////////////// FETCH DOCTOR'S SCHEDULED APPOINTMENTS  ///////////////////////////////////////
+    public static List<PatientScheduledAppointment> doctorListOfAllAppointments(String doctorID) throws IOException{
+        List<PatientScheduledAppointment> listOfSchedule = new ArrayList<>(); // List to hold multiple dates
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+        Workbook workbook = new XSSFWorkbook(is)) {
+        Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+        for (Row row : sheet) {
+            Cell patientIDCell = row.getCell(0);
+            Cell doctorIDCell = row.getCell(1);
+            Cell appointmentIDCell = row.getCell(2);
+            Cell dateCell = row.getCell(3);
+            Cell timeStartCell = row.getCell(4);
+            Cell timeEndCell = row.getCell(5);
+            Cell statusCell = row.getCell(6);
+            if (doctorIDCell!=null && doctorIDCell.getStringCellValue().equals(doctorID)){
+                String patientID = patientIDCell.getStringCellValue();
+                int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
+                LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
+                LocalTime timeStart = LocalTime.parse(timeStartCell.getStringCellValue(), timeFormat);
+                LocalTime timeEnd = LocalTime.parse(timeEndCell.getStringCellValue(), timeFormat);
+                AppointmentStatus status = AppointmentStatus.valueOf(statusCell.getStringCellValue().toUpperCase()); 
+
+                PatientScheduledAppointment schedule = new PatientScheduledAppointment(patientID, currentAppointmentID, doctorID, date, timeStart, timeEnd, status);
+                listOfSchedule.add(schedule);
+            }
+        }
+        return listOfSchedule;
+        }
+    }
+
+    /////////////////////////////////////// ACCEPT/DECLINE ///////////////////////////////////////////
+    public static void acceptDeclineAppointment(String doctorID, int appointmentID, String patientID, boolean status) {
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+            Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+            boolean appointmentFound = false; // Flag to track if the appointment was found
+
+            for (Row row : sheet) {
+                Cell patientIDCell = row.getCell(0);
+                Cell doctorIDCell = row.getCell(1);
+                Cell appointmentIDCell = row.getCell(2);
+                Cell statusCell = row.getCell(6);
+
+                if (row.getRowNum() == 0) continue;
+
+                // Check if the appointment ID, doctor ID, and patient ID match
+                if (appointmentIDCell != null && doctorIDCell != null && patientIDCell != null) {
+                    int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
+                    String currentDoctorID = doctorIDCell.getStringCellValue();
+                    String currentPatientID = patientIDCell.getStringCellValue();
+
+                    if (currentAppointmentID == appointmentID && currentDoctorID.equals(doctorID) && currentPatientID.equals(patientID)) {
+                        // Update the status
+                        statusCell.setCellValue(status ? "Confirmed" : "Declined");
+                        appointmentFound = true; // Mark that the appointment was found
+                        break; // Exit the loop after updating the status
+                    }
+                }
+            }
+            if (!appointmentFound) {
+                System.out.println("No matching appointment found for the provided details.");
+            } else {
+                // Write the changes back to the Excel file
+                try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+                    workbook.write(fos);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception as appropriate
+        }
+    }
 }
+
 
 

@@ -1,5 +1,4 @@
 sc2002/TimeSlot.class
-sc2002/DoctorScheduledDatesDB.class
 sc2002/PatientScheduledAppointment.class
 sc2002/AppointmentStatus.class
 sc2002/Staff.class
@@ -20,6 +19,7 @@ sc2002/User.class
 sc2002/Diagnosis.class
 sc2002/Patient.class
 sc2002/Doctor.class
+sc2002/DoctorAppointmentDB.class
 sc2002/PatientDB.class
 sc2002/Appointment.class
 sc2002/AvailableDatesToChoose.class

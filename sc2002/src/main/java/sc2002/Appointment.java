@@ -5,6 +5,4 @@ import java.util.Scanner;
 interface Appointment {
     
     public void viewAppointmentStatus();
-    public void cancelAppointment(Scanner scanner);
-
 }

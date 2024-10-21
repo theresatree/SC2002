@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -14,6 +15,7 @@ public class DoctorAppointment implements Appointment {
     // Create a hashmap that makes each date to a List of timeslot
     Map<LocalDate, List<TimeSlot>> availableSlots;
     List<DoctorScheduledDates> scheduledDates;
+    List<PatientScheduledAppointment> appointments;
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Set the desired date format
     DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -131,10 +133,15 @@ public class DoctorAppointment implements Appointment {
         //User input
         int choice;
         while (true) {
-            System.out.print("Enter a number corresponsing to the date: ");
+            System.out.print("Choose a date (or enter 0 to exit): ");
             
             if (scanner.hasNextInt()) { // Check if the input is an integer
                 choice = scanner.nextInt();
+
+                if (choice == 0) {
+                    System.out.println("Exiting booking process.\n\n");
+                    break; // Exit if the user chooses to exit
+                }
                 
                 if (choice >= 1 && choice <= selectableDates.size()) {
                     LocalDate selectedDate = selectableDates.get(choice - 1); // Get the selected date
@@ -153,19 +160,155 @@ public class DoctorAppointment implements Appointment {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void showPersonalSchedule(){
-        // try {
-        //     scheduledDates
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
-    }
+        try {
+            scheduledDates = DoctorAppointmentDB.getAllPersonalSchedule(doctorID);
 
+            if (scheduledDates.isEmpty()) {
+                System.out.println("No personal schedule found!\n\n");
+            }
+            else{
+                System.out.println("\n\n=========================================");
+                System.out.println("       List of Personal Schedule");
+                System.out.println("=========================================");
+                for (DoctorScheduledDates dates : scheduledDates) {
+                    if (dates.getStatus()!=AppointmentStatus.COMPLETED){ // Show only available and pending.
+                        dates.printSchedule();
+                        System.out.println("=========================================");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void viewAppointmentStatus(){
+        try {
+            appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
+            if (appointments.isEmpty()) {
+                System.out.println("\n\n=========================================");
+                System.out.println("         Scheduled Appointments");
+                System.out.println("=========================================");
+                System.out.println("        No scheduled dates found!");
+                System.out.println("=========================================\n\n");
+            }
+            else{
+                System.out.println("\n\n=========================================");
+                System.out.println("         Scheduled Appointments");
+                System.out.println("=========================================");
+                for (PatientScheduledAppointment appointment : appointments) {
+                    if (appointment.getStatus()==AppointmentStatus.CONFIRMED){
+                        appointment.printDoctorScheduledAppointment();
+                        System.out.println("=========================================");
+                    }
+            }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    @Override
-    public void cancelAppointment(Scanner scanner){};
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void acceptDeclineAppointment(Scanner scanner){
+        int choice=-1;
+        int proceed=-1;
+
+        try {
+            while (choice!=0) {
+                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
+                if (appointments.isEmpty()) {
+                    System.out.println("\n\n=========================================");
+                    System.out.println("         Pending Appointments");
+                    System.out.println("=========================================");
+                    System.out.println("      No pending appointment found!");
+                    System.out.println("=========================================\n\n");
+                    break;
+                }
+                else{
+                    System.out.println("\n\n=========================================");
+                    System.out.println("         Pending Appointments");
+                    System.out.println("=========================================");
+                    for (PatientScheduledAppointment appointment : appointments) {
+                        if (appointment.getStatus()==AppointmentStatus.PENDING){
+                            appointment.printDoctorScheduledAppointment();
+                            System.out.println("=========================================");
+                        }
+                    }
+                    System.out.println("Choose an appointment ID (or 0 to exit): ");
+                }
+
+
+                try {
+                    choice = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nInvalid input! Please enter a valid appointment ID.\n");
+                    scanner.nextLine(); // Clear the invalid input from the scanner
+                    continue; // Skip the rest of the loop and ask for input again
+                }
+                if (choice == 0) {
+                    System.out.println("\nExiting process.\n\n");
+                    break;
+                }
+                PatientScheduledAppointment selectedAppointment = null;
+                for (PatientScheduledAppointment selected : appointments) {
+                    if (selected.getAppointmentID() == choice && selected.getStatus()==AppointmentStatus.PENDING) {  // Check if the appointment ID and status matches
+                        selectedAppointment = selected;  // If found, set the selectedSlot
+                        break;
+                    }
+                }
+
+
+                if (selectedAppointment==null) {
+                    System.out.println("\nInvalid! Please select a valid appointment ID.");
+                } else {
+                    while (proceed!=0){
+                        System.out.println("\n\n=========================================");
+                        System.out.println("          You have selected:");
+                        System.out.println("      " +selectedAppointment.getDate().format(dateFormat) + " - " + selectedAppointment.getTimeStart().format(timeFormat) + " to " + selectedAppointment.getTimeEnd().format(timeFormat));
+                        System.out.println("=========================================");
+                        System.out.println("1. Accept");
+                        System.out.println("2. Decline");
+                        System.out.println("=========================================");
+                        System.out.println("Choose an option (or enter 0 to exit): ");
+                        proceed = scanner.nextInt();
+                        // If the user confirms booking
+
+                        switch (proceed) {
+                            case 1:
+                                updateAppointment(scanner, selectedAppointment.getAppointmentID(), this.doctorID, selectedAppointment.getPatientID(), true);
+                                System.out.println("Appointment accepted.");
+                                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID); // Update the appointments list
+                                proceed=0;
+                                break; 
+                            case 2:
+                                updateAppointment(scanner, selectedAppointment.getAppointmentID(), this.doctorID, selectedAppointment.getPatientID(), false);
+                                System.out.println("Appointment declined.");
+                                appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID); // Update the appointments list
+                                proceed=0;
+                                break;
+                            case 0:
+                                System.out.println("\nSelection cancelled.");
+                                break;
+                            default:
+                                System.out.println("\nPlease choose a valid option!");
+                                break;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateAppointment(Scanner scanner, int appointmentID, String doctorID, String patientID, boolean accept){
+        DoctorAppointmentDB.acceptDeclineAppointment(doctorID, appointmentID, patientID, accept);
+    };
+
 
     public void recordAppointmentOutcome(){}
 

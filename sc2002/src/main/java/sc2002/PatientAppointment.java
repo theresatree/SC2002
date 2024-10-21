@@ -21,20 +21,25 @@ public class PatientAppointment implements Appointment{
     public void viewAvailableAppointmentSlots(){
         try{
             availableDatesToChoose = PatientAppointmentDB.getAvailableSlots();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
 
         if (availableDatesToChoose.isEmpty()) {
-            System.out.println("No available dates found!\n\n");
-
-        }
-        System.out.println("\n\n=========================================");
-        System.out.println("       Available Appointment Slots");
-        System.out.println("=========================================");
-        for (AvailableDatesToChoose dates : availableDatesToChoose) {
-            dates.printString();
+            System.out.println("\n\n=========================================");
+            System.out.println("       Available Appointment Slots");
             System.out.println("=========================================");
+            System.out.println("        No available dates found!");
+            System.out.println("=========================================\n\n");
+        }
+        else{
+            System.out.println("\n\n=========================================");
+            System.out.println("       Available Appointment Slots");
+            System.out.println("=========================================");
+            for (AvailableDatesToChoose dates : availableDatesToChoose) {
+                dates.printString();
+                System.out.println("=========================================");
+            }
+        }
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 
@@ -152,7 +157,6 @@ public class PatientAppointment implements Appointment{
         }
     }
 
-    @Override
     public void cancelAppointment(Scanner scanner){
         int choice=-1;
         char proceed;

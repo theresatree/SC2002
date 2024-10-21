@@ -219,8 +219,19 @@ public class Doctor extends User{
 
     }
     /////////////////////////////////////////////////////////////////////////
-
     public void setAvailabilityDate(Scanner scanner){
         docotorAppointment.showSelectableDates(scanner);
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    public void acceptDeclineAppointment(Scanner scanner){
+        docotorAppointment.acceptDeclineAppointment(scanner);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
+    public void viewAppointmentStatus(){
+        docotorAppointment.viewAppointmentStatus();
+    }
+
 }

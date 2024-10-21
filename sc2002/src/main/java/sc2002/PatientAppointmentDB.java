@@ -81,7 +81,7 @@ public class PatientAppointmentDB {
             Cell timeEndCell = row.getCell(5);
             Cell statusCell = row.getCell(6);
             if (patientIDCell!=null && patientIDCell.getStringCellValue().equals(patientID)){
-                if (statusCell.getStringCellValue().equals("Confirmed") || statusCell.getStringCellValue().equals("Pending")){
+                if (statusCell.getStringCellValue().equals("Confirmed") || statusCell.getStringCellValue().equals("Pending") || statusCell.getStringCellValue().equals("Declined")){
                     int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
                     String doctorID = doctorIDCell.getStringCellValue();
                     LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
@@ -89,7 +89,7 @@ public class PatientAppointmentDB {
                     LocalTime timeEnd = LocalTime.parse(timeEndCell.getStringCellValue(), timeFormat);
                     AppointmentStatus status = AppointmentStatus.valueOf(statusCell.getStringCellValue().toUpperCase()); 
 
-                    PatientScheduledAppointment schedule = new PatientScheduledAppointment(currentAppointmentID, doctorID, date, timeStart, timeEnd, status);
+                    PatientScheduledAppointment schedule = new PatientScheduledAppointment(patientID, currentAppointmentID, doctorID, date, timeStart, timeEnd, status);
                     listOfSchedule.add(schedule);
                 }
             }

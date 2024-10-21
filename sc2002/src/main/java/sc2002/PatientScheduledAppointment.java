@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 
 public class PatientScheduledAppointment {
     private int appointmentID;
+    private String patientID;
     private String doctorID;
     private LocalDate date;
     private LocalTime timeStart;
@@ -16,7 +17,8 @@ public class PatientScheduledAppointment {
     DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
 
-    PatientScheduledAppointment(int appointmentID, String doctorID, LocalDate date, LocalTime timeStart, LocalTime timeEnd, AppointmentStatus status){
+    PatientScheduledAppointment(String patientID, int appointmentID, String doctorID, LocalDate date, LocalTime timeStart, LocalTime timeEnd, AppointmentStatus status){
+        this.patientID=patientID;
         this.appointmentID = appointmentID;
         this.doctorID = doctorID;
         this.date = date;
@@ -33,6 +35,14 @@ public class PatientScheduledAppointment {
                            "Status: " + status);
     }
 
+    public void printDoctorScheduledAppointment(){
+        System.out.println("Appointment ID: " + appointmentID + "\n" +
+                            "Patient ID: " + patientID + "\n" +
+                            "Date: " + date.format(dateFormat) + "\n" +
+                            "Time: " + timeStart.format(timeFormat) + " to " + timeEnd.format(timeFormat) + "\n" +
+                            "Status: " + status);
+    }
+
     public int getAppointmentID(){
         return this.appointmentID;
     }
@@ -47,6 +57,14 @@ public class PatientScheduledAppointment {
 
     public LocalTime getTimeEnd(){
         return this.timeEnd;
+    }
+
+    public AppointmentStatus getStatus(){
+        return this.status;
+    }
+
+    public String getPatientID(){
+        return this.patientID;
     }
 
 }
