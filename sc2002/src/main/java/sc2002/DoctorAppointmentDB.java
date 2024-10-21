@@ -224,7 +224,6 @@ public class DoctorAppointmentDB {
              Workbook workbook = new XSSFWorkbook(is)) {
             
             Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
-            boolean appointmentFound = false; // Flag to track if the appointment was found
     
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue; // Skip header
@@ -243,22 +242,14 @@ public class DoctorAppointmentDB {
                     if (currentAppointmentID == appointmentID && currentDoctorID.equals(doctorID) && currentPatientID.equals(patientID)) {
                         // Update the status
                         statusCell.setCellValue(status ? "Confirmed" : "Declined");
-                        appointmentFound = true;
                         break;
                     }
                 }
             }
     
-            if (!appointmentFound) {
-                System.out.println("No matching appointment found for the provided details.");
-            } else {
-                // Write the changes back to the Excel file
-                try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                    workbook.write(fos);
-                }
-                System.out.println("Appointment status updated successfully.");
-            }
-    
+        try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+            workbook.write(fos);
+        }
         } catch (IOException e) {
             e.printStackTrace();
         }

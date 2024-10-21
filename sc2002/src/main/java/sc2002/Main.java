@@ -78,7 +78,6 @@ class Main {
                             break;
                         case 5:
                             doctor.acceptDeclineAppointment(inputScanner);
-                            waitForEnter(inputScanner);
                             break;     
                         case 6:
                             doctor.viewAppointmentStatus();
