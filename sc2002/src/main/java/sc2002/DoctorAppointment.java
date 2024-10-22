@@ -332,8 +332,4 @@ private void updateAppointment(Scanner scanner, int appointmentID, String doctor
         e.printStackTrace();
     }
 }
-
-
-    public void recordAppointmentOutcome(){}
-
 }

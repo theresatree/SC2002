@@ -44,12 +44,14 @@ public class PatientAppointmentOutcomeDB {
 
 
                     if (row.getRowNum() == 0) continue;                    // Skip header row
-                    
+
+                     // Debug information
+
                     if (patientIDCell != null && patientIDCell.getStringCellValue().equals(hospitalID)) {
                         String patientID = patientIDCell.getStringCellValue();
                         String doctorID = doctorIDCell.getStringCellValue();
                         int appointment = (int) appointmentIDCell.getNumericCellValue();
-                        String date = dateCell.getStringCellValue();
+                        LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
                         Service services = Service.valueOf(servicesCell.getStringCellValue().toUpperCase());
                         Medicine medication = Medicine.valueOf(medicationCell.getStringCellValue().toUpperCase());
                         PrescriptionStatus status = PrescriptionStatus.valueOf(prescriptionStatusCell.getStringCellValue().toUpperCase());
@@ -59,6 +61,9 @@ public class PatientAppointmentOutcomeDB {
                         appointmentOutcome.add(outcome);
                     }
                 }
+            } catch(Exception e){
+                System.out.println("Error at specific field conversion:");
+                e.printStackTrace();
             }
         }
         return appointmentOutcome;

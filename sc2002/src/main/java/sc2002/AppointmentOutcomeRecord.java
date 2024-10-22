@@ -1,18 +1,22 @@
 package sc2002;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AppointmentOutcomeRecord {
 
     private String patientID;
     private String doctorID;
     private int appointmentID;
-    private String dateOfAppointment;
+    private LocalDate dateOfAppointment;
     private Service service;
     private Medicine medications; 
     private PrescriptionStatus prescriptionStatus;
     private String consultationNotes;
+    static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    AppointmentOutcomeRecord(String patientID, String doctorID, int appointmentID, String dateOfAppointment, Service service, Medicine medications, PrescriptionStatus prescriptionStatus, String consultationNotes){
+
+    AppointmentOutcomeRecord(String patientID, String doctorID, int appointmentID, LocalDate dateOfAppointment, Service service, Medicine medications, PrescriptionStatus prescriptionStatus, String consultationNotes){
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.appointmentID = appointmentID;
@@ -27,11 +31,11 @@ public class AppointmentOutcomeRecord {
         return(
             "Appointment ID: " + appointmentID + "\n" +
             "By Doctor ID: " + doctorID + "\n" +
-            "Date and Time: " + dateOfAppointment + "\n" +
+            "Date and Time: " + dateOfAppointment.format(dateFormat) + "\n" +
             "Services given: " + service + "\n" +
             "Medication given: " + medications + "\n" +
             "Prescription Status: " + prescriptionStatus + "\n" +
-            "Additional Notes: " + consultationNotes);
+            "Notes: " + consultationNotes);
     }
 
 }
