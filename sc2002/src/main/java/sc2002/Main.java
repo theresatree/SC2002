@@ -171,15 +171,12 @@ class Main {
                             switch (choice){
                                 case 1:
                                     admin.addHospitalStaff();
-                                    waitForEnter(inputScanner);
                                     break;
                                 case 2:
                                     admin.updateHospitalStaff();
-                                    waitForEnter(inputScanner);
                                     break;
                                 case 3:
                                     admin.removeHospitalStaff();
-                                    waitForEnter(inputScanner);
                                     break;
                                 default:
                                     System.out.println("Unexpected error occurred.");
@@ -279,10 +276,10 @@ class Main {
                 if (choice >= 1 && choice <= maxChoice) {
                     return choice;
                 } else {
-                    System.out.println("Invalid input. Please enter a number between 1 and " + maxChoice);
+                    System.out.print("Invalid input. Please enter a number between 1 and " + maxChoice + ": ");
                 }
             } else {
-                System.out.println("Invalid input. Please enter a valid integer.");
+                System.out.print("Invalid input. Please enter a valid integer: ");
                 scanner.nextLine(); // Clear the invalid input
             }
         }
