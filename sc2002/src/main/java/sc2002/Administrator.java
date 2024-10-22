@@ -20,6 +20,7 @@ public class Administrator extends User {
     private List<Staff> staffs;
     private StaffFilter selectedFilter = null;
     private List<MedicationInventory> medicationInventory;
+    private List<AppointmentDetails> appointmentDetails;
     Scanner scanner = new Scanner(System.in);
 
     public void viewHospitalStaff() {
@@ -226,6 +227,7 @@ public class Administrator extends User {
     public void updateHospitalStaff() {
         int choice, continueUpdate = 1;
         String staffID;
+        Staff selectedStaff=null;
 
         System.out.println("\n============================");
         System.out.println("       Updating Staff");
@@ -234,21 +236,16 @@ public class Administrator extends User {
         do {
             System.out.print("Enter StaffID to update: ");
             staffID = scanner.nextLine();
-            selectedFilter = new StaffIDFilter(staffID);
-            try {
-                this.staffs = StaffDB.getStaff(selectedFilter);
-            } catch (IOException e) {
-                System.out.println("An error occurred while fetching staff details: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("An unexpected error occurred: " + e.getMessage());
-            }
-            if (staffs.isEmpty()) {
-                System.out.println("\nStaff not found. Please try again!\n");
-            }
-        } while (staffs.isEmpty());
+        } while (StaffDB.findStaff(staffID) == 0);
 
         while (continueUpdate == 1) {
-            Staff selectedStaff = staffs.get(0);
+            selectedFilter = new StaffIDFilter(staffID);
+            try {
+                List<Staff> staff = StaffDB.getStaff(selectedFilter);
+                selectedStaff = staff.get(0);
+            } catch (IOException e) {
+                System.out.println("An error occurred while getting staff: " + e.getMessage());
+            }
 
             System.out.println("============================");
             System.out.print(selectedStaff.printStaffList());
@@ -295,8 +292,9 @@ public class Administrator extends User {
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
+
             System.out.println("\n===========================================");
-            System.out.println("             Continue updating?");
+            System.out.println("       Continue updating same staff?");
             System.out.println("===========================================");
             System.out.println("1. Yes");
             System.out.println("2. No");
@@ -317,18 +315,7 @@ public class Administrator extends User {
             do {
                 System.out.print("Enter StaffID to remove: ");
                 staffID = scanner.nextLine();
-                selectedFilter = new StaffIDFilter(staffID);
-                try {
-                    this.staffs = StaffDB.getStaff(selectedFilter);
-                } catch (IOException e) {
-                    System.out.println("An error occurred while fetching staff details: " + e.getMessage());
-                } catch (Exception e) {
-                    System.out.println("An unexpected error occurred: " + e.getMessage());
-                }
-                if (staffs.isEmpty()) {
-                    System.out.println("\nStaff not found. Please try again!\n");
-                }
-            } while (staffs.isEmpty());
+            } while (StaffDB.findStaff(staffID) == 0);
 
             try {
                 StaffDB.removeStaff(staffID);
@@ -337,6 +324,7 @@ public class Administrator extends User {
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
+
             System.out.println("\n===========================================");
             System.out.println("             Continue removing?");
             System.out.println("===========================================");
@@ -348,14 +336,35 @@ public class Administrator extends User {
     }
 
     public void viewAppointmentDetails() {
+        try {
+            this.appointmentDetails = AppointmentDetailsDB.getAppointmentDetails();
 
+            if (appointmentDetails.isEmpty()) {
+                System.out.println("No appointment found\n\n");
+
+            }
+            System.out.println("\n=========================================");
+            System.out.println("     List of Appointment Details");
+            System.out.println("=========================================");
+
+            for (AppointmentDetails appointmentDetail : appointmentDetails) {
+                System.out.print(appointmentDetail.printAppointmentDetails());
+
+                if (appointmentDetail.getStatus() == AppointmentStatus.COMPLETED) {
+                    AppointmentDetailsDB.printAppointmentOutcomeRecord(appointmentDetail.getPatientID(), appointmentDetail.getAppointmentID());
+                }
+
+                System.out.println("=========================================");
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching appointment details: " + e.getMessage());
+        }
     }
 
     public void viewAndManangeMedicationInventory() {
         try {
             this.medicationInventory = MedicationInventoryDB.getMedicationInventory();
 
-            StringBuilder medicationInventoryString = new StringBuilder();
             if (medicationInventory.isEmpty()) {
                 System.out.println("No Medications found\n\n");
 
@@ -370,6 +379,182 @@ public class Administrator extends User {
             }
         } catch (Exception e) {
             System.out.println("An error occurred while fetching medication details: " + e.getMessage());
+        }
+
+        System.out.println("=========================================");
+        System.out.println("      Manage Medication Inventory");
+        System.out.println("=========================================");
+        System.out.println("1. Add Medication");
+        System.out.println("2. Remove Medication");
+        System.out.println("3. Update Stock Level");
+        System.out.println("4. Change Low Stock Level Alert");
+        System.out.println("5. Exit");
+        System.out.println("=========================================");
+        System.out.print("Select a choice: ");
+        int choice = Main.getValidChoice(scanner, 5);
+
+        switch (choice) {
+            case 1:
+                addMedication();
+                break;
+            case 2:
+                removeMedication();
+                break;
+            case 3:
+                updateStockLevel();
+                break;
+            case 4:
+                changeLowStockLevelAlert();
+                break;
+            case 5:
+                break;
+            default:
+                System.out.println("Unexpected error occurred.");
+                break;
+        }
+    }
+
+    public void addMedication() {
+        int continueUpdate = 1;
+
+        while (continueUpdate == 1) {
+            System.out.println("\n=========================================");
+            System.out.println("        Adding New Medication");
+            System.out.println("=========================================");
+
+            System.out.print("Enter Medicine Name: ");
+            String newMedicine = scanner.nextLine().toUpperCase();
+
+            System.out.print("Enter Initial Stock: ");
+            int newStock = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.print("Enter Low Stock Level Alert: ");
+            int newLowAlert = scanner.nextInt();
+            scanner.nextLine();
+
+            MedicationInventory newMedication = new MedicationInventory(newMedicine, newStock, newLowAlert);
+
+            try {
+                MedicationInventoryDB.addMedication(newMedication);
+
+            } catch (IOException e) {
+                System.out.println("An error occurred while fetching medication inventory: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+            }
+            System.out.println("\n===========================================");
+            System.out.println("             Continue adding?");
+            System.out.println("===========================================");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            System.out.println("===========================================");
+            continueUpdate = Main.getValidChoice(scanner, 2);
+        }
+    }
+
+    public void removeMedication() {
+        int continueUpdate = 1;
+        String medicineName;
+
+        while (continueUpdate == 1) {
+            System.out.println("\n=========================================");
+            System.out.println("        Removing Medication");
+            System.out.println("=========================================");
+
+            do {
+                System.out.print("Enter Medicine Name: ");
+                medicineName = scanner.nextLine().toUpperCase();
+            } while (MedicationInventoryDB.findMedicine(medicineName) == 0);
+
+            try {
+                MedicationInventoryDB.removeMedication(medicineName);
+
+            } catch (IOException e) {
+                System.out.println("An error occurred while removing medication: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+            }
+
+            System.out.println("\n===========================================");
+            System.out.println("             Continue removing?");
+            System.out.println("===========================================");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            System.out.println("===========================================");
+            continueUpdate = Main.getValidChoice(scanner, 2);
+        }
+    }
+
+    public void updateStockLevel() {
+        int continueUpdate = 1;
+        String medicineName;
+
+        while (continueUpdate == 1) {
+            System.out.println("\n=========================================");
+            System.out.println("        Updating Stock Level");
+            System.out.println("=========================================");
+
+            do {
+                System.out.print("Enter Medicine Name: ");
+                medicineName = scanner.nextLine().toUpperCase();
+            } while (MedicationInventoryDB.findMedicine(medicineName) == 0);
+
+            System.out.print("Enter Updated Stock Level: ");
+            int updatedStockLevel = scanner.nextInt();
+
+            try {
+                MedicationInventoryDB.updateStockLevel(medicineName, updatedStockLevel);
+
+            } catch (IOException e) {
+                System.out.println("An error occurred while removing medication: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+            }
+
+            System.out.println("\n===========================================");
+            System.out.println("             Continue updating?");
+            System.out.println("===========================================");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            System.out.println("===========================================");
+            continueUpdate = Main.getValidChoice(scanner, 2);
+        }
+    }
+
+    public void changeLowStockLevelAlert() {
+        int continueUpdate = 1;
+        String medicineName;
+
+        while (continueUpdate == 1) {
+            System.out.println("\n=========================================");
+            System.out.println("     Changing Low Stock Level Alert");
+            System.out.println("=========================================");
+
+            do {
+                System.out.print("Enter Medicine Name: ");
+                medicineName = scanner.nextLine().toUpperCase();
+            } while (MedicationInventoryDB.findMedicine(medicineName) == 0);
+
+            System.out.print("Enter New Low Stock Level Alert: ");
+            int updatedLowLevelAlert = scanner.nextInt();
+
+            try {
+                MedicationInventoryDB.changeLowAlert(medicineName, updatedLowLevelAlert);
+
+            } catch (IOException e) {
+                System.out.println("An error occurred while changing low stock level alert: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+            }
+
+            System.out.println("\n===========================================");
+            System.out.println("             Continue changing?");
+            System.out.println("===========================================");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            System.out.println("===========================================");
+            continueUpdate = Main.getValidChoice(scanner, 2);
         }
     }
 

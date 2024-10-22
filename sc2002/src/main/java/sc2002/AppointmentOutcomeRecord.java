@@ -27,6 +27,38 @@ public class AppointmentOutcomeRecord {
         this.consultationNotes=consultationNotes;
     }
 
+    public int getAppointmentID() {
+        return appointmentID;
+    }
+
+    public String getPatientID() {
+        return patientID;
+    }
+    
+    public String getDoctorID() {
+        return doctorID;
+    }
+
+    public LocalDate getDateOfAppointment() {
+        return dateOfAppointment;
+    }
+
+    public Service getService() {
+        return service;
+    }
+
+    public Medicine getMedications() {
+        return medications;
+    }
+    
+    public PrescriptionStatus getPrescriptionStatus() {
+        return prescriptionStatus;
+    }
+    
+    public String getConsultationNotes() {
+        return consultationNotes;
+    }
+
     public String printAppointmentOutcome(){
         return(
             "Appointment ID: " + appointmentID + "\n" +

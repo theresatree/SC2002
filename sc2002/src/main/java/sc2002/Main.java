@@ -135,7 +135,6 @@ class Main {
             break;
 ///////////////////////////////////// ADMININSTRATOR ////////////////////////////////////
             case ADMINISTRATOR:
-                
                 Administrator admin = new Administrator(user.getHospitalID());
                 while (!logout){
                     System.out.println("Redirecting to Administrator's dashboard...");
@@ -163,9 +162,10 @@ class Main {
                             System.out.println("1. Add Hospital Staff");
                             System.out.println("2. Update Hospital Staff");
                             System.out.println("3. Remove Hospital Staff");
+                            System.out.println("4. Exit");
                             System.out.println("=========================================");
                             System.out.print("Select a choice: ");
-                            choice = getValidChoice(inputScanner,3);
+                            choice = getValidChoice(inputScanner,4);
 
                             switch (choice){
                                 case 1:
@@ -177,17 +177,22 @@ class Main {
                                 case 3:
                                     admin.removeHospitalStaff();
                                     break;
+                                case 4:
+                                    break;
                                 default:
                                     System.out.println("Unexpected error occurred.");
                                     break;
                             }
                             break;
                         case 3:
+                            admin.viewAppointmentDetails();
+                            waitForEnter(inputScanner);
                             break;  
                         case 4:
                             admin.viewAndManangeMedicationInventory();
                             break;  
                         case 5:
+                            
                             break;
                         case 6:
                             logout = user.logOut();

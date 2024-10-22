@@ -129,37 +129,38 @@ public class StaffDB {
     public static void removeStaff(String staffID) throws IOException {
         StaffFilter noFilter = new StaffNoFilter();
         List<Staff> staffs = getStaff(noFilter);
-        staffs.removeIf(staff -> staff.getStaffID().equals(staffID)); 
+        staffs.removeIf(staff -> staff.getStaffID().equals(staffID));
         if (newStaffFile(staffs) == 1) {
+
             System.out.println("Successfully removed the staff member");
-        }
 
-        // Get the existing User.xlsx and rewrite new User.xlsx without the removed staff member
-        List<UserAccount> userAccs = new ArrayList<>();
-        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx"); Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+            // Get the existing User.xlsx and rewrite new User.xlsx without the removed staff member
+            List<UserAccount> userAccs = new ArrayList<>();
+            try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx"); Workbook workbook = new XSSFWorkbook(is)) {
+                Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
 
-            for (Row row : sheet) {
-                Cell hospitalIDCell = row.getCell(0);
-                Cell passwordCell = row.getCell(1);
+                for (Row row : sheet) {
+                    Cell hospitalIDCell = row.getCell(0);
+                    Cell passwordCell = row.getCell(1);
 
-                if (row.getRowNum() == 0) {
-                    continue; // Skip header row
+                    if (row.getRowNum() == 0) {
+                        continue; // Skip header row
+                    }
+
+                    if (hospitalIDCell != null) {
+                        String hospitalID = hospitalIDCell.getStringCellValue();
+                        String password = passwordCell.getStringCellValue();
+                        UserAccount userAcc = new UserAccount(hospitalID, password);
+                        userAccs.add(userAcc);
+                    }
                 }
 
-                if (hospitalIDCell != null) {
-                    String hospitalID = hospitalIDCell.getStringCellValue();
-                    String password = passwordCell.getStringCellValue();
-                    UserAccount userAcc = new UserAccount(hospitalID, password);
-                    userAccs.add(userAcc);
-                }
+                userAccs.removeIf(userAcc -> userAcc.getHospitalID().equals(staffID));
+                newUserAccFile(userAccs);
+
+            } catch (IOException e) {
+                System.err.println("Error writing to the file User.xlsx: " + e.getMessage());
             }
-
-            userAccs.removeIf(userAcc -> userAcc.getHospitalID().equals(staffID)); 
-            newUserAccFile(userAccs);
-
-        } catch (IOException e) {
-            System.err.println("Error writing to the file User.xlsx: " + e.getMessage());
         }
     }
 
@@ -201,7 +202,6 @@ public class StaffDB {
         }
     }
 
-
     private static void newUserAccFile(List<UserAccount> userAccs) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("User");
@@ -226,5 +226,26 @@ public class StaffDB {
                 throw e; // Re-throw to notify the caller
             }
         }
+    }
+
+    public static int findStaff(String staffID) {
+        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+            for (Row row : sheet) {
+                Cell staffIDCell = row.getCell(0);
+                if (row.getRowNum() == 0) {
+                    continue; // Skip header row
+                }
+                if (staffIDCell.getStringCellValue().equals(staffID)) {
+                    return 1;
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while finding staff: " + e.getMessage());
+        }
+        System.out.println("Staff not found. Please try again!\n");
+        return 0; //not found
     }
 }
