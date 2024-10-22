@@ -19,6 +19,7 @@ public class Administrator extends User {
 
     private List<Staff> staffs;
     private StaffFilter selectedFilter = null;
+    private List<MedicationInventory> medicationInventory;
     Scanner scanner = new Scanner(System.in);
 
     public void viewHospitalStaff() {
@@ -246,7 +247,7 @@ public class Administrator extends User {
             }
         } while (staffs.isEmpty());
 
-        while (continueUpdate==1) {
+        while (continueUpdate == 1) {
             Staff selectedStaff = staffs.get(0);
 
             System.out.println("============================");
@@ -308,7 +309,7 @@ public class Administrator extends User {
         String staffID;
         int continueUpdate = 1;
 
-        while (continueUpdate==1) {
+        while (continueUpdate == 1) {
             System.out.println("\n============================");
             System.out.println("       Removing Staff");
             System.out.println("============================");
@@ -350,8 +351,26 @@ public class Administrator extends User {
 
     }
 
-    public void viewAndManageMedicationInventory() {
+    public void viewAndManangeMedicationInventory() {
+        try {
+            this.medicationInventory = MedicationInventoryDB.getMedicationInventory();
 
+            StringBuilder medicationInventoryString = new StringBuilder();
+            if (medicationInventory.isEmpty()) {
+                System.out.println("No Medications found\n\n");
+
+            }
+            System.out.println("\n============================");
+            System.out.println("    Medication Inventory");
+            System.out.println("============================");
+
+            for (MedicationInventory medication : medicationInventory) {
+                System.out.print(medication.printMedicationInventory());
+                System.out.println("============================");
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred while fetching medication details: " + e.getMessage());
+        }
     }
 
     public void approveReplenishmentRequests() {
