@@ -243,13 +243,6 @@ public class PatientAppointment implements Appointment{
     public void viewPastAppointmentOutcome(){
         try {
             appointmentOutcomeRecord = PatientAppointmentOutcomeDB.getAppointmentOutcome(this.patientID);
-        }
-        catch (Exception e) {
-            // Handle the exception
-            System.out.println("An error occurred while fetching Appointment Details: " + e.getMessage());
-        }
-
-            StringBuilder appointmentOutcomeRecordList = new StringBuilder(); 
             if (appointmentOutcomeRecord.isEmpty()) {
                 System.out.println("\n\n=========================================");
                 System.out.println("No diagnosis found for patient");
@@ -262,6 +255,11 @@ public class PatientAppointment implements Appointment{
                 System.out.println(outcome.printAppointmentOutcome());
                 System.out.println("=========================================");
             }
+        }
+        catch (Exception e) {
+            // Handle the exception
+            System.out.println("An error occurred while fetching Appointment Details: " + e.getMessage());
+        }
     }
 
 
