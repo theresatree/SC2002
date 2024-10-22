@@ -187,7 +187,14 @@ public class DoctorAppointment implements Appointment {
     public void viewAppointmentStatus(){
         try {
             appointments = DoctorAppointmentDB.doctorListOfAllAppointments(this.doctorID);
-            if (appointments.isEmpty()) {
+            List<PatientScheduledAppointment> confirmedAppointments = new ArrayList<>();
+
+            for (PatientScheduledAppointment appointment : appointments) {
+                if (appointment.getStatus() == AppointmentStatus.CONFIRMED) {
+                    confirmedAppointments.add(appointment);
+                }
+            }
+            if (confirmedAppointments.isEmpty()) {
                 System.out.println("\n\n=========================================");
                 System.out.println("         Scheduled Appointments");
                 System.out.println("=========================================");
@@ -195,15 +202,13 @@ public class DoctorAppointment implements Appointment {
                 System.out.println("=========================================\n\n");
             }
             else{
-                System.out.println("\n\n=========================================");
+                System.out.println("\n\n========================================");
                 System.out.println("         Scheduled Appointments");
-                System.out.println("=========================================");
-                for (PatientScheduledAppointment appointment : appointments) {
-                    if (appointment.getStatus()==AppointmentStatus.CONFIRMED){
-                        appointment.printDoctorScheduledAppointment();
-                        System.out.println("=========================================");
-                    }
-            }
+                System.out.println("========================================");
+                for (PatientScheduledAppointment appointment : confirmedAppointments) {
+                    appointment.printDoctorScheduledAppointment();
+                    System.out.println("============================================");
+                }
             }
 
         } catch (IOException e) {

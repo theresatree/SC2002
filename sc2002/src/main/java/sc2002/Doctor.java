@@ -45,10 +45,10 @@ public class Doctor extends User{
     private String choosePatientString(List<String> patientIDs, Scanner scanner){
         int choice;
         System.out.println("\n\n==========================================");
-        System.out.println("          Patients under " + this.doctorID);
+        System.out.println("      Patients under " + UserDB.getNameByHospitalID(this.doctorID, Role.DOCTOR));
         System.out.println("==========================================");
         for (int i = 0; i < patientIDs.size(); i++) {
-            System.out.println((i + 1) + ". " + patientIDs.get(i));
+            System.out.println((i + 1) + ". " + patientIDs.get(i) + " (" + UserDB.getNameByHospitalID(patientIDs.get(i), Role.PATIENT) + ")");
         }
         System.out.println("==========================================");
         while (true) {
@@ -64,6 +64,7 @@ public class Doctor extends User{
                 System.out.println("Invalid choice. Please select a valid Patient.\n");
             }
             else {
+                scanner.nextLine();
                 return patientIDs.get(choice - 1);
             }
         }
@@ -80,12 +81,12 @@ public class Doctor extends User{
 
         String patientID = choosePatientString(patientIDs, scanner);
         while (!exit && patientID!=null){
-            System.out.println("\n\n==========================================");
+            System.out.println("\n\n====================================================");
             System.out.println("            Choose an option");
-            System.out.println("==========================================");
-            System.out.println("1. Add new diagnosis for " + patientID);
-            System.out.println("2. Update existing diagnosis for " + patientID);
-            System.out.println("==========================================");
+            System.out.println("====================================================");
+            System.out.println("1. Add new diagnosis for " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
+            System.out.println("2. Update existing diagnosis for " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
+            System.out.println("====================================================");
             System.out.print("Choose an option (or enter 0 to exit): ");
             int choice = scanner.nextInt();
             switch (choice){
@@ -115,7 +116,7 @@ public class Doctor extends User{
         String descriptionOfDiagnosis = scanner.nextLine();
         System.out.println("Description of Treatment given");
         String descriptionOfTreatmtent = scanner.nextLine();
-        System.out.println("Additional Notes for " + patientID);
+        System.out.println("Additional Notes for " + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
         String additionalNotes = scanner.nextLine();
 
         DiagnosisDB.addDiagnosis(patientID, this.doctorID, descriptionOfDiagnosis, descriptionOfTreatmtent, additionalNotes);
@@ -127,36 +128,47 @@ public class Doctor extends User{
             List<Diagnosis> diagnoses = medicalRecord.getDiagnosis(); //Get all existing diagnosis of the patient.
 
             if (diagnoses.isEmpty()) {
-                System.out.println("\n\n==========================================");
-                System.out.println("No diagnoses found for patient ID: " + patientID);
-                System.out.println("==========================================");
+                System.out.println("\n\n====================================================");
+                System.out.println("No diagnoses found for patient ID: " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
+                System.out.println("====================================================");
                 return;
             }
 
             int choice;
             while (true){
-                for (int i = 0; i < diagnoses.size(); i++) {
-                    Diagnosis diagnosis = diagnoses.get(i);
-                    System.out.println((i + 1) + ". Diagnosis ID: " + diagnosis.getDiagnosisCode());
-                }
                 System.out.println("\n\n==========================================");
-                System.out.println("            Choose an option");
+                System.out.println("              Diagnosis ID");
+                System.out.println("==========================================");
+                for (Diagnosis diagnosis : diagnoses){
+                    System.out.println("Diagnosis ID: " + diagnosis.getDiagnosisCode());
+                }
                 System.out.println("==========================================");
                 System.out.print("Choose an option (or enter 0 to exit):");
-                choice = scanner.nextInt();
-
-                if (choice == 0) {
-                    System.out.println("Exiting viewing process.\n\n");
-                    break;
+                try {
+                    choice = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("\nInvalid input! Please enter a valid diagnosis ID.\n");
+                    scanner.nextLine(); // Clear the invalid input from the scanner
+                    continue; // Skip the rest of the loop and ask for input again
                 }
     
-                if (choice < 1 || choice > diagnoses.size()) {
-                    System.out.println("Invalid choice. Please select a valid ID.\n");
+                if (choice == 0) {
+                    System.out.println("\nExiting process.\n\n");
+                    break;
                 }
-                else {
-                    int selectedDiagnosisID = diagnoses.get(choice - 1).getDiagnosisCode(); // Actual Diagnosis code
-                    updateDiagnosisInDB(patientID, scanner, selectedDiagnosisID); // Update In DB
 
+                Diagnosis selectedCode = null;
+                for (Diagnosis selected : diagnoses) {
+                    if (selected.getDiagnosisCode() == choice) {
+                        selectedCode = selected;
+                        break;
+                    }
+                }
+
+                if (selectedCode == null) {
+                    System.out.println("\nInvalid! Please select a valid diagnosis ID.");
+                } else {
+                    updateDiagnosisInDB(patientID, scanner, selectedCode.getDiagnosisCode()); // Update In DB
                 }
             }
         }catch(IOException e) {
@@ -177,7 +189,7 @@ public class Doctor extends User{
 
         while (!exit){
             System.out.println("\n\n==========================================");
-            System.out.println("            Diagnosis code: " + selectedDiagnosisID);
+            System.out.println("           Diagnosis code: " + selectedDiagnosisID);
             System.out.println("        Choose a data to update");
             System.out.println("==========================================");
             System.out.println("1. Diagnosis");
@@ -259,17 +271,17 @@ public class Doctor extends User{
                 }
                 
                 if (confirmedAppointments.isEmpty()){
-                    System.out.println("\n\n==========================================");
-                    System.out.println("Select Appointment ID with Patient: " + patientID);
-                    System.out.println("==========================================");
+                    System.out.println("\n\n==============================================");
+                    System.out.println("Select Appointment ID with " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
+                    System.out.println("==============================================");
                     System.out.println("\nThere is no available appointments to record!\n\n");
                     System.out.println("Press Enter to continue...");
                     scanner.nextLine(); // Clear the invalid input from the scanner
                     break;
                 }
-                System.out.println("\n\n==========================================");
-                System.out.println("Select Appointment ID with Patient: " + patientID);
-                System.out.println("==========================================");
+                System.out.println("\n\n==============================================");
+                System.out.println("Select Appointment ID with " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
+                System.out.println("==============================================");
 
                 for (PatientScheduledAppointment appointment : confirmedAppointments){
                     System.out.println("ID: " + appointment.getAppointmentID());
@@ -302,7 +314,7 @@ public class Doctor extends User{
                     System.out.println("\nInvalid! Please select a valid appointment ID.");
                 } else {
                     System.out.println("\n\n==========================================");
-                    System.out.println("  Appointment ID " + selectedAppointment.getAppointmentID() + " with Patient: " + patientID);
+                    System.out.println("  Appointment ID " + selectedAppointment.getAppointmentID() + " with " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
                     System.out.println("   Date: " + selectedAppointment.getDate() + " - " + selectedAppointment.getTimeStart() + " to " + selectedAppointment.getTimeEnd());
                     System.out.println("==========================================\n");
 

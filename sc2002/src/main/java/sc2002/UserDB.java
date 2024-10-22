@@ -102,32 +102,59 @@ public class UserDB {
     }
 
    /////////////////////////////////// Get name by hospital ID ///////////////////////////////////////////
-   public static String getNameByHospitalID(String hospitalID, String filePath) throws IOException {
-    try (InputStream is = UserDB.class.getClassLoader().getResourceAsStream(filePath)) {
-        if (is == null) {
-            throw new IOException("File not found in resources: " + filePath);
-        }
-
-        try (Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
-
+   public static String getNameByHospitalID(String hospitalID, Role role){
+    String filePath = "";
+    if (role == Role.PATIENT) {
+        filePath = "Patient_List.xlsx";
+    } else {
+        filePath = "Staff_List.xlsx";  // for DOCTOR, PHARMACIST, ADMINISTRATOR
+    }
+        try {
+            // Get the file
+            InputStream is = UserDB.class.getClassLoader().getResourceAsStream(filePath);
+            if (is == null) {
+                System.out.println("Error: Could not find file " + filePath);
+                return null;
+            }
+            
+            // Open the workbook
+            Workbook workbook = new XSSFWorkbook(is);
+            Sheet sheet = workbook.getSheetAt(0);
+            
+            // Look for matching ID
             for (Row row : sheet) {
+                // Skip header row
+                if (row.getRowNum() == 0) continue;
+                
+                // Get ID and name cells
                 Cell idCell = row.getCell(0);
                 Cell nameCell = row.getCell(1);
-
-                if (row.getRowNum() == 0) continue; // Skip header row
-
+                
+                // Check if cells exist and ID matches
                 if (idCell != null && nameCell != null) {
                     String id = idCell.getStringCellValue();
-
                     if (id.equals(hospitalID)) {
-                        return nameCell.getStringCellValue(); // Return the corresponding name
+                        String name = nameCell.getStringCellValue();
+                        
+                        // Clean up
+                        workbook.close();
+                        is.close();
+                        
+                        return name;
                     }
                 }
             }
+            
+            // Clean up if no match found
+            workbook.close();
+            is.close();
+            
+        } catch (Exception e) {
+            System.out.println("Error: Could not read from file " + filePath);
+            System.out.println("Error details: " + e.getMessage());
         }
+        
+        return null;
     }
-        return null; // Return null if no match is found
-    }  
 
 }

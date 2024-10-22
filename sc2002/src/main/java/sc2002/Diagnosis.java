@@ -24,7 +24,7 @@ public class Diagnosis {
     public String printDiagnosis(){
         return(
             "Diagnosis ID: " + diagnosisID + "\n" +
-            "Doctor ID: " + doctorID + "\n" +
+            "Doctor ID: " + doctorID + " (" + UserDB.getNameByHospitalID(doctorID, Role.DOCTOR) + ")" + "\n" +
             "Diagnosis: " + descriptionOfDiagnosis + "\n" +
             "Treatment: " + descriptionOfTreatmtent + "\n" +
             "Additional notes: " + additionalNotes);

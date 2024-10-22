@@ -26,7 +26,7 @@ public class AvailableDatesToChoose {
         System.out.println("Appointment ID: " + appointmentID + "\n" +
                             "Date: " + date.format(dateFormat) + "\n" +
                             "Time: " + timeStart.format(timeFormat) + " to " + timeEnd.format(timeFormat) + "\n" +
-                            "By Doctor ID: " + doctorID);
+                            "By Doctor ID: " + doctorID + " (" + UserDB.getNameByHospitalID(doctorID, Role.DOCTOR) + ")");
     }
 
     public LocalDate getDate(){

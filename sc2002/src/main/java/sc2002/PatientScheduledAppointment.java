@@ -29,7 +29,7 @@ public class PatientScheduledAppointment {
 
     public void printScheduledAppointment(){
         System.out.println("Appointment ID: " + appointmentID + "\n" +
-                           "Doctor ID: " + doctorID + "\n" +
+                           "Doctor ID: " + doctorID + " (" + UserDB.getNameByHospitalID(doctorID, Role.DOCTOR) + ")" + "\n" +
                            "Date: " + date.format(dateFormat) + "\n" +
                            "Time: " + timeStart.format(timeFormat) + " to " + timeEnd.format(timeFormat) + "\n" +
                            "Status: " + status);
@@ -37,7 +37,7 @@ public class PatientScheduledAppointment {
 
     public void printDoctorScheduledAppointment(){
         System.out.println("Appointment ID: " + appointmentID + "\n" +
-                            "Patient ID: " + patientID + "\n" +
+                            "Patient ID: " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")" + "\n" +
                             "Date: " + date.format(dateFormat) + "\n" +
                             "Time: " + timeStart.format(timeFormat) + " to " + timeEnd.format(timeFormat) + "\n" +
                             "Status: " + status);

@@ -25,8 +25,7 @@ class Main {
                 if (login) {
                     System.out.println("\n\nLogin successful!");
                     user = new User(hospitalID); // Create an instance of User when logged in.
-                    filePath = user.getFilePath();
-                    System.out.println("Welcome back " + user.getRole() + " " + UserDB.getNameByHospitalID(hospitalID, filePath));
+                    System.out.println("Welcome back " + user.getRole() + " " + UserDB.getNameByHospitalID(hospitalID, user.getRole()));
                     login=true;
                 } else {
                     System.out.println("Invalid Hospital ID or Password.");

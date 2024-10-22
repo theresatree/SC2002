@@ -30,7 +30,7 @@ public class AppointmentOutcomeRecord {
     public String printAppointmentOutcome(){
         return(
             "Appointment ID: " + appointmentID + "\n" +
-            "By Doctor ID: " + doctorID + "\n" +
+            "By Doctor ID: " + doctorID + " (" + UserDB.getNameByHospitalID(doctorID, Role.DOCTOR) + ")" +"\n" +
             "Date and Time: " + dateOfAppointment.format(dateFormat) + "\n" +
             "Services given: " + service + "\n" +
             "Medication given: " + medications + "\n" +

@@ -38,17 +38,4 @@ public class User{
         }
     }
 
-/////////////////////////////////// Return file path based on role ///////////////////////////////////////////
-    public String getFilePath() {
-        switch (this.role) {
-            case DOCTOR:
-            case PHARMACIST:
-            case ADMINISTRATOR:
-                return "Staff_List.xlsx"; // File for staff roles
-            case PATIENT:
-                return "Patient_List.xlsx"; // File for patient role
-            default:
-                throw new IllegalStateException("Unexpected value: " + this.role);
-        }
-    }
 }
