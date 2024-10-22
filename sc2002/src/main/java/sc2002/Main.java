@@ -9,7 +9,7 @@ class Main {
         Scanner inputScanner = new Scanner(System.in);
         User user = null;
         boolean logout = false; // This is to facilitate logout
-        int choice; // This is for the dashboard later.
+        int choice; // This is for tDhe dashboard later.
         String filePath = ""; // This is to access either Patient_List.xlsx or Staff_List.xlsx depending on the HospitalID.
 
         while (!login){ // Make sure the user is logged-in before continuing
@@ -41,6 +41,9 @@ class Main {
     switch (user.getRole()) {
 ///////////////////////////////////// DOCTOR ////////////////////////////////////
             case DOCTOR:
+
+                Doctor doctor = new Doctor(user.getHospitalID());
+
                 while (!logout){
                     System.out.println("Redirecting to Doctor's dashboard...");
                     System.out.println("=========================================");
@@ -59,18 +62,29 @@ class Main {
 
                     switch (choice){
                         case 1: 
+                            doctor.viewPatientMedicalRecord(inputScanner);
+                            waitForEnter(inputScanner);
                             break;
                         case 2:
+                            doctor.updatePatientMedicalRecord(inputScanner);
                             break;
                         case 3:
+                            doctor.viewPersonalSchedule();
+                            waitForEnter(inputScanner);
                             break;  
                         case 4:
+                            doctor.setAvailabilityDate(inputScanner);
+                            waitForEnter(inputScanner);
                             break;
                         case 5:
+                            doctor.acceptDeclineAppointment(inputScanner);
                             break;     
                         case 6:
+                            doctor.viewAppointmentStatus();
+                            waitForEnter(inputScanner);
                             break;
                         case 7:
+                            doctor.createAppointmentRecord(inputScanner);
                             break;    
                         case 8: 
                             logout = user.logOut();
@@ -106,6 +120,7 @@ class Main {
                             break;
                         case 3:
                             pharmacist.viewMedicationInventory();
+                            waitForEnter(inputScanner);
                             break;  
                         case 4:
                             break;
@@ -217,14 +232,21 @@ class Main {
                             patient.updatePersonalInfo(inputScanner);
                             break;
                         case 3:
+                            patient.viewAvailableAppointmentSlots();
+                            waitForEnter(inputScanner);
                             break;  
                         case 4:
+                            patient.scheduleAppointment(inputScanner);
                             break;
                         case 5:
+                            patient.rescheduleAppointment(inputScanner);
                             break;     
                         case 6:
+                            patient.cancelAppointment(inputScanner);
                             break;
                         case 7:
+                            patient.viewScheduledAppointments();
+                            waitForEnter(inputScanner);
                             break;    
                         case 8:
                             patient.viewPastAppointmentOutcomeRecords();

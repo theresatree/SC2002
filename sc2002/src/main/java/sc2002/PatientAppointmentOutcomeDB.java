@@ -1,7 +1,10 @@
 package sc2002;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class PatientAppointmentOutcomeDB {
        private static final String FILE_NAME = "Appointment_Outcomes.xlsx"; //fixed file location for Patient_List.xlsx
+       static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     //////////////////////////////////////// Get Diagnosis Detail ////////////////////////////////////////
     public static List<AppointmentOutcomeRecord> getAppointmentOutcome(String hospitalID) throws IOException {
@@ -59,4 +63,35 @@ public class PatientAppointmentOutcomeDB {
         }
         return appointmentOutcome;
     }
+
+    //////////////////////////////////////// Set PatientAppointmentOucome ////////////////////////////////////////
+    public static void setAppointmentOutcome(String patientID, String doctorID, int appointmentID, LocalDate date, Service services, Medicine medication, String notes){
+        try (InputStream is = PatientAppointmentOutcomeDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+        Workbook workbook = new XSSFWorkbook(is)) {
+        Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+        // Find the first empty row
+        int rowCount = sheet.getPhysicalNumberOfRows();
+        Row row = sheet.createRow(rowCount); // Create a new row at the end of the sheet
+
+        // Set the values in the appropriate columns
+        row.createCell(0).setCellValue(patientID);
+        row.createCell(1).setCellValue(doctorID);
+        row.createCell(2).setCellValue(appointmentID); 
+        row.createCell(3).setCellValue(date.format(dateFormat)); 
+        row.createCell(4).setCellValue(services.name()); 
+        row.createCell(5).setCellValue(medication.name());
+        row.createCell(6).setCellValue("Pending");
+        row.createCell(7).setCellValue(notes);
+        // Write the changes back to the Excel file
+
+    try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+            workbook.write(fos);
+    }
+
+    } catch (IOException e) {
+        e.printStackTrace(); // Handle the exception as appropriate
+    }
+}
+
 }
