@@ -18,8 +18,12 @@ public class MedicalRecord {
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.bloodType = bloodType;
-        this.contactInformation = PatientDB.getPatientContactDetails(patientID);
-        this.diagnoses = DiagnosisDB.getDiagnosis(patientID);
+        try{
+            this.contactInformation = PatientDB.getPatientContactDetails(patientID);
+            this.diagnoses = DiagnosisDB.getDiagnosis(patientID);         
+        }catch(IOException e) {
+            e.printStackTrace(); // Handle the exception as appropriate
+        }
     }
 
     public int getPhoneNumber(){
@@ -28,6 +32,10 @@ public class MedicalRecord {
 
     public String getEmailAddress(){
         return this.contactInformation.getEmailAddress();
+    }
+
+    public List<Diagnosis> getDiagnosis(){
+        return this.diagnoses;
     }
 
     // Method to print all diagnoses

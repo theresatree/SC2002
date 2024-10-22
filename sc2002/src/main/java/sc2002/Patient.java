@@ -1,16 +1,16 @@
 package sc2002;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class Patient extends User{
     private String patientID;
     private MedicalRecord medicalRecord;
-    private List<AppointmentOutcomeRecord> appointmentOutcomeRecord;
+    private PatientAppointment patientAppointment;
 
     Patient(String patientID){
         super(patientID);
         this.patientID=patientID;
+        this.patientAppointment = new PatientAppointment(patientID);
     }
 
     public void viewMedicalRecord(){
@@ -85,37 +85,30 @@ public class Patient extends User{
         medicalRecord.updatePersonalInfo(email, phoneNumber);
     }
 
-    public void viewAvailableAppointmentSlots(){}
+    public void viewAvailableAppointmentSlots(){
+        patientAppointment.viewAvailableAppointmentSlots();
+    }
 
-    public void scheduleAppointment(){}
+    public void scheduleAppointment(Scanner scanner){
+        patientAppointment.scheduleAppointment(scanner);
+    }
 
-    public void viewStatusOfAppointmen(){}
+    public void rescheduleAppointment(Scanner scanner){
+        patientAppointment.rescheduleAppointment(scanner);
+    }
 
-    public void rescheduleAppointment(){}
+    public void cancelAppointment(Scanner scanner){
+        patientAppointment.cancelAppointment(scanner);
+    }
 
-    public void cancelAppointment(){}
-
-    public void viewScheduledAppointments(){}
+    public void viewScheduledAppointments(){
+        System.out.println("\n\n=========================================");
+        System.out.println("     List of Scheduled Appointments");
+        System.out.println("=========================================");
+        patientAppointment.viewAppointmentStatus();
+    }
 
     public void viewPastAppointmentOutcomeRecords(){
-        try {
-            appointmentOutcomeRecord = PatientAppointmentOutcomeDB.getAppointmentOutcome(patientID);
-        }
-        catch (Exception e) {
-            // Handle the exception
-            System.out.println("An error occurred while fetching Appointment Details: " + e.getMessage());
-        }
-
-            StringBuilder appointmentOutcomeRecordList = new StringBuilder(); 
-            if (appointmentOutcomeRecord.isEmpty()) {
-                System.out.println("\n\n==============================================");
-                System.out.println("No diagnosis found for patient");
-
-            }
-            System.out.println("==============================================");
-            for (AppointmentOutcomeRecord outcome : appointmentOutcomeRecord) {
-                System.out.println(outcome.printAppointmentOutcome());
-                System.out.println("==============================================");
-            }
+        patientAppointment.viewPastAppointmentOutcome();
      }
 }
