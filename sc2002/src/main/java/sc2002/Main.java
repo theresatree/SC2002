@@ -192,7 +192,7 @@ class Main {
                             admin.viewAndManangeMedicationInventory();
                             break;  
                         case 5:
-                            
+                            admin.approveReplenishmentRequests();
                             break;
                         case 6:
                             logout = user.logOut();
