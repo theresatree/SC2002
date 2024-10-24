@@ -112,4 +112,29 @@ public class ReplenishmentRequestDB {
         System.out.println("Request not found. Please try again!\n");
         return 0; //not found
     }
+
+    public static void saveReplenishmentRequest(ReplenishmentRequest request) throws IOException {
+        try (InputStream is = ReplenishmentRequestDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+            Workbook workbook = new XSSFWorkbook(is);
+            FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+
+            Sheet sheet = workbook.getSheetAt(0); 
+            int lastRow = sheet.getLastRowNum();
+            Row newRow = sheet.createRow(lastRow + 1); 
+
+            newRow.createCell(0).setCellValue(request.getRequestID());
+            newRow.createCell(1).setCellValue(request.getPharmacistID());
+            newRow.createCell(2).setCellValue(request.getDateOfRequest().format(dateFormat));
+            newRow.createCell(3).setCellValue(request.getMedicine());
+            newRow.createCell(4).setCellValue(request.getAmount());
+            newRow.createCell(5).setCellValue(request.getStatus().name());
+
+            workbook.write(fos);
+
+            System.out.println("Replenishment request for " + request.getMedicine() + " has been saved successfully.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the replenishment request: " + e.getMessage());
+            throw e;
+        }
+    }
 }

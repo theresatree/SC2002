@@ -1,16 +1,9 @@
 package sc2002;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
-
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Pharmacist extends User{
     private String pharmacistID;
@@ -124,57 +117,35 @@ public class Pharmacist extends User{
     }
 
     public void submitReplenishmentRequest(String medicine) {
-    try {
+        try {
+            List<MedicationInventory> inventoryList = MedicationInventoryDB.getMedicationInventory();
+            MedicationInventory selectedMedicine = null;
 
-        List<MedicationInventory> inventoryList = MedicationInventoryDB.getMedicationInventory();
-        MedicationInventory selectedMedicine = null;
-
-        for (MedicationInventory inventory : inventoryList) {
-            if (inventory.getMedicine().equalsIgnoreCase(medicine)) {
-                selectedMedicine = inventory;
-                break;
+            for (MedicationInventory inventory : inventoryList) {
+                if (inventory.getMedicine().equalsIgnoreCase(medicine)) {
+                    selectedMedicine = inventory;
+                    break;
+                }
             }
+
+            if (selectedMedicine == null) {
+                System.out.println("Medicine " + medicine + " not found in inventory.");
+                return;
+            }
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Please enter the amount of stock you'd like to add for " + medicine + ": ");
+            int amountToReplenish = scanner.nextInt();
+
+            List<ReplenishmentRequest> replenishmentRequests = ReplenishmentRequestDB.getReplenishmentRequest(RequestStatus.PENDING);
+            int newRequestID = replenishmentRequests.size() + 1;
+            LocalDate dateOfRequest = LocalDate.now();
+            ReplenishmentRequest newRequest = new ReplenishmentRequest(newRequestID, this.pharmacistID, dateOfRequest, medicine, amountToReplenish, RequestStatus.PENDING);
+
+            ReplenishmentRequestDB.saveReplenishmentRequest(newRequest);
+
+        } catch (IOException e) {
+            System.out.println("An error occurred while submitting the replenishment request: " + e.getMessage());
         }
-
-        if (selectedMedicine == null) {
-            System.out.println("Medicine " + medicine + " not found in inventory.");
-            return;
-        }
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the amount of stock you'd like to add for " + medicine + ": ");
-        int amountToReplenish = scanner.nextInt();
-
-        List<ReplenishmentRequest> replenishmentRequests = ReplenishmentRequestDB.getReplenishmentRequest(RequestStatus.PENDING);
-        int newRequestID = replenishmentRequests.size() + 1; 
-        LocalDate dateOfRequest = LocalDate.now();
-        ReplenishmentRequest newRequest = new ReplenishmentRequest(newRequestID, this.pharmacistID, dateOfRequest, medicine, amountToReplenish, RequestStatus.PENDING);
-
-        // Write the request to the Excel sheet
-        try (InputStream is = ReplenishmentRequestDB.class.getClassLoader().getResourceAsStream("Replenishment_Requests.xlsx");
-             Workbook workbook = new XSSFWorkbook(is);
-             FileOutputStream fos = new FileOutputStream("src/main/resources/Replenishment_Requests.xlsx")) {
-
-            Sheet sheet = workbook.getSheetAt(0); 
-            int lastRow = sheet.getLastRowNum();
-            Row newRow = sheet.createRow(lastRow + 1); 
-
-            newRow.createCell(0).setCellValue(newRequestID);  
-            newRow.createCell(1).setCellValue(this.pharmacistID);  
-            newRow.createCell(2).setCellValue(dateOfRequest.format(ReplenishmentRequestDB.dateFormat));  
-            newRow.createCell(3).setCellValue(medicine);  
-            newRow.createCell(4).setCellValue(amountToReplenish);  
-            newRow.createCell(5).setCellValue(RequestStatus.PENDING.name());  
-
-            workbook.write(fos);
-
-            System.out.println("Replenishment request for " + medicine + " has been submitted successfully.");
-        }
-
-    } catch (IOException e) {
-        System.out.println("An error occurred while submitting the replenishment request: " + e.getMessage());
     }
-}
-
-    
 }
