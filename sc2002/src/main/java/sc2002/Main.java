@@ -114,21 +114,31 @@ class Main {
 
                     switch (choice){
                         case 1: 
-                            pharmacist.viewPastAppointmentOutcome(inputScanner);
+                            System.out.println("=========================================");
+                            System.out.println("Enter patient ID: ");
+                            String patientID1 = inputScanner.nextLine().toUpperCase().trim();
+                            pharmacist.viewPastAppointmentOutcome(patientID1);
                             waitForEnter(inputScanner);
                             break;
                         case 2:
                             System.out.println("=========================================");
-                            System.out.println("Input patient ID");
-                            String patientID = inputScanner.nextLine();
-
-                            pharmacist.updatePrescriptionStatus(patientID, choice);
+                            System.out.println("Enter patient ID");
+                            String patientID2 = inputScanner.nextLine().toUpperCase().trim();
+                            System.out.println("Enter appointment ID");
+                            int appointmentID = inputScanner.nextInt();
+                            pharmacist.updatePrescriptionStatus(patientID2, appointmentID);
                             break;
                         case 3:
                             pharmacist.viewMedicationInventory();
                             waitForEnter(inputScanner);
                             break;  
                         case 4:
+                            pharmacist.viewMedicationInventory();
+                            waitForEnter(inputScanner);
+                            System.out.println("=========================================");
+                            System.out.println("Enter medicine name you would like to request replenishment for: ");
+                            String medicine = inputScanner.nextLine().toUpperCase().trim();
+                            pharmacist.submitReplenishmentRequest(medicine);
                             break;
                         case 5:
                             logout = user.logOut();
