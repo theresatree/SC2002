@@ -262,6 +262,4 @@ public class PatientAppointment implements Appointment{
         }
     }
 
-
-
 }

@@ -70,4 +70,8 @@ public class AppointmentOutcomeRecord {
             "Notes: " + consultationNotes);
     }
 
+    public void setPrescriptionStatus(PrescriptionStatus newStatus) {
+        this.prescriptionStatus = newStatus;
+    }
+    
 }

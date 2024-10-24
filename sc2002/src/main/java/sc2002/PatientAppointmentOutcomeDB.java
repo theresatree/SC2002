@@ -99,4 +99,36 @@ public class PatientAppointmentOutcomeDB {
     }
 }
 
+    public static void updateAppointmentOutcome(List<AppointmentOutcomeRecord> updatedStatus) throws IOException {
+        try (InputStream is = PatientAppointmentOutcomeDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+            Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+            for (Row row : sheet) {
+                Cell patientIDCell = row.getCell(0);
+                if (row.getRowNum() == 0) continue; // Skip header row
+
+                String patientID = patientIDCell.getStringCellValue();
+                int appointmentID = (int) row.getCell(2).getNumericCellValue();
+
+                // Find the matching row in the Excel sheet and update the prescription status
+                for (AppointmentOutcomeRecord updatedRecord : updatedStatus) {
+                    if (updatedRecord.getPatientID().equals(patientID) && updatedRecord.getAppointmentID() == appointmentID) {
+                        // Update the prescription status cell
+                        Cell prescriptionStatusCell = row.getCell(6);
+                        prescriptionStatusCell.setCellValue(updatedRecord.getPrescriptionStatus().name());
+                    }
+                }
+            }
+
+            // Write changes back to the file
+            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+                workbook.write(fos);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

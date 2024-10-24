@@ -114,8 +114,15 @@ class Main {
 
                     switch (choice){
                         case 1: 
+                            pharmacist.viewPastAppointmentOutcome(inputScanner);
+                            waitForEnter(inputScanner);
                             break;
                         case 2:
+                            System.out.println("=========================================");
+                            System.out.println("Input patient ID");
+                            String patientID = inputScanner.nextLine();
+
+                            pharmacist.updatePrescriptionStatus(patientID, choice);
                             break;
                         case 3:
                             pharmacist.viewMedicationInventory();
