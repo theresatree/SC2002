@@ -10,13 +10,13 @@ public class AppointmentOutcomeRecord {
     private int appointmentID;
     private LocalDate dateOfAppointment;
     private Service service;
-    private Medicine medications; 
+    private String medications; 
     private PrescriptionStatus prescriptionStatus;
     private String consultationNotes;
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
-    AppointmentOutcomeRecord(String patientID, String doctorID, int appointmentID, LocalDate dateOfAppointment, Service service, Medicine medications, PrescriptionStatus prescriptionStatus, String consultationNotes){
+    AppointmentOutcomeRecord(String patientID, String doctorID, int appointmentID, LocalDate dateOfAppointment, Service service, String medications, PrescriptionStatus prescriptionStatus, String consultationNotes){
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.appointmentID = appointmentID;
@@ -47,7 +47,7 @@ public class AppointmentOutcomeRecord {
         return service;
     }
 
-    public Medicine getMedications() {
+    public String getMedications() {
         return medications;
     }
     

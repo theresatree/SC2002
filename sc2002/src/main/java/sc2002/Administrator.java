@@ -21,6 +21,7 @@ public class Administrator extends User {
     private StaffFilter selectedFilter = null;
     private List<MedicationInventory> medicationInventory;
     private List<AppointmentDetails> appointmentDetails;
+    private List<ReplenishmentRequest> replenishmentRequests;
     Scanner scanner = new Scanner(System.in);
 
     public void viewHospitalStaff() {
@@ -212,6 +213,19 @@ public class Administrator extends User {
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
+
+            System.out.println("\nAdding Staff's Details. Please wait...");
+            for (int i = 5; i > 0; i--) {
+                System.out.print("*");
+                try {
+                    Thread.sleep(200); // Sleep for 0.2 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("\nUpdate process interrupted.");
+                }
+            }
+            System.out.println("\nSuccessfully Added Staff!");
+
             System.out.println("\n===========================================");
             System.out.println("             Continue adding?");
             System.out.println("===========================================");
@@ -227,7 +241,7 @@ public class Administrator extends User {
     public void updateHospitalStaff() {
         int choice, continueUpdate = 1;
         String staffID;
-        Staff selectedStaff=null;
+        Staff selectedStaff = null;
 
         System.out.println("\n============================");
         System.out.println("       Updating Staff");
@@ -293,6 +307,18 @@ public class Administrator extends User {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
 
+            System.out.println("\nUpdating Staff's Details. Please wait...");
+            for (int i = 5; i > 0; i--) {
+                System.out.print("*");
+                try {
+                    Thread.sleep(200); // Sleep for 0.2 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("\nUpdate process interrupted.");
+                }
+            }
+            System.out.println("\nSuccessfully Updated Staff!");
+
             System.out.println("\n===========================================");
             System.out.println("       Continue updating same staff?");
             System.out.println("===========================================");
@@ -325,6 +351,18 @@ public class Administrator extends User {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
 
+            System.out.println("\nRemoving Staff's Details. Please wait...");
+            for (int i = 5; i > 0; i--) {
+                System.out.print("*");
+                try {
+                    Thread.sleep(200); // Sleep for 0.2 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("\nRemove process interrupted.");
+                }
+            }
+            System.out.println("\nSuccessfully Removed Staff!");
+
             System.out.println("\n===========================================");
             System.out.println("             Continue removing?");
             System.out.println("===========================================");
@@ -343,9 +381,9 @@ public class Administrator extends User {
                 System.out.println("No appointment found\n\n");
 
             }
-            System.out.println("\n=========================================");
-            System.out.println("     List of Appointment Details");
-            System.out.println("=========================================");
+            System.out.println("\n===========================================");
+            System.out.println("        List of Appointment Details");
+            System.out.println("===========================================");
 
             for (AppointmentDetails appointmentDetail : appointmentDetails) {
                 System.out.print(appointmentDetail.printAppointmentDetails());
@@ -354,7 +392,7 @@ public class Administrator extends User {
                     AppointmentDetailsDB.printAppointmentOutcomeRecord(appointmentDetail.getPatientID(), appointmentDetail.getAppointmentID());
                 }
 
-                System.out.println("=========================================");
+                System.out.println("===========================================");
             }
         } catch (Exception e) {
             System.out.println("An error occurred while fetching appointment details: " + e.getMessage());
@@ -381,15 +419,15 @@ public class Administrator extends User {
             System.out.println("An error occurred while fetching medication details: " + e.getMessage());
         }
 
-        System.out.println("=========================================");
-        System.out.println("      Manage Medication Inventory");
-        System.out.println("=========================================");
+        System.out.println("===========================================");
+        System.out.println("        Manage Medication Inventory");
+        System.out.println("===========================================");
         System.out.println("1. Add Medication");
         System.out.println("2. Remove Medication");
         System.out.println("3. Update Stock Level");
-        System.out.println("4. Change Low Stock Level Alert");
+        System.out.println("4. Update Low Stock Level Alert");
         System.out.println("5. Exit");
-        System.out.println("=========================================");
+        System.out.println("===========================================");
         System.out.print("Select a choice: ");
         int choice = Main.getValidChoice(scanner, 5);
 
@@ -404,7 +442,7 @@ public class Administrator extends User {
                 updateStockLevel();
                 break;
             case 4:
-                changeLowStockLevelAlert();
+                updateLowStockLevelAlert();
                 break;
             case 5:
                 break;
@@ -418,9 +456,9 @@ public class Administrator extends User {
         int continueUpdate = 1;
 
         while (continueUpdate == 1) {
-            System.out.println("\n=========================================");
-            System.out.println("        Adding New Medication");
-            System.out.println("=========================================");
+            System.out.println("\n===========================================");
+            System.out.println("           Adding New Medication");
+            System.out.println("===========================================");
 
             System.out.print("Enter Medicine Name: ");
             String newMedicine = scanner.nextLine().toUpperCase();
@@ -443,6 +481,19 @@ public class Administrator extends User {
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
+
+            System.out.println("\nAdding New Medication. Please wait...");
+            for (int i = 5; i > 0; i--) {
+                System.out.print("*");
+                try {
+                    Thread.sleep(200); // Sleep for 0.2 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("\nUpdate process interrupted.");
+                }
+            }
+            System.out.println("\nSuccessfully Added Medication!");
+
             System.out.println("\n===========================================");
             System.out.println("             Continue adding?");
             System.out.println("===========================================");
@@ -458,9 +509,9 @@ public class Administrator extends User {
         String medicineName;
 
         while (continueUpdate == 1) {
-            System.out.println("\n=========================================");
-            System.out.println("        Removing Medication");
-            System.out.println("=========================================");
+            System.out.println("\n===========================================");
+            System.out.println("            Removing Medication");
+            System.out.println("===========================================");
 
             do {
                 System.out.print("Enter Medicine Name: ");
@@ -475,6 +526,18 @@ public class Administrator extends User {
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
+
+            System.out.println("\nRemoving Medication. Please wait...");
+            for (int i = 5; i > 0; i--) {
+                System.out.print("*");
+                try {
+                    Thread.sleep(200); // Sleep for 0.2 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("\nRemove process interrupted.");
+                }
+            }
+            System.out.println("\nSuccessfully Removed Medication!");
 
             System.out.println("\n===========================================");
             System.out.println("             Continue removing?");
@@ -491,26 +554,38 @@ public class Administrator extends User {
         String medicineName;
 
         while (continueUpdate == 1) {
-            System.out.println("\n=========================================");
-            System.out.println("        Updating Stock Level");
-            System.out.println("=========================================");
+            System.out.println("\n===========================================");
+            System.out.println("           Updating Stock Level");
+            System.out.println("===========================================");
 
             do {
                 System.out.print("Enter Medicine Name: ");
                 medicineName = scanner.nextLine().toUpperCase();
             } while (MedicationInventoryDB.findMedicine(medicineName) == 0);
 
-            System.out.print("Enter Updated Stock Level: ");
-            int updatedStockLevel = scanner.nextInt();
+            System.out.print("Enter Restock Amount: ");
+            int restockAmount = scanner.nextInt();
 
             try {
-                MedicationInventoryDB.updateStockLevel(medicineName, updatedStockLevel);
+                MedicationInventoryDB.updateStockLevel(medicineName, restockAmount);
 
             } catch (IOException e) {
                 System.out.println("An error occurred while removing medication: " + e.getMessage());
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
+
+            System.out.println("\nUpdating Stock Level. Please wait...");
+            for (int i = 5; i > 0; i--) {
+                System.out.print("*");
+                try {
+                    Thread.sleep(200); // Sleep for 0.2 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("\nUpdate process interrupted.");
+                }
+            }
+            System.out.println("\nSuccessfully Updated Stock Level!");
 
             System.out.println("\n===========================================");
             System.out.println("             Continue updating?");
@@ -522,14 +597,14 @@ public class Administrator extends User {
         }
     }
 
-    public void changeLowStockLevelAlert() {
+    public void updateLowStockLevelAlert() {
         int continueUpdate = 1;
         String medicineName;
 
         while (continueUpdate == 1) {
-            System.out.println("\n=========================================");
-            System.out.println("     Changing Low Stock Level Alert");
-            System.out.println("=========================================");
+            System.out.println("\n===========================================");
+            System.out.println("      Updating Low Stock Level Alert");
+            System.out.println("===========================================");
 
             do {
                 System.out.print("Enter Medicine Name: ");
@@ -540,16 +615,28 @@ public class Administrator extends User {
             int updatedLowLevelAlert = scanner.nextInt();
 
             try {
-                MedicationInventoryDB.changeLowAlert(medicineName, updatedLowLevelAlert);
+                MedicationInventoryDB.updateLowAlert(medicineName, updatedLowLevelAlert);
 
             } catch (IOException e) {
-                System.out.println("An error occurred while changing low stock level alert: " + e.getMessage());
+                System.out.println("An error occurred while updating low stock level alert: " + e.getMessage());
             } catch (Exception e) {
                 System.out.println("An unexpected error occurred: " + e.getMessage());
             }
 
+            System.out.println("\nUpdating Low Stock Level Alert. Please wait...");
+            for (int i = 5; i > 0; i--) {
+                System.out.print("*");
+                try {
+                    Thread.sleep(200); // Sleep for 0.2 second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("\nUpdate process interrupted.");
+                }
+            }
+            System.out.println("\nSuccessfully Updated Low Stock Level Alert!");
+
             System.out.println("\n===========================================");
-            System.out.println("             Continue changing?");
+            System.out.println("             Continue updating?");
             System.out.println("===========================================");
             System.out.println("1. Yes");
             System.out.println("2. No");
@@ -559,6 +646,132 @@ public class Administrator extends User {
     }
 
     public void approveReplenishmentRequests() {
+        int continueUpdate = 1;
+        RequestStatus requestStatus = null, approval=null;
 
+        System.out.println("\n===========================================");
+        System.out.println("        View Replenishment Requests");
+        System.out.println("===========================================");
+        System.out.println("1. Approved");
+        System.out.println("2. Pending");
+        System.out.println("3. Rejected");
+        System.out.println("4. Exit");
+
+        System.out.print("Select status to view: ");
+        int choice = Main.getValidChoice(scanner, 4);
+
+        switch (choice) {
+            case 1:
+                requestStatus = RequestStatus.APPROVED;
+                break;
+            case 2:
+                requestStatus = RequestStatus.PENDING;
+                break;
+            case 3:
+                requestStatus = RequestStatus.REJECTED;
+                break;
+            case 4:
+                return;                
+            default:
+                System.out.println("Unexpected error occurred.");
+                break;
+        }
+
+        while (continueUpdate == 1) {
+            try {
+                this.replenishmentRequests = ReplenishmentRequestDB.getReplenishmentRequest(requestStatus);
+
+                System.out.println("\n===========================================");
+                System.out.println("      " + requestStatus + " Replenishment Requests");
+                System.out.println("===========================================");
+
+                for (ReplenishmentRequest replenishmentRequest : replenishmentRequests) {
+                    System.out.print(replenishmentRequest.printReplenishmentRequest());
+                    System.out.println("===========================================");
+                }
+
+            } catch (IOException e) {
+                System.out.println("An error occurred while getting replenishment requests: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+            }
+
+            if (requestStatus == RequestStatus.PENDING) {
+
+                do {
+                    System.out.print("Enter the Request ID to approve or reject: ");
+                    choice = scanner.nextInt();
+                    scanner.nextLine();
+                } while (ReplenishmentRequestDB.findPendingRequest(choice) == 0);
+
+                ReplenishmentRequest selectedRequest = null;
+                for (ReplenishmentRequest selected : replenishmentRequests) {
+                    if (selected.getRequestID() == choice) {
+                        selectedRequest = selected;
+                        break;
+                    }
+                }
+
+                System.out.println("\n===========================================");
+                System.out.println("         Approve selected request?");
+                System.out.println("===========================================");
+                System.out.print(selectedRequest.printReplenishmentRequest());
+                System.out.println("===========================================");
+                System.out.println("1. Approve");
+                System.out.println("2. Reject");
+                System.out.print("Select a choice: ");
+                choice = Main.getValidChoice(scanner, 2);
+
+                switch (choice) {
+                    case 1:
+                        approval = RequestStatus.APPROVED;
+                        break;
+                    case 2:
+                        approval = RequestStatus.REJECTED;
+                    default:
+                        System.out.println("Unexpected error occurred.");
+                        break;
+                }
+
+                try {
+                    ReplenishmentRequestDB.updateStatus(selectedRequest.getRequestID(), approval);
+                    MedicationInventoryDB.updateStockLevel(selectedRequest.getMedicine(), selectedRequest.getAmount());
+
+                } catch (IOException e) {
+                    System.out.println("An error occurred while getting replenishment requests: " + e.getMessage());
+                } catch (Exception e) {
+                    System.out.println("An unexpected error occurred: " + e.getMessage());
+                }
+
+                if (choice == 1) {
+                    System.out.println("\nUpdating Status and Stock Level. Please wait...");
+                    for (int i = 5; i > 0; i--) {
+                        System.out.print("*");
+                        try {
+                            Thread.sleep(200); // Sleep for 0.2 second
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            System.out.println("\nUpdate process interrupted.");
+                        }
+                    }
+                    System.out.println("\nSuccessfully Updated Status and Stock Level!");
+                } else {
+                    System.out.println("\nSuccessfully Rejected Request!");
+                }
+
+                System.out.println("\n===========================================");
+                System.out.println("            Continue approving?");
+                System.out.println("===========================================");
+                System.out.println("1. Yes");
+                System.out.println("2. No");
+                System.out.println("===========================================");
+                continueUpdate = Main.getValidChoice(scanner, 2);
+
+            } else {
+                continueUpdate = 0;
+                Main.waitForEnter(scanner);
+            }
+
+        }
     }
 }

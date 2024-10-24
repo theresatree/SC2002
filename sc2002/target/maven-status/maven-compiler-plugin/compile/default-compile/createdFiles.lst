@@ -1,3 +1,4 @@
+sc2002\ReplenishmentRequest.class
 sc2002\Pharmacist.class
 sc2002\StaffFiltering\StaffIDFilter.class
 sc2002\PatientDB.class
@@ -26,8 +27,10 @@ sc2002\DiagnosisDB.class
 sc2002\PrescriptionStatus.class
 sc2002\MedicationInventoryDB.class
 sc2002\StaffFiltering\StaffGenderFilter.class
+sc2002\ReplenishmentRequestDB.class
 sc2002\StaffFiltering\StaffFilter.class
 sc2002\AppointmentOutcomeRecord.class
+sc2002\RequestStatus.class
 sc2002\MedicalRecord.class
 sc2002\Medicine.class
 sc2002\DoctorAppointmentDB.class

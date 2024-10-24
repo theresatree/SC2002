@@ -62,7 +62,6 @@ public class MedicationInventoryDB {
 
             try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
                 workbook.write(fos);
-                System.out.println("Successfully added new medication");
             }
         } catch (IOException e) {
             System.out.println("An error occurred while adding the new medication: " + e.getMessage());
@@ -98,11 +97,10 @@ public class MedicationInventoryDB {
                 throw e; // Re-throw to notify the caller
             }
         }
-        System.out.println("Successfully removed the medication");
     }
 
     //////////////////////////////// Update Stock Level /////////////////////////////////
-    public static void updateStockLevel(String medicineName, int updatedStockLevel) throws IOException {
+    public static void updateStockLevel(String medicineName, int restockAmount) throws IOException {
         try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
             Workbook workbook = new XSSFWorkbook(is)) {
             Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
@@ -113,7 +111,8 @@ public class MedicationInventoryDB {
 
                 if (medicineCell.getStringCellValue().equals(medicineName)) {
                     Cell stockLevelCell = row.getCell(1);
-                    stockLevelCell.setCellValue(updatedStockLevel);
+                    int currentStock = (int) stockLevelCell.getNumericCellValue();
+                    stockLevelCell.setCellValue(currentStock + restockAmount);
                     break;
                 }
             }
@@ -128,7 +127,7 @@ public class MedicationInventoryDB {
     }
 
     //////////////////////////////// Change Low Stock Level Alert /////////////////////////////////
-    public static void changeLowAlert(String medicineName, int updatedLowLevelAlert) throws IOException {
+    public static void updateLowAlert(String medicineName, int updatedLowLevelAlert) throws IOException {
         try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
             Workbook workbook = new XSSFWorkbook(is)) {
             Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
@@ -149,7 +148,7 @@ public class MedicationInventoryDB {
                 workbook.write(fos);
             }
         } catch (IOException e) {
-            System.out.println("An error occurred while changing the low stock level alert: " + e.getMessage());
+            System.out.println("An error occurred while updating the low stock level alert: " + e.getMessage());
         }
     }
 

@@ -53,7 +53,7 @@ public class PatientAppointmentOutcomeDB {
                         int appointment = (int) appointmentIDCell.getNumericCellValue();
                         LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
                         Service services = Service.valueOf(servicesCell.getStringCellValue().toUpperCase());
-                        Medicine medication = Medicine.valueOf(medicationCell.getStringCellValue().toUpperCase());
+                        String medication = medicationCell.getStringCellValue();
                         PrescriptionStatus status = PrescriptionStatus.valueOf(prescriptionStatusCell.getStringCellValue().toUpperCase());
                         String notes = notesCell.getStringCellValue();
 
@@ -70,7 +70,7 @@ public class PatientAppointmentOutcomeDB {
     }
 
     //////////////////////////////////////// Set PatientAppointmentOucome ////////////////////////////////////////
-    public static void setAppointmentOutcome(String patientID, String doctorID, int appointmentID, LocalDate date, Service services, Medicine medication, String notes){
+    public static void setAppointmentOutcome(String patientID, String doctorID, int appointmentID, LocalDate date, Service services, String medication, String notes){
         try (InputStream is = PatientAppointmentOutcomeDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
         Workbook workbook = new XSSFWorkbook(is)) {
         Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
@@ -85,7 +85,7 @@ public class PatientAppointmentOutcomeDB {
         row.createCell(2).setCellValue(appointmentID); 
         row.createCell(3).setCellValue(date.format(dateFormat)); 
         row.createCell(4).setCellValue(services.name()); 
-        row.createCell(5).setCellValue(medication.name());
+        row.createCell(5).setCellValue(medication);
         row.createCell(6).setCellValue("Pending");
         row.createCell(7).setCellValue(notes);
         // Write the changes back to the Excel file

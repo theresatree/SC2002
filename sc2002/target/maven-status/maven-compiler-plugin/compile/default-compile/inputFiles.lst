@@ -1,4 +1,5 @@
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\PatientScheduledAppointment.java
+C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\ReplenishmentRequest.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\UserDB.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\AvailableDatesToChoose.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\Medicine.java
@@ -12,6 +13,7 @@ C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\PatientAppoi
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\PatientDB.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\StaffFiltering\StaffFilter.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\StaffFiltering\StaffIDFilter.java
+C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\ReplenishmentRequestDB.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\MedicalRecord.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\StaffFiltering\StaffRoleFilter.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\DiagnosisDB.java
@@ -31,6 +33,7 @@ C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\ContactInfor
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\TimeSlot.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\Doctor.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\PatientAppointment.java
+C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\RequestStatus.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\UserAccount.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\Service.java
 C:\Users\Edmund\Documents\GitHub\SC2002\sc2002\src\main\java\sc2002\AppointmentStatus.java

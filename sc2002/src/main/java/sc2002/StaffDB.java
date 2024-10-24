@@ -86,7 +86,6 @@ public class StaffDB {
 
             try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
                 workbook.write(fos);
-                System.out.println("Successfully added new staff");
             }
         } catch (IOException e) {
             System.out.println("An error occurred while adding the new staff: " + e.getMessage());
@@ -117,9 +116,8 @@ public class StaffDB {
                 staffs.set(i, updatedStaff); // Update the staff member
 
                 // Save back to the file
-                if (newStaffFile(staffs) == 1) {
-                    System.out.println("Successfully updated the staff member");
-                }
+                newStaffFile(staffs);
+
                 return;
             }
         }
@@ -130,41 +128,39 @@ public class StaffDB {
         StaffFilter noFilter = new StaffNoFilter();
         List<Staff> staffs = getStaff(noFilter);
         staffs.removeIf(staff -> staff.getStaffID().equals(staffID));
-        if (newStaffFile(staffs) == 1) {
+        newStaffFile(staffs);
 
-            System.out.println("Successfully removed the staff member");
+        // Get the existing User.xlsx and rewrite new User.xlsx without the removed staff member
+        List<UserAccount> userAccs = new ArrayList<>();
+        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx"); Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
 
-            // Get the existing User.xlsx and rewrite new User.xlsx without the removed staff member
-            List<UserAccount> userAccs = new ArrayList<>();
-            try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx"); Workbook workbook = new XSSFWorkbook(is)) {
-                Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+            for (Row row : sheet) {
+                Cell hospitalIDCell = row.getCell(0);
+                Cell passwordCell = row.getCell(1);
 
-                for (Row row : sheet) {
-                    Cell hospitalIDCell = row.getCell(0);
-                    Cell passwordCell = row.getCell(1);
-
-                    if (row.getRowNum() == 0) {
-                        continue; // Skip header row
-                    }
-
-                    if (hospitalIDCell != null) {
-                        String hospitalID = hospitalIDCell.getStringCellValue();
-                        String password = passwordCell.getStringCellValue();
-                        UserAccount userAcc = new UserAccount(hospitalID, password);
-                        userAccs.add(userAcc);
-                    }
+                if (row.getRowNum() == 0) {
+                    continue; // Skip header row
                 }
 
-                userAccs.removeIf(userAcc -> userAcc.getHospitalID().equals(staffID));
-                newUserAccFile(userAccs);
-
-            } catch (IOException e) {
-                System.err.println("Error writing to the file User.xlsx: " + e.getMessage());
+                if (hospitalIDCell != null) {
+                    String hospitalID = hospitalIDCell.getStringCellValue();
+                    String password = passwordCell.getStringCellValue();
+                    UserAccount userAcc = new UserAccount(hospitalID, password);
+                    userAccs.add(userAcc);
+                }
             }
+
+            userAccs.removeIf(userAcc -> userAcc.getHospitalID().equals(staffID));
+            newUserAccFile(userAccs);
+
+        } catch (IOException e) {
+            System.err.println("Error writing to the file User.xlsx: " + e.getMessage());
         }
+
     }
 
-    private static int newStaffFile(List<Staff> staffs) throws IOException {
+    private static void newStaffFile(List<Staff> staffs) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Staff");
 
@@ -194,7 +190,6 @@ public class StaffDB {
 
             try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
                 workbook.write(fos);
-                return 1;
             } catch (IOException e) {
                 System.err.println("Error writing to the file: " + e.getMessage());
                 throw e; // Re-throw to notify the caller

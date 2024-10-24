@@ -8,14 +8,15 @@ import java.util.Scanner;
 
 public class Doctor extends User{
     private String doctorID;
-    private DoctorAppointment docotorAppointment;
+    private DoctorAppointment doctorAppointment;
     private MedicalRecord medicalRecord;
     private List<String> patientIDs;
+    private List<MedicationInventory> medicationInventory;
 
     public Doctor(String doctorID){
         super(doctorID);
         this.doctorID=doctorID;
-        docotorAppointment = new DoctorAppointment(doctorID);
+        doctorAppointment = new DoctorAppointment(doctorID);
 
         try {
             patientIDs = DoctorAppointmentDB.getPatients(doctorID);
@@ -72,7 +73,7 @@ public class Doctor extends User{
     /////////////////////////////////////////////////////////////////////////
     
     public void viewPersonalSchedule(){
-        docotorAppointment.showPersonalSchedule();
+        doctorAppointment.showPersonalSchedule();
     }
     
     /////////////////////////////////////////////////////////////////////////
@@ -234,17 +235,17 @@ public class Doctor extends User{
     }
     /////////////////////////////////////////////////////////////////////////
     public void setAvailabilityDate(Scanner scanner){
-        docotorAppointment.showSelectableDates(scanner);
+        doctorAppointment.showSelectableDates(scanner);
     }
 
     /////////////////////////////////////////////////////////////////////////
     public void acceptDeclineAppointment(Scanner scanner){
-        docotorAppointment.acceptDeclineAppointment(scanner);
+        doctorAppointment.acceptDeclineAppointment(scanner);
     }
 
     /////////////////////////////////////////////////////////////////////////
     public void viewAppointmentStatus(){
-        docotorAppointment.viewAppointmentStatus();
+        doctorAppointment.viewAppointmentStatus();
     }
 
 
@@ -253,10 +254,10 @@ public class Doctor extends User{
     public void createAppointmentRecord(Scanner scanner){
         boolean exit=false;
         int choice=-1;
-        int medicineChoice=-1;
         int serviceChoice = -1;
-        Medicine medication=null;
+        String medication="";
         Service service = null;
+        String notes = "";
         String patientID = choosePatientString(patientIDs, scanner);
 
         try{
@@ -342,32 +343,12 @@ public class Doctor extends User{
                         }
                     }
 
-                    //MEDICINE
-                    while (medicineChoice < 1 || medicineChoice > Medicine.values().length) {
-                        System.out.println("\n==========================================");
-                        System.out.println("            Medicine provided");
-                        System.out.println("==========================================");
-                        // Start displaying medicines from index 1
-                        for (int i = 1; i <= Medicine.values().length; i++) {
-                            System.out.println(i + ": " + Medicine.values()[i - 1]); // Display index with the medicine name
-                        }
-                        System.out.println("==========================================");
-                        System.out.print("Choose medication prescribed: ");
-                        
-                        medicineChoice = scanner.nextInt();
-                        scanner.nextLine(); // Consume the newline character
-                    
-                        // Adjust the condition to check for the range starting from 1
-                        if (medicineChoice >= 1 && medicineChoice <= Medicine.values().length) {
-                            medication = Medicine.values()[medicineChoice - 1]; // Access the enum by index
-                            System.out.println("You selected: " + medication);
-                        } else {
-                            System.out.println("Invalid choice! Please enter a number between 1 and " + Medicine.values().length);
-                        }
-                    }
+                    // MEDICINE
+                    medication = listOfMedicine(scanner);
+                    System.out.print("You selected: " + medication);
 
                     System.out.print("\n\nConsultation notes for patient: ");
-                    String notes = scanner.nextLine();
+                    notes = scanner.nextLine();
                     PatientAppointmentOutcomeDB.setAppointmentOutcome(patientID,doctorID,selectedAppointment.getAppointmentID(),selectedAppointment.getDate(),service,medication,notes);
                     DoctorAppointmentDB.completeAppointment(doctorID,selectedAppointment.getAppointmentID(),patientID);
 
@@ -388,5 +369,35 @@ public class Doctor extends User{
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    private String listOfMedicine(Scanner scanner){
+        int medicineChoice=-1;
+        try{
+            while (true){
+                medicationInventory = MedicationInventoryDB.getMedicationInventory();
+                System.out.println("\n==========================================");
+                System.out.println("            Medicine provided");
+                System.out.println("==========================================");
+                for (int i=0; i<medicationInventory.size(); i++){
+                    System.out.println((i + 1) + ". " + medicationInventory.get(i).getMedicine());
+                }
+                System.out.println("==========================================");
+                System.out.print("Choose medication prescribed: ");
+                        
+                medicineChoice = scanner.nextInt();
+
+                if (medicineChoice < 1 || medicineChoice > medicationInventory.size()) {
+                    System.out.println("Invalid choice. Please select a valid medicine.\n");
+                }
+                else {
+                    scanner.nextLine();
+                    return medicationInventory.get(medicineChoice-1).getMedicine();
+                }
+            }
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
