@@ -137,8 +137,7 @@ public class Pharmacist extends User{
             System.out.println("Please enter the amount of stock you'd like to add for " + medicine + ": ");
             int amountToReplenish = scanner.nextInt();
 
-            List<ReplenishmentRequest> replenishmentRequests = ReplenishmentRequestDB.getReplenishmentRequest(RequestStatus.PENDING);
-            int newRequestID = replenishmentRequests.size() + 1;
+            int newRequestID = ReplenishmentRequestDB.getLastRequestID() + 1;
             LocalDate dateOfRequest = LocalDate.now();
             ReplenishmentRequest newRequest = new ReplenishmentRequest(newRequestID, this.pharmacistID, dateOfRequest, medicine, amountToReplenish, RequestStatus.PENDING);
 

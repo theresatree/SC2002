@@ -113,14 +113,37 @@ public class ReplenishmentRequestDB {
         return 0; //not found
     }
 
-    public static void saveReplenishmentRequest(ReplenishmentRequest request) throws IOException {
-        try (InputStream is = ReplenishmentRequestDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-            Workbook workbook = new XSSFWorkbook(is);
-            FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+    public static int getLastRequestID() throws IOException {
+        try (InputStream is = ReplenishmentRequestDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (is == null) {
+                throw new IOException("File not found in resources: " + FILE_NAME);
+            }
 
-            Sheet sheet = workbook.getSheetAt(0); 
+            // Load the workbook from the input stream
+            try (Workbook workbook = new XSSFWorkbook(is)) {
+                Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+                int lastRowIndex = sheet.getLastRowNum();
+
+                if (lastRowIndex > 0) {     //header is not counted
+                    Row lastRow = sheet.getRow(lastRowIndex);
+                    Cell requestIDCell = lastRow.getCell(0);
+                    return (int)requestIDCell.getNumericCellValue();
+                }
+
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while finding request: " + e.getMessage());
+        }        
+        return 0; //first request
+    }
+
+    public static void saveReplenishmentRequest(ReplenishmentRequest request) throws IOException {
+        try (InputStream is = ReplenishmentRequestDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is); FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
             int lastRow = sheet.getLastRowNum();
-            Row newRow = sheet.createRow(lastRow + 1); 
+            Row newRow = sheet.createRow(lastRow + 1);
 
             newRow.createCell(0).setCellValue(request.getRequestID());
             newRow.createCell(1).setCellValue(request.getPharmacistID());
