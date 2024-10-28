@@ -109,4 +109,64 @@ public class PatientDB {
             System.out.println("An error occurred while updating the password: " + e.getMessage());
         }
     }
+
+
+    /////////////////////////////////////// Create a new patient ///////////////////////////////////////////
+    public static String createNewPatient(String patientName, String patientDOB, String gender, String bloodType, int phoneNumber, String email) throws IOException{
+        String nextPatientID = ""; // Initialize nextPatientID
+        try (InputStream is = PatientDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+            Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+            // Find the first empty row
+            int rowCount = sheet.getPhysicalNumberOfRows();
+            Row row = sheet.createRow(rowCount); // Create a new row at the end of the sheet
+
+            nextPatientID = getNextPatientID(sheet);
+
+            if (gender.equalsIgnoreCase("M")) {
+                gender = "Male";
+            } else if (gender.equalsIgnoreCase("F")) {
+                gender = "Female";
+            }
+
+            // Set the values in the appropriate columns
+            row.createCell(0).setCellValue(nextPatientID); 
+            row.createCell(1).setCellValue(patientName);
+            row.createCell(2).setCellValue(patientDOB);
+            row.createCell(3).setCellValue(gender); 
+            row.createCell(4).setCellValue(bloodType);
+            row.createCell(5).setCellValue(phoneNumber);
+            row.createCell(6).setCellValue(email); 
+            // Write the changes back to the Excel file
+
+        try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+                workbook.write(fos);
+                UserDB.createNewPatient(nextPatientID); // Put it in user.xlsx.
+        }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception as appropriate
+        }
+        return nextPatientID;
+    }
+
+        /////////////////////////////////////// getting Appointment ID///////////////////////////////////////////
+    private static String getNextPatientID(Sheet sheet) {
+        int maxId = 0; // Initialize the maximum ID
+
+        for (int i = 1; i <= sheet.getPhysicalNumberOfRows(); i++) {
+            Row row = sheet.getRow(i);
+            if (row != null && row.getCell(0) != null) { 
+                String idStr = row.getCell(0).getStringCellValue(); // Get the patient ID
+                if (idStr.startsWith("P")) { 
+                    // Extract the numeric part and parse it as an integer
+                    int idNumber = Integer.parseInt(idStr.substring(1)); // Skip the 'P'
+                    maxId = Math.max(maxId, idNumber); // Update maxId if this one is larger
+                }
+            }
+        }
+        // Return the next patient ID in the format "P" + (maxId + 1)
+        return "P" + (maxId + 1);
+    }
+
 }

@@ -5,35 +5,200 @@ import java.util.Scanner;
 class Main {
     public static void main(String[] args) {
 ////////////////////////////////////// LOGIN ////////////////////////////////////// 
-        boolean login = false;
+    while (true){
+        boolean mainMenuExit = false;
         Scanner inputScanner = new Scanner(System.in);
-        User user = null;
+        User user = null; // Set user to null
+        boolean login = false; //facilitate login
+        boolean register = false;//facilitate register
         boolean logout = false; // This is to facilitate logout
-        int choice; // This is for tDhe dashboard later.
-        String filePath = ""; // This is to access either Patient_List.xlsx or Staff_List.xlsx depending on the HospitalID.
+        int choice; // This is for all the selection choices.
 
-        while (!login){ // Make sure the user is logged-in before continuing
-            try {
-                System.out.print("Enter Hospital ID: ");
-                String hospitalID = inputScanner.nextLine().trim();
+        while (!mainMenuExit){
+ //////////////////////////////////////////// MAIN MENU SECTION (LOGIN + REGISTER) /////////////////////////////////////////////////
+            System.out.println("=========================================");
+            System.out.println("                Main Menu");
+            System.out.println("=========================================");
+            System.out.println("1. Login");
+            System.out.println("2. Register as Patient");
+            System.out.println("=========================================");
+            choice = getValidChoice(inputScanner,2);
 
-                System.out.print("Enter Password: ");
-                String password = inputScanner.nextLine().trim();
+            switch (choice){
+        //////////////////////////////////////////// LOGIN SECTION /////////////////////////////////////////////////
+                case 1:
+                    while (!login){ // Make sure the user is logged-in before continuing
+                        try {
+                            System.out.println("\n\n=========================================");
+                            System.out.println("       Please input login details");
+                            System.out.println("          Enter 'exit' to exit");
+                            System.out.println("=========================================");
+                            System.out.print("Enter Hospital ID: ");
+                            String hospitalID = inputScanner.nextLine().trim().toUpperCase();
 
-                // Validate the login credentials
-                login = UserDB.validateLogin(hospitalID, password);
-                if (login) {
-                    System.out.println("\n\nLogin successful!");
-                    user = new User(hospitalID); // Create an instance of User when logged in.
-                    System.out.println("Welcome back " + user.getRole() + " " + UserDB.getNameByHospitalID(hospitalID, user.getRole()));
-                    login=true;
-                } else {
-                    System.out.println("Invalid Hospital ID or Password.");
+                            if (hospitalID.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting login process!");
+                                break;
+                            }
+
+                            System.out.print("Enter Password: ");
+                            String password = inputScanner.nextLine().trim();
+
+                            if (password.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting login process!");
+                                break;
+                            }
+
+                            // Validate the login credentials
+                            login = UserDB.validateLogin(hospitalID, password);
+                            if (login) {
+                                System.out.println("\nLogging in. Please wait...");
+                                for (int i = 5; i > 0; i--) {
+                                    System.out.print("*");
+                                    try {
+                                        Thread.sleep(200); // Sleep for 0.2 second
+                                    } catch (InterruptedException e) {
+                                        Thread.currentThread().interrupt();
+                                        System.out.println("\nLogin process interrupted.");
+                                    }
+                                }
+                                System.out.println("\n\nLogin successful!");
+                                user = new User(hospitalID); // Create an instance of User when logged in.
+                                System.out.println("Welcome back " + user.getRole() + " " + UserDB.getNameByHospitalID(hospitalID, user.getRole()));
+                                login=true;
+                                mainMenuExit=true;
+                            } else {
+                                System.out.println("\nInvalid Hospital ID or Password.");
+                            }
+                        } catch (IOException e) {
+                            System.out.println("An error occurred while loading user data: " + e.getMessage());
+                        }
+                    }
+                    break;
+        //////////////////////////////////////////// REGISTER SECTION //////////////////////////////////////////////////
+                case 2:
+                    while (!register){
+                        try {
+                            String patientName;
+                            String patientYear;
+                            String patientMonth;
+                            String patientDay;
+                            String patientDOB;
+                            String patientGender;
+                            String patientBloodType;
+                            int patientPhone;
+                            String patientEmail;
+
+                            System.out.println("\n\n=========================================");
+                            System.out.println("        Registering as  a patient");
+                            System.out.println("          Enter 'exit' to exit");
+                            System.out.println("=========================================");
+                            //// Name ////
+                            System.out.print("Enter your full name: ");
+                            patientName = inputScanner.nextLine();
+                            if (patientName.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+
+                            //// DOB ////
+                            System.out.print("Enter year of birth (YYYY): ");
+                            patientYear = digitChecker(inputScanner, 4, 2024);
+                            if (patientYear.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+                            System.out.print("Enter month of birth (MM): ");
+                            patientMonth = digitChecker(inputScanner,2 ,12);
+                            if (patientMonth.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+                            System.out.print("Enter day of birth (DD): ");
+                            patientDay = digitChecker(inputScanner, 2,31);
+                            if (patientDay.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+
+                            patientDOB = patientYear +"-"+patientMonth+"-"+patientDay;
+ 
+                            //// Gender ////
+                            while (true) {
+                                System.out.print("Enter your gender (M/F): ");
+                                patientGender = inputScanner.nextLine().trim().toUpperCase(); 
+                                if (patientGender.equalsIgnoreCase("EXIT")){
+                                    break;
+                                }             
+                                if (patientGender.equals("M") || patientGender.equals("F")) {
+                                    break; // Exit the loop if input is valid
+                                } else {
+                                    System.out.println("Invalid input. Please enter 'M' for Male or 'F' for Female.");
+                                }
+                            }
+                            if (patientGender.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+
+                            //// Blood Type ////
+                            System.out.print("Enter your blood type: ");
+                            patientBloodType = inputScanner.nextLine().toUpperCase();
+                            if (patientBloodType.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+
+                            //// Phone number ////
+                            System.out.print("Enter Phone Number: ");
+                            String phone = digitChecker(inputScanner, 8,-1);
+                            patientPhone = Integer.parseInt(phone);
+                            if (phone.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+
+                            //// Email ////
+                            System.out.print("Enter your email address: ");
+                            patientEmail = inputScanner.nextLine();
+                            if (patientEmail.equalsIgnoreCase("EXIT")){
+                                System.out.println("\n\nExiting registering process!");
+                                break;
+                            }
+
+
+                            String patientID = PatientDB.createNewPatient(patientName, patientDOB, patientGender, patientBloodType, patientPhone, patientEmail);
+                            System.out.println("\nCreating new profile for "+ patientName+ ". Please wait...");
+                            for (int i = 5; i > 0; i--) {
+                                System.out.print("*");
+                                try {
+                                    Thread.sleep(200); // Sleep for 0.2 second
+                                } catch (InterruptedException e) {
+                                    Thread.currentThread().interrupt();
+                                    System.out.println("\nRegister process interrupted.");
+                                }
+                            }
+                            System.out.println("\n\n==========================================");
+                            System.out.println("     Patient successfuly regisetered!");
+                            System.out.println("Please remember your Hospital ID to login!");
+                            System.out.println("==========================================");
+                            System.out.println("                ID: " + patientID);
+                            System.out.println("          Password: password");
+                            System.out.println("==========================================");
+                            waitForEnter(inputScanner);
+                            register=true;
+                        }
+                        catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                default:
+                System.out.println("Unexpected error occurred.");
+                    break;
                 }
-            } catch (IOException e) {
-                System.out.println("An error occurred while loading user data: " + e.getMessage());
+                
             }
-        }
 
 ///////////////////////////////////// ROLE-SPECIFIC FUNCTIONS ////////////////////////////////////
         
@@ -287,6 +452,7 @@ class Main {
                 break;
         }
     }
+}
 
 
 ///////////////////////////////////// Function to check valid input for dashboard ////////////////////////////////////
@@ -311,5 +477,28 @@ class Main {
     public static void waitForEnter(Scanner scanner) {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
+    }
+
+
+
+///////////////////////////////////// Number of digits Checker ////////////////////////////////////
+    public static String digitChecker(Scanner scanner, int maxDigit, int range){
+        while (true){
+            String number = scanner.nextLine();
+            if (number.equalsIgnoreCase("EXIT")){
+                return number;
+            }
+            if (number.length() == maxDigit && number.matches("\\d+")){ // Check for 8 digits and integer.
+                int rangeChecker = Integer.parseInt(number);
+            
+                if (range == -1 || (rangeChecker >= 1 && rangeChecker <= range)) {  // check the range
+                    return number;
+                } else {
+                    System.out.println("Invalid input. Please enter a number from 1 to " + range + ".");
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a number with exactly " + String.valueOf(maxDigit) + " digits.");
+            }
+        }
     }
 }

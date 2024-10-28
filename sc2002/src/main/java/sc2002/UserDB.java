@@ -157,4 +157,27 @@ public class UserDB {
         return null;
     }
 
+    /////////////////////////////////// Create new Patient in User.xlsx///////////////////////////////////////////
+    public static void createNewPatient(String patientID) {
+        try (InputStream is = UserDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+            Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+            // Find the first empty row
+            int rowCount = sheet.getPhysicalNumberOfRows();
+            Row row = sheet.createRow(rowCount); // Create a new row at the end of the sheet
+
+            // Set the values in the appropriate columns
+            row.createCell(0).setCellValue(patientID); // Set column 1 as empty
+            row.createCell(1).setCellValue("password"); // Column 2 for Doctor ID
+            // Write the changes back to the Excel file
+
+        try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
+                workbook.write(fos);
+        }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle the exception as appropriate
+        }
+    }
 }
+
