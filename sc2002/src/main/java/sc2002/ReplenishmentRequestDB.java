@@ -160,4 +160,24 @@ public class ReplenishmentRequestDB {
             throw e;
         }
     }
+
+    public static int numPending() {
+        int count=0;
+        try (InputStream is = ReplenishmentRequestDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+            for (Row row : sheet) {
+                Cell statusCell = row.getCell(5);
+                if (row.getRowNum() == 0) {
+                    continue; // Skip header row
+                }
+                if (RequestStatus.valueOf(statusCell.getStringCellValue()) == RequestStatus.PENDING) {
+                    count++;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while finding request: " + e.getMessage());
+        }
+        return count;
+    }
 }

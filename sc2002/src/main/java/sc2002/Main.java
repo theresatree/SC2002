@@ -325,7 +325,7 @@ class Main {
                     System.out.println("2. Manage Hospital Staff");
                     System.out.println("3. View Appointment Details");
                     System.out.println("4. View and Manage Medication Inventory");
-                    System.out.println("5. Approve Replenishment Requests");
+                    System.out.println("5. Approve Replenishment Requests (" + ReplenishmentRequestDB.numPending() + " new request)");
                     System.out.println("6. Logout");
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
