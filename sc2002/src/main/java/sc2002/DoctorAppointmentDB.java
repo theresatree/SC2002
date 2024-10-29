@@ -291,4 +291,26 @@ public class DoctorAppointmentDB {
             e.printStackTrace();
         }
     }
+
+    /////////////////////////////////////// Show the amount of pending ///////////////////////////////////////////
+    public static String numberOfPending(String doctorID) throws IOException{
+        int pendingAppointments = 0; // set it to 0.
+        try (InputStream is = DoctorAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+        Workbook workbook = new XSSFWorkbook(is)) {
+        Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+
+        for (Row row : sheet) {
+            Cell doctorIDCell = row.getCell(1);
+            Cell statusCell = row.getCell(6);
+            if (doctorIDCell!=null && doctorIDCell.getStringCellValue().equals(doctorID) && statusCell.getStringCellValue().equals("Pending")){
+                pendingAppointments=pendingAppointments+1;
+            }
+        }
+        }
+
+        if (pendingAppointments!=0){
+           return("(" + pendingAppointments + " pending appointment!)");
+        }
+        return "";
+    }
 }

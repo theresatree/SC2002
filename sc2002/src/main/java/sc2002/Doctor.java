@@ -248,8 +248,6 @@ public class Doctor extends User{
         doctorAppointment.viewAppointmentStatus();
     }
 
-
-
     /////////////////////////////////////////////////////////////////////////
     public void createAppointmentRecord(Scanner scanner){
         boolean exit=false;
@@ -371,6 +369,7 @@ public class Doctor extends User{
         }
     }
 
+     /////////////////////////////////////////////////////////////////////////
     private String listOfMedicine(Scanner scanner){
         int medicineChoice=-1;
         try{
