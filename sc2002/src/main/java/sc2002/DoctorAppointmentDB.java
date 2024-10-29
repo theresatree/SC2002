@@ -309,7 +309,7 @@ public class DoctorAppointmentDB {
         }
 
         if (pendingAppointments!=0){
-           return("(" + pendingAppointments + " pending appointment!)");
+           return("(" + pendingAppointments + " pending appointment)");
         }
         return "";
     }
