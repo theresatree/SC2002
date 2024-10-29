@@ -396,7 +396,7 @@ class Main {
                 Patient patient = new Patient(user.getHospitalID());
 
                 while (!logout){
-                    System.out.println("\nRedirecting to Patient's dashboard...");
+                    System.out.println("Redirecting to Patient's dashboard...");
                     System.out.println("=========================================");
                     System.out.println("1. View Medical Record");
                     System.out.println("2. Update Personal Information");
