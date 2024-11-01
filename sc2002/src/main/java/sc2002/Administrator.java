@@ -655,6 +655,7 @@ public class Administrator extends User {
         System.out.println("1. Approved");
         System.out.println("2. Pending");
         System.out.println("3. Rejected");
+        System.out.println("===========================================");
         System.out.println("4. Exit");
 
         System.out.print("Select status to view: ");
@@ -719,6 +720,7 @@ public class Administrator extends User {
                 System.out.println("===========================================");
                 System.out.println("1. Approve");
                 System.out.println("2. Reject");
+                System.out.println("===========================================");
                 System.out.print("Select a choice: ");
                 choice = Main.getValidChoice(scanner, 2);
 
@@ -728,6 +730,7 @@ public class Administrator extends User {
                         break;
                     case 2:
                         approval = RequestStatus.REJECTED;
+                        break;
                     default:
                         System.out.println("Unexpected error occurred.");
                         break;
