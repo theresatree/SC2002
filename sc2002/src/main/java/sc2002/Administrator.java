@@ -68,12 +68,28 @@ public class Administrator extends User {
                 break;
             case 7:
                 System.out.println("\n============================");
-                System.out.print("Enter age range(min): ");
-                int minAge = scanner.nextInt();
-                scanner.nextLine();
-                System.out.print("Enter age range(max): ");
-                int maxAge = scanner.nextInt();
-                scanner.nextLine();
+
+                int minAge = -1;
+                int maxAge = -1;
+
+                while (true) {
+                    try {
+                        System.out.print("Enter age range (min): ");
+                        minAge = Integer.parseInt(scanner.nextLine());
+
+                        System.out.print("Enter age range (max): ");
+                        maxAge = Integer.parseInt(scanner.nextLine());
+
+                        if (maxAge >= minAge) {
+                            break; // Valid input, exit the loop
+                        } else {
+                            System.out.println("Invalid input. Max age must be greater than or equal to min age. Please try again!");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter valid integers!");
+                    }
+                }
+
                 selectedFilter = new StaffAgeFilter(minAge, maxAge);
                 break;
             default:
@@ -85,7 +101,7 @@ public class Administrator extends User {
             this.staffs = StaffDB.getStaff(selectedFilter);
 
             if (staffs == null || staffs.isEmpty()) {
-                System.out.println("\nNo staff found\n\n");
+                System.out.println("\nNo staff found!\n\n");
                 return;
             }
 
@@ -106,25 +122,58 @@ public class Administrator extends User {
     }
 
     public void addHospitalStaff() {
-        int roleChoice, genderChoice, idNumber = 0, continueUpdate = 1;
+        int roleChoice=0, genderChoice=0, idNumber = 0, continueUpdate = 1, newAge = 0;
         Role newRole = null;
-        String newGender = "", newStaffIDPrefix;
+        String newGender = "", newStaffIDPrefix, age, role, gender;
 
         while (continueUpdate == 1) {
 
             System.out.println("\n============================");
             System.out.println("      Adding New Staff");
+            System.out.println("   Enter 'exit' to exit");
             System.out.println("============================");
 
-            System.out.print("Enter Name: ");
+            //// Name ////
+            System.out.print("Enter your full name: ");
             String newName = scanner.nextLine();
+            if (newName.equalsIgnoreCase("EXIT")) {
+                System.out.println("\n\nExiting process!");
+                break;
+            }
 
+            //// Roles ////
             System.out.println("Roles: ");
             System.out.println("1. Administrator");
             System.out.println("2. Doctor");
             System.out.println("3. Pharmacist");
             System.out.print("Select the Role: ");
-            roleChoice = Main.getValidChoice(scanner, 3);
+            
+            while (true) {
+                role = scanner.nextLine().trim();
+            
+                if (role.equalsIgnoreCase("EXIT")) {
+                    break;
+                }
+
+                if (role.matches("\\d+")) {
+                    roleChoice = Integer.parseInt(role);
+            
+                    // Check if the role choice is valid
+                    if (roleChoice >= 1 && roleChoice <= 3) {
+                        break;
+                    } else {
+                        System.out.println("Invalid option. Please enter a number between 1 and 3!");
+                        System.out.print("Select the Role: ");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter a valid number!");
+                    System.out.print("Select the Role: ");
+                }
+            }
+            if (role.equalsIgnoreCase("EXIT")) {
+                System.out.println("\nExiting process!");
+                break;
+            }
 
             switch (roleChoice) {
                 case 1:
@@ -135,17 +184,43 @@ public class Administrator extends User {
                     break;
                 case 3:
                     newRole = Role.PHARMACIST;
-                    break;
+                    break;  
                 default:
-                    System.out.println("\nInvalid option. Please try again!\n");
                     break;
             }
 
+            //// Gender ////
             System.out.println("Gender: ");
             System.out.println("1. Male");
             System.out.println("2. Female");
             System.out.print("Select the Gender: ");
-            genderChoice = Main.getValidChoice(scanner, 2);
+
+            while (true) {
+                gender = scanner.nextLine().trim();
+            
+                if (gender.equalsIgnoreCase("EXIT")) {
+                    break;
+                }
+
+                if (gender.matches("\\d+")) {
+                    genderChoice = Integer.parseInt(gender);
+            
+                    // Check if the role choice is valid
+                    if (genderChoice >= 1 && genderChoice <= 2) {
+                        break;
+                    } else {
+                        System.out.println("Invalid option. Please enter number 1 or 2!");
+                        System.out.print("Select the Gender: ");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter a valid number!");
+                    System.out.print("Select the Gender: ");
+                }
+            }
+            if (gender.equalsIgnoreCase("EXIT")) {
+                System.out.println("\nExiting process!");
+                break;
+            }
 
             switch (genderChoice) {
                 case 1:
@@ -155,21 +230,48 @@ public class Administrator extends User {
                     newGender = "Female";
                     break;
                 default:
-                    System.out.println("\nInvalid option. Please try again!\n");
                     break;
             }
 
-            System.out.print("Enter Age: ");
-            int newAge = scanner.nextInt();
-            scanner.nextLine();
+            //// Age ////
+            while (true) {
+                System.out.print("Enter Age: ");
+                age = scanner.nextLine();
+            
+                if (age.equalsIgnoreCase("EXIT")) {
+                    break;
+                }
+            
+                if (age.matches("\\d+")) { // Ensure the input is only digits
+                    newAge = Integer.parseInt(age); 
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a valid age!");
+                }
+            }
+            if (age.equalsIgnoreCase("EXIT")) {
+                System.out.println("\n\nExiting process!");
+                break;
+            }
 
+            //// Phone number ////
             System.out.print("Enter Phone Number: ");
-            int newPhoneNumber = scanner.nextInt();
-            scanner.nextLine();
+            String phone = Main.digitChecker(scanner, 8, -1);
+            int newPhoneNumber = Integer.parseInt(phone);
+            if (phone.equalsIgnoreCase("EXIT")) {
+                System.out.println("\n\nExiting process!");
+                break;
+            }
 
+            //// Email ////
             System.out.print("Enter Email: ");
             String newEmail = scanner.nextLine();
+            if (newEmail.equalsIgnoreCase("EXIT")) {
+                System.out.println("\n\nExiting process!");
+                break;
+            }
 
+            //// Generate new ID based on current list ////
             try {
                 selectedFilter = new StaffNoFilter();
                 this.staffs = StaffDB.getStaff(selectedFilter);
@@ -647,7 +749,7 @@ public class Administrator extends User {
 
     public void approveReplenishmentRequests() {
         int continueUpdate = 1;
-        RequestStatus requestStatus = null, approval=null;
+        RequestStatus requestStatus = null, approval = null;
 
         System.out.println("\n===========================================");
         System.out.println("        View Replenishment Requests");
@@ -672,7 +774,7 @@ public class Administrator extends User {
                 requestStatus = RequestStatus.REJECTED;
                 break;
             case 4:
-                return;                
+                return;
             default:
                 System.out.println("Unexpected error occurred.");
                 break;
