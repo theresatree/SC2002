@@ -337,7 +337,7 @@ class Main {
                             waitForEnter(inputScanner);
                             break;
                         case 2:
-                            System.out.println("=========================================");
+                            System.out.println("\n\n=========================================");
                             System.out.println("          Manage Hospital Staff");
                             System.out.println("=========================================");
                             System.out.println("1. Add Hospital Staff");
@@ -364,6 +364,7 @@ class Main {
                                     System.out.println("Unexpected error occurred.");
                                     break;
                             }
+                            System.out.println("\n\n");
                             break;
                         case 3:
                             admin.viewAppointmentDetails();
