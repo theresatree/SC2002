@@ -154,7 +154,6 @@ public class ReplenishmentRequestDB {
 
             workbook.write(fos);
 
-            System.out.println("Replenishment request for " + request.getMedicine() + " has been saved successfully.");
         } catch (IOException e) {
             System.out.println("An error occurred while saving the replenishment request: " + e.getMessage());
             throw e;

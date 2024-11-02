@@ -131,4 +131,44 @@ public class PatientAppointmentOutcomeDB {
         }
     }
 
+    public static List<AppointmentOutcomeRecord> getAllAppointmentOutcomes() throws IOException {
+        List<AppointmentOutcomeRecord> appointmentOutcome = new ArrayList<>();
+        try (InputStream is = PatientAppointmentOutcomeDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
+            if (is == null) {
+                throw new IOException("File not found in resources: " + FILE_NAME);
+            }
+    
+            try (Workbook workbook = new XSSFWorkbook(is)) {
+                Sheet sheet = workbook.getSheetAt(0); 
+                for (Row row : sheet) {
+                    if (row.getRowNum() == 0) continue; 
+                    
+                    Cell patientIDCell = row.getCell(0);
+                    Cell doctorIDCell = row.getCell(1);
+                    Cell appointmentIDCell = row.getCell(2);
+                    Cell dateCell = row.getCell(3);
+                    Cell servicesCell = row.getCell(4);
+                    Cell medicationCell = row.getCell(5);
+                    Cell prescriptionStatusCell = row.getCell(6);
+                    Cell notesCell = row.getCell(7);
+                    
+                    if (patientIDCell != null) {
+                        String patientID = patientIDCell.getStringCellValue();
+                        String doctorID = doctorIDCell != null ? doctorIDCell.getStringCellValue() : "";
+                        int appointmentID = (int) appointmentIDCell.getNumericCellValue();
+                        LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
+                        Service services = Service.valueOf(servicesCell.getStringCellValue().toUpperCase());
+                        String medication = medicationCell != null ? medicationCell.getStringCellValue() : "";
+                        PrescriptionStatus status = PrescriptionStatus.valueOf(prescriptionStatusCell.getStringCellValue().toUpperCase());
+                        String notes = notesCell != null ? notesCell.getStringCellValue() : "";
+    
+                        AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(patientID, doctorID, appointmentID, date, services, medication, status, notes);
+                        appointmentOutcome.add(outcome);
+                    }
+                }
+            }
+        }
+        return appointmentOutcome;
+    }    
+
 }
