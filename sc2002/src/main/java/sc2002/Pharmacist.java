@@ -11,7 +11,6 @@ import java.util.Set;
 public class Pharmacist extends User{
     private String pharmacistID;
     private List<MedicationInventory> medicationInventory;
-    private List<String> patientIDs;
     private List<AppointmentOutcomeRecord> appointmentOutcomeRecord;
 
     Pharmacist(String pharmacistID){
@@ -21,47 +20,10 @@ public class Pharmacist extends User{
 
     public void viewPastAppointmentOutcome(Scanner scanner) {
     try {
-        List<AppointmentOutcomeRecord> allOutcomes = PatientAppointmentOutcomeDB.getAllAppointmentOutcomes();
-        Set<String> uniquePatientIDs = new HashSet<>(); // Use a Set to collect unique patient IDs
-
-        for (AppointmentOutcomeRecord outcome : allOutcomes) {
-            uniquePatientIDs.add(outcome.getPatientID());
-        }
-
-        if (uniquePatientIDs.isEmpty()) {
-            System.out.println("No patients found in the appointment outcomes.");
+        String patientID = isValidPatientID(scanner);
+        if (patientID.equals("Exit")){
             return;
         }
-
-        List<String> patientIDList = new ArrayList<>(uniquePatientIDs);
-
-        System.out.println("\n========================");
-        System.out.println("    Choose a patient    ");
-        System.out.println("========================");
-        for (int i = 0; i < patientIDList.size(); i++) {
-            System.out.println((i + 1) + ". " + UserDB.getNameByHospitalID(patientIDList.get(i), Role.PATIENT) + " (" + patientIDList.get(i) + ")");
-        }
-        System.out.println("========================");
-
-        int choice;
-        while (true) {
-            System.out.print("Choose a Patient (or enter 0 to exit): ");
-            choice = scanner.nextInt();
-
-            if (choice == 0) {
-                System.out.println("Exiting viewing process.\n\n");
-                return;
-            }
-
-            if (choice < 1 || choice > patientIDList.size()) {
-                System.out.println("Invalid choice. Please select a valid Patient.\n");
-            } else {
-                scanner.nextLine(); 
-                break;  
-            }
-        }
-
-        String patientID = patientIDList.get(choice - 1);
         List<AppointmentOutcomeRecord> appointmentOutcomeRecord = PatientAppointmentOutcomeDB.getAppointmentOutcome(patientID);
 
         if (appointmentOutcomeRecord.isEmpty()) {
@@ -83,52 +45,38 @@ public class Pharmacist extends User{
 
     public void updatePrescriptionStatus(Scanner scanner) {
         try {
-            String patientID;
-            while (true) {
-                System.out.println("Enter patient ID:");
-                patientID = scanner.nextLine().toUpperCase().trim();
-    
-                if (isValidPatientID(patientID)) {
-                    break; 
-                } else {
-                    System.out.println("Invalid Patient ID. Please re-enter.");
-                }
+            String patientID = isValidPatientID(scanner);
+            if (patientID.equals("Exit")){
+                return;
             }
-    
-            int appointmentID;
-            while (true) {
-                System.out.println("Enter appointment ID:");
-                String input = scanner.nextLine().trim(); 
-                
-                if (input.isEmpty()) {
-                    System.out.println("Invalid Appointment ID. Please re-enter.");
-                    continue; 
-                }
-                try {
-                    appointmentID = Integer.parseInt(input);
-                    if (isValidAppointmentID(patientID, appointmentID)) {
-                        break; 
-                    } else {
-                        System.out.println("Invalid Appointment ID for the given Patient ID. Please re-enter.");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a valid appointment ID.");
-                }
+            int appointmentID = isValidAppointmentID(patientID,scanner);
+            if (appointmentID==-1){
+                return;
             }
-
             List<AppointmentOutcomeRecord> outcomes = PatientAppointmentOutcomeDB.getAppointmentOutcome(patientID);
                 
             boolean updated = false;
             for (AppointmentOutcomeRecord outcome : outcomes) {
                 if (outcome.getAppointmentID() == appointmentID) {
                     if (outcome.getPrescriptionStatus() == PrescriptionStatus.DISPENSED) {
-                        System.out.println("Medicine already dispensed to patient.");
+                        System.out.println("\n\nMedicine already dispensed to patient.\n\n");
+                        Thread.sleep(500);
                         return; 
                     }
                     if (outcome.getPrescriptionStatus() == PrescriptionStatus.PENDING) {
                         outcome.setPrescriptionStatus(PrescriptionStatus.DISPENSED);
                         updated = true;
-                        System.out.println("Prescription status updated to: DISPENSED");
+                        System.out.println("\nUpdating Prescription Status. Please wait");
+                        for (int i = 5; i > 0; i--) {
+                            System.out.print("*");
+                            try {
+                                Thread.sleep(200); // Sleep for 0.2 second
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                System.out.println("\nUpdating process interrupted.");
+                            }
+                        }
+                        System.out.println("\nPrescription status updated to: DISPENSED\n\n");
             
                         String medicine = outcome.getMedications().toUpperCase();
                         if (medicine != null && !medicine.isEmpty()) {
@@ -152,30 +100,94 @@ public class Pharmacist extends User{
         }
     }
     
-    private boolean isValidPatientID(String patientID) {
-        try {
-            List<AppointmentOutcomeRecord> outcomes = PatientAppointmentOutcomeDB.getAppointmentOutcome(patientID);
-            return outcomes != null && outcomes.size() > 0; 
-        } catch (Exception e) {
-            System.out.println("Error validating Patient ID: " + e.getMessage());
-            return false;
-        }
-    }
-    
-    private boolean isValidAppointmentID(String patientID, int appointmentID) {
-        try {
-            List<AppointmentOutcomeRecord> outcomes = PatientAppointmentOutcomeDB.getAppointmentOutcome(patientID);
-            if (outcomes != null) {
-                for (AppointmentOutcomeRecord outcome : outcomes) {
-                    if (outcome.getAppointmentID() == appointmentID) {
-                        return true; 
-                    }
+    private String isValidPatientID(Scanner scanner){
+        try{
+            List<AppointmentOutcomeRecord> allOutcomes = PatientAppointmentOutcomeDB.getAllAppointmentOutcomes();
+            Set<String> uniquePatientIDs = new HashSet<>(); // Use a Set to collect unique patient IDs
+
+            for (AppointmentOutcomeRecord outcome : allOutcomes) {
+                uniquePatientIDs.add(outcome.getPatientID());
+            }
+
+            if (uniquePatientIDs.isEmpty()) {
+                System.out.println("No patients found in the appointment outcomes.");
+                return "Exit";
+            }
+            
+            List<String> patientIDList = new ArrayList<>(uniquePatientIDs);
+
+            System.out.println("\n========================");
+            System.out.println("    Choose a patient    ");
+            System.out.println("========================");
+            for (int i = 0; i < patientIDList.size(); i++) {
+                System.out.println((i + 1) + ". " + UserDB.getNameByHospitalID(patientIDList.get(i), Role.PATIENT) + " (" + patientIDList.get(i) + ")");
+            }
+            System.out.println("========================");
+
+            int choice;
+            while (true) {
+                System.out.print("Choose a Patient (or enter 0 to exit): ");
+                choice = scanner.nextInt();
+                if (choice == 0) {
+                    System.out.println("Exiting viewing process.\n\n");
+                    return "Exit";
+                }
+
+                if (choice < 1 || choice > patientIDList.size()) {
+                    System.out.println("Invalid choice. Please select a valid Patient.\n");
+                } else {
+                    scanner.nextLine(); 
+                    break;  
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Error validating Appointment ID: " + e.getMessage());
+            return patientIDList.get(choice - 1);
+        } catch (IOException e){
+            e.printStackTrace();
+            return "Exit";
         }
-        return false; 
+    }
+
+    private int isValidAppointmentID(String patientID, Scanner scanner){
+        int choice=-1;
+        try{
+            appointmentOutcomeRecord = PatientAppointmentOutcomeDB.getAppointmentOutcome(patientID);
+            System.out.println("\n\n=========================================");
+            System.out.println("  Appointment Outcome Records for " + patientID);
+            System.out.println("=========================================");
+            for (AppointmentOutcomeRecord outcome : appointmentOutcomeRecord) {
+                System.out.println("Appointment ID "+outcome.getAppointmentID());
+                System.out.println("Prescription Status " +outcome.getPrescriptionStatus());
+                System.out.println("=========================================");
+            }
+            while (choice!=0){
+                System.out.print("Choose an appointment ID (or 0 to exit): ");
+                choice=scanner.nextInt();
+                if (choice == 0) {
+                    System.out.println("\nExiting selection process.\n\n");
+                    break;
+                }
+    
+                // Search for the selected appointment ID in the availableDatesToChoose list
+                AppointmentOutcomeRecord selectedID = null;
+                for (AppointmentOutcomeRecord ID : appointmentOutcomeRecord) {
+                    if (ID.getAppointmentID() == choice) {  // Check if the appointment ID matches
+                        selectedID = ID;  // If found, set the selectedSlot
+                        break;
+                    }
+                }
+                if (selectedID==null) {
+                    System.out.println("\nInvalid! Please select a valid appointment ID.");
+                }
+                else{
+                    return selectedID.getAppointmentID();
+                }
+            }
+            return -1;
+        }
+        catch(IOException e){
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     public void viewMedicationInventory(){
