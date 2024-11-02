@@ -172,4 +172,36 @@ public class MedicationInventoryDB {
         System.out.println("Medicine not found. Please try again!\n");
         return 0; //not found
     }
+
+    /////////////////////////////// Low Stock Level Alert ///////////////////////////////
+    public static String lowStockLevelAlert() throws IOException {
+        List<String> lowStockMedicines = new ArrayList<>();
+        
+        try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
+             Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0); 
+            
+            for (Row row : sheet) {
+                if (row.getRowNum() == 0) continue; 
+                
+                Cell medicineNameCell = row.getCell(0);
+                Cell initialStockCell = row.getCell(1);
+                Cell lowStockLevelCell = row.getCell(2);
+                
+                if (medicineNameCell != null && initialStockCell != null && lowStockLevelCell != null) {
+                    String medicineName = medicineNameCell.getStringCellValue();
+                    int initialStock = (int) initialStockCell.getNumericCellValue();
+                    int lowStockLevelAlert = (int) lowStockLevelCell.getNumericCellValue();
+                    
+                    if (initialStock <= lowStockLevelAlert) {
+                        lowStockMedicines.add(medicineName);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while checking for low stock levels: " + e.getMessage());
+            throw e;
+        }
+        return lowStockMedicines.isEmpty() ? "NO" : String.join(", ", lowStockMedicines);
+    }
 }

@@ -275,7 +275,12 @@ class Main {
                     System.out.println("1. View Appointment Outcome Record");
                     System.out.println("2. Update Prescription Status");
                     System.out.println("3. View Medication Inventory");
-                    System.out.println("4. Submit Replenishment Request");
+                    try {
+                        System.out.println("4. Submit Replenishment Request (" + MedicationInventoryDB.lowStockLevelAlert() + " LOW STOCK)");
+                    } catch (IOException e) {
+                        System.out.println("An error occurred while checking for low stock levels: " + e.getMessage());
+                    }
+                    
                     System.out.println("5. Logout");
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
@@ -284,19 +289,11 @@ class Main {
 
                     switch (choice){
                         case 1: 
-                            System.out.println("=========================================");
-                            System.out.println("Enter patient ID: ");
-                            String patientID1 = inputScanner.nextLine().toUpperCase().trim();
-                            pharmacist.viewPastAppointmentOutcome(patientID1);
+                            pharmacist.viewPastAppointmentOutcome(inputScanner);
                             waitForEnter(inputScanner);
                             break;
                         case 2:
-                            System.out.println("=========================================");
-                            System.out.println("Enter patient ID");
-                            String patientID2 = inputScanner.nextLine().toUpperCase().trim();
-                            System.out.println("Enter appointment ID");
-                            int appointmentID = inputScanner.nextInt();
-                            pharmacist.updatePrescriptionStatus(patientID2, appointmentID);
+                            pharmacist.updatePrescriptionStatus(inputScanner);
                             break;
                         case 3:
                             pharmacist.viewMedicationInventory();
@@ -304,11 +301,8 @@ class Main {
                             break;  
                         case 4:
                             pharmacist.viewMedicationInventory();
+                            pharmacist.submitReplenishmentRequest(inputScanner);
                             waitForEnter(inputScanner);
-                            System.out.println("=========================================");
-                            System.out.println("Enter medicine name you would like to request replenishment for: ");
-                            String medicine = inputScanner.nextLine().toUpperCase().trim();
-                            pharmacist.submitReplenishmentRequest(medicine);
                             break;
                         case 5:
                             logout = user.logOut();
