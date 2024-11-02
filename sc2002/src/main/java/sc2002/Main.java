@@ -38,7 +38,7 @@ class Main {
 
                             if (hospitalID.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting login process!");
-                                break;
+                                return;
                             }
 
                             System.out.print("Enter Password: ");
@@ -46,7 +46,7 @@ class Main {
 
                             if (password.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting login process!");
-                                break;
+                                return;
                             }
 
                             // Validate the login credentials
@@ -98,7 +98,7 @@ class Main {
                             patientName = inputScanner.nextLine();
                             if (patientName.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting registering process!");
-                                break;
+                                return;
                             }
 
                             //// DOB ////
@@ -106,19 +106,19 @@ class Main {
                             patientYear = digitChecker(inputScanner, 4, 2024);
                             if (patientYear.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting registering process!");
-                                break;
+                                return;
                             }
                             System.out.print("Enter month of birth (MM): ");
                             patientMonth = digitChecker(inputScanner,2 ,12);
                             if (patientMonth.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting registering process!");
-                                break;
+                                return;
                             }
                             System.out.print("Enter day of birth (DD): ");
                             patientDay = digitChecker(inputScanner, 2,31);
                             if (patientDay.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting registering process!");
-                                break;
+                                return;
                             }
 
                             patientDOB = patientYear +"-"+patientMonth+"-"+patientDay;
@@ -128,7 +128,8 @@ class Main {
                                 System.out.print("Enter your gender (M/F): ");
                                 patientGender = inputScanner.nextLine().trim().toUpperCase(); 
                                 if (patientGender.equalsIgnoreCase("EXIT")){
-                                    break;
+                                    System.out.println("\n\nExiting registering process!");
+                                    return;
                                 }             
                                 if (patientGender.equals("M") || patientGender.equals("F")) {
                                     break; // Exit the loop if input is valid
@@ -136,34 +137,30 @@ class Main {
                                     System.out.println("Invalid input. Please enter 'M' for Male or 'F' for Female.");
                                 }
                             }
-                            if (patientGender.equalsIgnoreCase("EXIT")){
-                                System.out.println("\n\nExiting registering process!");
-                                break;
-                            }
 
                             //// Blood Type ////
                             System.out.print("Enter your blood type: ");
                             patientBloodType = inputScanner.nextLine().toUpperCase();
                             if (patientBloodType.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting registering process!");
-                                break;
+                                return;
                             }
 
                             //// Phone number ////
                             System.out.print("Enter Phone Number: ");
                             String phone = digitChecker(inputScanner, 8,-1);
-                            patientPhone = Integer.parseInt(phone);
                             if (phone.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting registering process!");
-                                break;
+                                return;
                             }
+                            patientPhone = Integer.parseInt(phone);
 
                             //// Email ////
                             System.out.print("Enter your email address: ");
                             patientEmail = inputScanner.nextLine();
                             if (patientEmail.equalsIgnoreCase("EXIT")){
                                 System.out.println("\n\nExiting registering process!");
-                                break;
+                                return;
                             }
 
 
@@ -324,7 +321,7 @@ class Main {
                     System.out.println("2. Manage Hospital Staff");
                     System.out.println("3. View Appointment Details");
                     System.out.println("4. View and Manage Medication Inventory");
-                    System.out.println("5. Approve Replenishment Requests (" + ReplenishmentRequestDB.numPending() + " new request)");
+                    System.out.println("5. Approve Replenishment Requests (" + ReplenishmentRequestDB.numPending() + " NEW REQUEST)");
                     System.out.println("6. Logout");
                     System.out.println("=========================================");
                     System.out.print("Select a choice: ");
@@ -343,12 +340,28 @@ class Main {
                             System.out.println("1. Add Hospital Staff");
                             System.out.println("2. Update Hospital Staff");
                             System.out.println("3. Remove Hospital Staff");
-                            System.out.println("4. Exit");
                             System.out.println("=========================================");
-                            System.out.print("Select a choice: ");
-                            choice = getValidChoice(inputScanner,4);
+                            System.out.print("Select a choice (or 0 to exit): ");
+
+                            while (true) {
+                                if (inputScanner.hasNextInt()) {
+                                    choice = inputScanner.nextInt();
+                                    inputScanner.nextLine(); // Consume the newline
+                                    if (choice >= 0 && choice <= 3) {
+                                        break;
+                                    } else {
+                                        System.out.print("Invalid option. Please enter a number between 0 and 3: ");
+                                    }
+                                } else {
+                                    System.out.print("Invalid input. Please enter a valid integer: ");
+                                    inputScanner.nextLine(); // Clear the invalid input
+                                }
+                            }
 
                             switch (choice){
+                                case 0:
+                                    System.out.println("\n\nExiting process");
+                                    return;
                                 case 1:
                                     admin.addHospitalStaff();
                                     break;
@@ -494,10 +507,10 @@ class Main {
                 if (range == -1 || (rangeChecker >= 1 && rangeChecker <= range)) {  // check the range
                     return number;
                 } else {
-                    System.out.println("Invalid input. Please enter a number from 1 to " + range + ".");
+                    System.out.print("Invalid input. Please enter a number from 1 to " + range + ": ");
                 }
             } else {
-                System.out.println("Invalid input. Please enter a number with exactly " + String.valueOf(maxDigit) + " digits.");
+                System.out.print("Invalid input. Please enter a number with exactly " + String.valueOf(maxDigit) + " digits: ");
             }
         }
     }

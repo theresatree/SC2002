@@ -100,7 +100,7 @@ public class ReplenishmentRequestDB {
                     if (RequestStatus.valueOf(statusCell.getStringCellValue().toUpperCase()).equals(RequestStatus.PENDING)) {
                         return 1;
                     } else {
-                        System.out.println("Request is completed. Please try again!\n");
+                        System.out.print("Request is completed. Please try again: ");
                         return 0;
                     }
                 }
@@ -109,7 +109,7 @@ public class ReplenishmentRequestDB {
         } catch (IOException e) {
             System.out.println("An error occurred while finding request: " + e.getMessage());
         }
-        System.out.println("Request not found. Please try again!\n");
+        System.out.print("Request not found. Please try again: ");
         return 0; //not found
     }
 

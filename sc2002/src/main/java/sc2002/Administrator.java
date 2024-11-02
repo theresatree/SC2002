@@ -44,10 +44,26 @@ public class Administrator extends User {
         System.out.println("----------------------------");
         System.out.println("7. Filter by Age");
         System.out.println("============================");
-        System.out.print("Select a choice: ");
-        choice = Main.getValidChoice(scanner, 7);
+        System.out.print("Select a choice (or 0 to exit): ");
+        while (true) {
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline
+                if (choice >= 0 && choice <= 7) {
+                    break;
+                } else {
+                    System.out.print("Invalid option. Please enter a number between 0 and 7: ");
+                }
+            } else {
+                System.out.print("Invalid input. Please enter a valid integer: ");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
 
         switch (choice) {
+            case 0:
+                System.out.println("\n\nExiting process!");
+                return;
             case 1:
                 selectedFilter = new StaffNoFilter();
                 break;
@@ -122,15 +138,15 @@ public class Administrator extends User {
     }
 
     public void addHospitalStaff() {
-        int roleChoice=0, genderChoice=0, idNumber = 0, continueUpdate = 1, newAge = 0;
+        int roleChoice = 0, genderChoice = 0, idNumber = 0, continueUpdate = 1, newAge = 0;
         Role newRole = null;
-        String newGender = "", newStaffIDPrefix, age, role, gender;
+        String newGender = "", newStaffIDPrefix, age, gender, role;
 
         while (continueUpdate == 1) {
 
             System.out.println("\n============================");
             System.out.println("      Adding New Staff");
-            System.out.println("   Enter 'exit' to exit");
+            System.out.println("    Enter 'exit' to exit");
             System.out.println("============================");
 
             //// Name ////
@@ -138,7 +154,7 @@ public class Administrator extends User {
             String newName = scanner.nextLine();
             if (newName.equalsIgnoreCase("EXIT")) {
                 System.out.println("\n\nExiting process!");
-                break;
+                return;
             }
 
             //// Roles ////
@@ -147,32 +163,26 @@ public class Administrator extends User {
             System.out.println("2. Doctor");
             System.out.println("3. Pharmacist");
             System.out.print("Select the Role: ");
-            
+
             while (true) {
                 role = scanner.nextLine().trim();
-            
+
                 if (role.equalsIgnoreCase("EXIT")) {
-                    break;
+                    System.out.println("\nExiting process!");
+                    return;
                 }
 
                 if (role.matches("\\d+")) {
                     roleChoice = Integer.parseInt(role);
-            
-                    // Check if the role choice is valid
+
                     if (roleChoice >= 1 && roleChoice <= 3) {
                         break;
                     } else {
-                        System.out.println("Invalid option. Please enter a number between 1 and 3!");
-                        System.out.print("Select the Role: ");
+                        System.out.println("Invalid option. Please enter a number between 1 and 3: ");
                     }
                 } else {
-                    System.out.println("Invalid input. Please enter a valid number!");
-                    System.out.print("Select the Role: ");
+                    System.out.println("Invalid input. Please enter a valid integer: ");
                 }
-            }
-            if (role.equalsIgnoreCase("EXIT")) {
-                System.out.println("\nExiting process!");
-                break;
             }
 
             switch (roleChoice) {
@@ -184,7 +194,7 @@ public class Administrator extends User {
                     break;
                 case 3:
                     newRole = Role.PHARMACIST;
-                    break;  
+                    break;
                 default:
                     break;
             }
@@ -197,29 +207,24 @@ public class Administrator extends User {
 
             while (true) {
                 gender = scanner.nextLine().trim();
-            
+
                 if (gender.equalsIgnoreCase("EXIT")) {
-                    break;
+                    System.out.println("\nExiting process!");
+                    return;
                 }
 
                 if (gender.matches("\\d+")) {
                     genderChoice = Integer.parseInt(gender);
-            
+
                     // Check if the role choice is valid
                     if (genderChoice >= 1 && genderChoice <= 2) {
                         break;
                     } else {
-                        System.out.println("Invalid option. Please enter number 1 or 2!");
-                        System.out.print("Select the Gender: ");
+                        System.out.println("Invalid option. Please enter a number between 1 and 2: ");
                     }
                 } else {
-                    System.out.println("Invalid input. Please enter a valid number!");
-                    System.out.print("Select the Gender: ");
+                    System.out.println("Invalid input. Please enter a valid integer: ");
                 }
-            }
-            if (gender.equalsIgnoreCase("EXIT")) {
-                System.out.println("\nExiting process!");
-                break;
             }
 
             switch (genderChoice) {
@@ -237,38 +242,35 @@ public class Administrator extends User {
             while (true) {
                 System.out.print("Enter Age: ");
                 age = scanner.nextLine();
-            
+
                 if (age.equalsIgnoreCase("EXIT")) {
-                    break;
+                    System.out.println("\nExiting process!");
+                    return;
                 }
-            
+
                 if (age.matches("\\d+")) { // Ensure the input is only digits
-                    newAge = Integer.parseInt(age); 
+                    newAge = Integer.parseInt(age);
                     break;
                 } else {
-                    System.out.println("Invalid input. Please enter a valid age!");
+                    System.out.println("Invalid input. Please enter a valid integer!");
                 }
-            }
-            if (age.equalsIgnoreCase("EXIT")) {
-                System.out.println("\n\nExiting process!");
-                break;
             }
 
             //// Phone number ////
             System.out.print("Enter Phone Number: ");
             String phone = Main.digitChecker(scanner, 8, -1);
-            int newPhoneNumber = Integer.parseInt(phone);
             if (phone.equalsIgnoreCase("EXIT")) {
                 System.out.println("\n\nExiting process!");
-                break;
+                return;
             }
+            int newPhoneNumber = Integer.parseInt(phone);
 
             //// Email ////
             System.out.print("Enter Email: ");
             String newEmail = scanner.nextLine();
             if (newEmail.equalsIgnoreCase("EXIT")) {
                 System.out.println("\n\nExiting process!");
-                break;
+                return;
             }
 
             //// Generate new ID based on current list ////
@@ -342,16 +344,21 @@ public class Administrator extends User {
 
     public void updateHospitalStaff() {
         int choice, continueUpdate = 1;
-        String staffID;
+        String staffID, age;
         Staff selectedStaff = null;
 
         System.out.println("\n============================");
         System.out.println("       Updating Staff");
+        System.out.println("    Enter 'exit' to exit");
         System.out.println("============================");
 
         do {
             System.out.print("Enter StaffID to update: ");
-            staffID = scanner.nextLine();
+            staffID = scanner.nextLine().toUpperCase();
+            if (staffID.equalsIgnoreCase("EXIT")) {
+                System.out.println("\nExiting process!");
+                return;
+            }
         } while (StaffDB.findStaff(staffID) == 0);
 
         while (continueUpdate == 1) {
@@ -370,34 +377,75 @@ public class Administrator extends User {
             System.out.println("2. Age");
             System.out.println("3. Phone Number");
             System.out.println("4. Email");
-            System.out.print("Select what to update: ");
-            choice = Main.getValidChoice(scanner, 4);
+            System.out.print("Select what to update (or 0 to exit): ");
+
+            while (true) {
+                if (scanner.hasNextInt()) {
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline
+                    if (choice >= 0 && choice <= 4) {
+                        break;
+                    } else {
+                        System.out.print("Invalid option. Please enter a number between 0 and 4: ");
+                    }
+                } else {
+                    System.out.print("Invalid input. Please enter a valid integer: ");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
 
             switch (choice) {
-                case 1:
+                case 0: //exit
+                    System.out.println("\n\nExiting process!");
+                    return;
+                case 1: //update name
                     System.out.print("Enter new name: ");
                     String newName = scanner.nextLine();
+                    if (newName.equalsIgnoreCase("EXIT")) {
+                        System.out.println("\n\nExiting process!");
+                        return;
+                    }
                     selectedStaff.setName(newName);
                     break;
-                case 2:
-                    System.out.print("Enter new age: ");
-                    int newAge = scanner.nextInt();
-                    scanner.nextLine();
-                    selectedStaff.setAge(newAge);
+                case 2: //update age
+                    while (true) {
+                        System.out.print("Enter new age: ");
+                        age = scanner.nextLine();
+
+                        if (age.equalsIgnoreCase("EXIT")) {
+                            System.out.println("\n\nExiting process!");
+                            return;
+                        }
+
+                        if (age.matches("\\d+")) { // Ensure the input is only digits
+                            int newAge = Integer.parseInt(age);
+                            selectedStaff.setAge(newAge);
+                            break;
+                        } else {
+                            System.out.println("Invalid input. Please enter a valid integer!");
+                        }
+                    }
                     break;
-                case 3:
+                case 3: //update phone number
                     System.out.print("Enter new phone number: ");
-                    int newPhoneNumber = scanner.nextInt();
-                    scanner.nextLine();
+                    String phone = Main.digitChecker(scanner, 8, -1);
+                    if (phone.equalsIgnoreCase("EXIT")) {
+                        System.out.println("\n\nExiting process!");
+                        return;
+                    }
+                    int newPhoneNumber = Integer.parseInt(phone);
                     selectedStaff.setPhoneNumber(newPhoneNumber);
                     break;
-                case 4:
+                case 4: //update email
                     System.out.print("Enter new email: ");
                     String newEmail = scanner.nextLine();
+                    if (newEmail.equalsIgnoreCase("EXIT")) {
+                        System.out.println("\n\nExiting process!");
+                        return;
+                    }
                     selectedStaff.setEmail(newEmail);
                     break;
                 default:
-                    System.out.println("Invalid option. Please try again!");
                     break;
             }
 
@@ -438,11 +486,16 @@ public class Administrator extends User {
         while (continueUpdate == 1) {
             System.out.println("\n============================");
             System.out.println("       Removing Staff");
+            System.out.println("    Enter 'exit' to exit");
             System.out.println("============================");
 
             do {
                 System.out.print("Enter StaffID to remove: ");
-                staffID = scanner.nextLine();
+                staffID = scanner.nextLine().toUpperCase();
+                if (staffID.equalsIgnoreCase("EXIT")) {
+                    System.out.println("\n\nExiting process!");
+                    return;
+                }
             } while (StaffDB.findStaff(staffID) == 0);
 
             try {
@@ -502,6 +555,7 @@ public class Administrator extends User {
     }
 
     public void viewAndManangeMedicationInventory() {
+        int choice;
         try {
             this.medicationInventory = MedicationInventoryDB.getMedicationInventory();
 
@@ -528,12 +582,28 @@ public class Administrator extends User {
         System.out.println("2. Remove Medication");
         System.out.println("3. Update Stock Level");
         System.out.println("4. Update Low Stock Level Alert");
-        System.out.println("5. Exit");
         System.out.println("===========================================");
-        System.out.print("Select a choice: ");
-        int choice = Main.getValidChoice(scanner, 5);
+        System.out.print("Select a choice (or 0 to exit): ");
+
+        while (true) {
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline
+                if (choice >= 0 && choice <= 4) {
+                    break;
+                } else {
+                    System.out.print("Invalid option. Please enter a number between 0 and 4: ");
+                }
+            } else {
+                System.out.print("Invalid input. Please enter a valid integer: ");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
 
         switch (choice) {
+            case 0:
+                System.out.println("\nExiting process!");
+                return;
             case 1:
                 addMedication();
                 break;
@@ -555,23 +625,54 @@ public class Administrator extends User {
     }
 
     public void addMedication() {
-        int continueUpdate = 1;
+        int continueUpdate = 1, newStock, newLowAlert;
 
         while (continueUpdate == 1) {
             System.out.println("\n===========================================");
             System.out.println("           Adding New Medication");
+            System.out.println("           Enter 'exit' to exit");
             System.out.println("===========================================");
 
             System.out.print("Enter Medicine Name: ");
             String newMedicine = scanner.nextLine().toUpperCase();
+            if (newMedicine.equalsIgnoreCase("EXIT")){
+                System.out.println("\n\nExiting process!");
+                return;
+            }
 
-            System.out.print("Enter Initial Stock: ");
-            int newStock = scanner.nextInt();
-            scanner.nextLine();
+            while (true) {
+                System.out.print("Enter Initial Stock: ");
+                String stock = scanner.nextLine();
 
-            System.out.print("Enter Low Stock Level Alert: ");
-            int newLowAlert = scanner.nextInt();
-            scanner.nextLine();
+                if (stock.equalsIgnoreCase("EXIT")) {
+                    System.out.println("\nExiting process!");
+                    return;
+                }
+
+                if (stock.matches("\\d+")) { // Ensure the input is only digits
+                    newStock = Integer.parseInt(stock);
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a valid integer!");
+                }
+            }
+
+            while (true) {
+                System.out.print("Enter Low Stock Level Alert: ");
+                String lowAlert = scanner.nextLine();
+
+                if (lowAlert.equalsIgnoreCase("EXIT")) {
+                    System.out.println("\nExiting process!");
+                    return;
+                }
+
+                if (lowAlert.matches("\\d+")) { // Ensure the input is only digits
+                    newLowAlert = Integer.parseInt(lowAlert);
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a valid integer!");
+                }
+            }
 
             MedicationInventory newMedication = new MedicationInventory(newMedicine, newStock, newLowAlert);
 
@@ -613,11 +714,16 @@ public class Administrator extends User {
         while (continueUpdate == 1) {
             System.out.println("\n===========================================");
             System.out.println("            Removing Medication");
+            System.out.println("           Enter 'exit' to exit");
             System.out.println("===========================================");
 
             do {
                 System.out.print("Enter Medicine Name: ");
                 medicineName = scanner.nextLine().toUpperCase();
+                if (medicineName.equalsIgnoreCase("EXIT")){
+                    System.out.println("\n\nExiting process!");
+                    return;
+                }
             } while (MedicationInventoryDB.findMedicine(medicineName) == 0);
 
             try {
@@ -652,21 +758,40 @@ public class Administrator extends User {
     }
 
     public void updateStockLevel() {
-        int continueUpdate = 1;
+        int continueUpdate = 1, restockAmount;
         String medicineName;
 
         while (continueUpdate == 1) {
             System.out.println("\n===========================================");
             System.out.println("           Updating Stock Level");
+            System.out.println("           Enter 'exit' to exit");
             System.out.println("===========================================");
 
             do {
                 System.out.print("Enter Medicine Name: ");
                 medicineName = scanner.nextLine().toUpperCase();
+                if (medicineName.equalsIgnoreCase("EXIT")){
+                    System.out.println("\n\nExiting process!");
+                    return;
+                }
             } while (MedicationInventoryDB.findMedicine(medicineName) == 0);
 
-            System.out.print("Enter Restock Amount: ");
-            int restockAmount = scanner.nextInt();
+            while (true) {
+                System.out.print("Enter Restock Amount: ");
+                String stock = scanner.nextLine();
+
+                if (stock.equalsIgnoreCase("EXIT")) {
+                    System.out.println("\nExiting process!");
+                    return;
+                }
+
+                if (stock.matches("\\d+")) { // Ensure the input is only digits
+                    restockAmount = Integer.parseInt(stock);
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a valid integer!");
+                }
+            }
 
             try {
                 MedicationInventoryDB.updateStockLevel(medicineName, restockAmount);
@@ -700,21 +825,40 @@ public class Administrator extends User {
     }
 
     public void updateLowStockLevelAlert() {
-        int continueUpdate = 1;
+        int continueUpdate = 1, updatedLowLevelAlert;
         String medicineName;
 
         while (continueUpdate == 1) {
             System.out.println("\n===========================================");
             System.out.println("      Updating Low Stock Level Alert");
+            System.out.println("           Enter 'exit' to exit");
             System.out.println("===========================================");
 
             do {
                 System.out.print("Enter Medicine Name: ");
                 medicineName = scanner.nextLine().toUpperCase();
+                if (medicineName.equalsIgnoreCase("EXIT")){
+                    System.out.println("\n\nExiting process!");
+                    return;
+                }
             } while (MedicationInventoryDB.findMedicine(medicineName) == 0);
 
-            System.out.print("Enter New Low Stock Level Alert: ");
-            int updatedLowLevelAlert = scanner.nextInt();
+            while (true) {
+                System.out.print("Enter New Low Stock Level Alert: ");
+                String lowAlert = scanner.nextLine();
+
+                if (lowAlert.equalsIgnoreCase("EXIT")) {
+                    System.out.println("\nExiting process!");
+                    return;
+                }
+
+                if (lowAlert.matches("\\d+")) { // Ensure the input is only digits
+                    updatedLowLevelAlert = Integer.parseInt(lowAlert);
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a valid integer!");
+                }
+            }
 
             try {
                 MedicationInventoryDB.updateLowAlert(medicineName, updatedLowLevelAlert);
@@ -748,7 +892,7 @@ public class Administrator extends User {
     }
 
     public void approveReplenishmentRequests() {
-        int continueUpdate = 1;
+        int continueUpdate = 1, choice;
         RequestStatus requestStatus = null, approval = null;
 
         System.out.println("\n===========================================");
@@ -758,12 +902,28 @@ public class Administrator extends User {
         System.out.println("2. Pending");
         System.out.println("3. Rejected");
         System.out.println("===========================================");
-        System.out.println("4. Exit");
+        System.out.print("Select status to view (or 0 to exit): ");
 
-        System.out.print("Select status to view: ");
-        int choice = Main.getValidChoice(scanner, 4);
+        while (true) {
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline
+                if (choice >= 0 && choice <= 3) {
+                    break;
+                } else {
+                    System.out.print("Invalid option. Please enter a number between 0 and 3: ");
+                }
+            } else {
+                System.out.print("Invalid input. Please enter a valid integer: ");
+                scanner.nextLine(); // Clear the invalid input
+            }
+        }
+
 
         switch (choice) {
+            case 0:
+                System.out.println("\nExiting process!");
+                return;
             case 1:
                 requestStatus = RequestStatus.APPROVED;
                 break;
@@ -801,12 +961,24 @@ public class Administrator extends User {
 
             if (requestStatus == RequestStatus.PENDING) {
 
-                do {
-                    System.out.print("Enter the Request ID to approve or reject: ");
-                    choice = scanner.nextInt();
-                    scanner.nextLine();
-                } while (ReplenishmentRequestDB.findPendingRequest(choice) == 0);
-
+                System.out.print("Enter the Request ID to approve or reject (or 0 to exit): ");
+                while(true){
+                    if (scanner.hasNextInt()) {
+                        choice = scanner.nextInt();
+                        scanner.nextLine(); // Consume the newline
+                        if (choice == 0) {
+                            System.out.println("\nExiting process!");
+                            return;
+                        }
+                        else if (ReplenishmentRequestDB.findPendingRequest(choice) == 1){
+                            break;
+                        }
+                    } else {
+                        System.out.print("Invalid input. Please enter a valid integer: ");
+                        scanner.nextLine(); // Clear the invalid input
+                    }
+                } 
+                
                 ReplenishmentRequest selectedRequest = null;
                 for (ReplenishmentRequest selected : replenishmentRequests) {
                     if (selected.getRequestID() == choice) {
@@ -823,10 +995,27 @@ public class Administrator extends User {
                 System.out.println("1. Approve");
                 System.out.println("2. Reject");
                 System.out.println("===========================================");
-                System.out.print("Select a choice: ");
-                choice = Main.getValidChoice(scanner, 2);
+                System.out.print("Select a choice (or 0 to exit): ");
+
+                while (true) {
+                    if (scanner.hasNextInt()) {
+                        choice = scanner.nextInt();
+                        scanner.nextLine(); // Consume the newline
+                        if (choice >= 0 && choice <= 2) {
+                            break;
+                        } else {
+                            System.out.print("Invalid option. Please enter a number between 0 and 2: ");
+                        }
+                    } else {
+                        System.out.print("Invalid input. Please enter a valid integer: ");
+                        scanner.nextLine(); // Clear the invalid input
+                    }
+                }
 
                 switch (choice) {
+                    case 0:
+                        System.out.println("\n\nExiting process!");
+                        return;
                     case 1:
                         approval = RequestStatus.APPROVED;
                         break;
