@@ -41,7 +41,7 @@ public class User{
         }
     }
 ////////////////////////////////// Faciliate Exiting process///////////////////////////////////////////
-    public static boolean e(String exit){
+    public static boolean checkForExit(String exit){
         if (exit.equalsIgnoreCase("EXIT")){
             System.out.println("\n\nExiting process!");
             return true;
