@@ -40,8 +40,8 @@ public class User{
             return Role.PATIENT; 
         }
     }
-////////////////////////////////// Faciliate Exiting process. ///////////////////////////////////////////
-    public static boolean exit(String exit){
+////////////////////////////////// Faciliate Exiting process///////////////////////////////////////////
+    public static boolean e(String exit){
         if (exit.equalsIgnoreCase("EXIT")){
             System.out.println("\n\nExiting process!");
             return true;
@@ -62,14 +62,14 @@ public class User{
                 System.out.print("Enter Hospital ID: ");
                 String enteredID = scanner.nextLine().trim().toUpperCase();
 
-                if (exit(enteredID)){
+                if (checkForExit(enteredID)){
                     return null;
                 }
 
                 System.out.print("Enter Password: ");
                 String password = scanner.nextLine().trim();
 
-                if (exit(password)){
+                if (checkForExit(password)){
                     return null;
                 }
 
@@ -122,24 +122,24 @@ public class User{
             //// Name ////
             System.out.print("Enter your full name: ");
             patientName = scanner.nextLine();
-            if (exit(patientName)){
+            if (checkForExit(patientName)){
                 return;
             }
 
             //// DOB ////
             System.out.print("Enter year of birth (YYYY): ");
             patientYear = Main.digitChecker(scanner, 4, 2024);
-            if (exit(patientYear)){
+            if (checkForExit(patientYear)){
                 return;
             }
             System.out.print("Enter month of birth (MM): ");
             patientMonth = Main.digitChecker(scanner,2 ,12);
-            if (exit(patientMonth)){
+            if (checkForExit(patientMonth)){
                 return;
             }
             System.out.print("Enter day of birth (DD): ");
             patientDay = Main.digitChecker(scanner, 2,31);
-            if (exit(patientDay)){
+            if (checkForExit(patientDay)){
                 return;
             }
 
@@ -149,7 +149,7 @@ public class User{
             while (true) {
                 System.out.print("Enter your gender (M/F): ");
                 patientGender = scanner.nextLine().trim().toUpperCase(); 
-                if (exit(patientGender)){
+                if (checkForExit(patientGender)){
                     return;
                 }
                 if (patientGender.equals("M") || patientGender.equals("F")) {
@@ -162,14 +162,14 @@ public class User{
             //// Blood Type ////
             System.out.print("Enter your blood type: ");
             patientBloodType = scanner.nextLine().toUpperCase();
-            if (exit(patientBloodType)){
+            if (checkForExit(patientBloodType)){
                 return;
             }
 
             //// Phone number ////
             System.out.print("Enter Phone Number: ");
             String phone = Main.digitChecker(scanner, 8,-1);
-            if (exit(phone)){
+            if (checkForExit(phone)){
                 return;
             }
             patientPhone = Integer.parseInt(phone);
@@ -177,7 +177,7 @@ public class User{
             //// Email ////
             System.out.print("Enter your email address: ");
             patientEmail = scanner.nextLine();
-            if (exit(patientEmail)){
+            if (checkForExit(patientEmail)){
                 return;
             }
 
