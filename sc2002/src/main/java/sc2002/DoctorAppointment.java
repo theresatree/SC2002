@@ -240,7 +240,6 @@ public void acceptDeclineAppointment(Scanner scanner) {
                 System.out.println("      No pending appointment found!");
                 System.out.println("=========================================\n");
                 System.out.println("Press Enter to continue...");
-                scanner.nextLine();
                 scanner.nextLine(); // Clear the invalid input from the scanner
                 break;
             } else {
