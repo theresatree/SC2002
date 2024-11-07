@@ -8,7 +8,9 @@
     2.2. [Setup Instructions](#22-setup-instructions)</br>
 3. [JavaDoc](#3-javadoc)
 
-Link to GitHub Repository: https://github.com/theresatree/SC2002
+[Link](https://github.com/theresatree/SC2002) to GitHub Repository<br>
+[Link](https://github.com/theresatree/SC2002/blob/main/Relevant%20Files/SC2002%20UML%20Class%20Diagram.pdf) to UML Class Diagram
+
 
 <hr>
 
