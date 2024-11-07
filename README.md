@@ -25,9 +25,9 @@ Link to GitHub Repository: https://github.com/theresatree/SC2002
 <hr>
 
 ## 2. Getting Started
-Maven is required to run Apache POI, which is a Java library for reading and writing in XLSX files. It helps manage dependencies in Java Project and ensured they are configured correctly. 
+Maven is required to run Apache POI, which is a Java library used in this project for reading and writing in XLSX files. It helps manage dependencies in Java Project and ensures correct configuration
 
-Clone the repository to your local machine by running
+We can start by cloning the repository to your local machine by running
 ```bash
 git clone https://github.com/theresatree/SC2002
 ```
