@@ -10,6 +10,7 @@
 
 [Link](https://github.com/theresatree/SC2002) to GitHub Repository<br>
 [Link](https://github.com/theresatree/SC2002/blob/main/Relevant%20Files/SC2002%20UML%20Class%20Diagram.pdf) to UML Class Diagram
+> UML Class Diagram PDF needs to be downloaded to be viewed.
 
 
 <hr>
