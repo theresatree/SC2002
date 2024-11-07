@@ -20,6 +20,21 @@
 
   <dependencies>
     <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>5.2.3</version> <!-- You can check for the latest version on Maven Central -->
+    </dependency>
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>5.2.3</version> <!-- You can check for the latest version on Maven Central -->
+    </dependency>
+    <dependency>
+        <groupId>org.apache.xmlbeans</groupId>
+        <artifactId>xmlbeans</artifactId>
+        <version>5.1.1</version> <!-- Required for working with OOXML files -->
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
@@ -117,7 +132,7 @@
                 <arguments>
                     <argument>-cp</argument>
                     <classpath/>
-                    <argument>sc2002.Main</argument> <!-- Change this to your main class -->
+                    <argument>sc2002.main.Main</argument> <!-- Change this to your main class -->
                 </arguments>
             </configuration>
         </plugin>
