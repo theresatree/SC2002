@@ -11,7 +11,6 @@
 3. [JavaDoc](#3-javadoc)
 
 Link to GitHub Repository: https://github.com/theresatree/SC2002
-Link to UML Diagram: 
 
 <hr>
 
