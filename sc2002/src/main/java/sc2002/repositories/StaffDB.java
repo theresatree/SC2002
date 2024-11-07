@@ -3,7 +3,7 @@ package sc2002.repositories;
 import sc2002.models.Staff;
 import sc2002.models.UserAccount;
 import sc2002.enums.Role;
-import sc2002.StaffFiltering.*;
+import sc2002.StaffFiltering.StaffFilter;
 import sc2002.StaffFiltering.StaffNoFilter;
 
 import java.io.FileOutputStream;
