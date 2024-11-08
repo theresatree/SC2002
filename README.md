@@ -75,7 +75,7 @@ mvn exec:exec
 <hr>
 
 ## 3. JavaDoc
-JavaDoc can be accessed by ``index.html`` under
+JavaDoc can be accessed by ``index.html`` through [here](https://theresatree.github.io/SC2002/sc2002/target/reports/apidocs/sc2002/controllers/package-summary.html) or under the directory
 >.../GitHub/sc2002/sc2002/target/reports/apidocs
 
 </br>
@@ -88,4 +88,4 @@ mvn javadoc:javadoc
 
 
 *Note: Open ``index.html`` directly in a browser to view the documentation locally. 
-If viewing on GitHub, download the files first as GitHub cannot render HTML files directly.*
+If viewing on GitHub and not GitHub Pages, download the files first as GitHub cannot render HTML files directly.*
