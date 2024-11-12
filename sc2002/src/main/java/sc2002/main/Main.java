@@ -1,16 +1,16 @@
 package sc2002.main;
 
-import sc2002.models.User;
+import java.io.IOException;
+import java.util.Scanner;
+
 import sc2002.controllers.Administrator;
 import sc2002.controllers.Doctor;
 import sc2002.controllers.Patient;
 import sc2002.controllers.Pharmacist;
+import sc2002.models.User;
 import sc2002.repositories.DoctorAppointmentDB;
 import sc2002.repositories.MedicationInventoryDB;
 import sc2002.repositories.ReplenishmentRequestDB;
-
-import java.io.IOException;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -219,7 +219,7 @@ public class Main {
                             switch (choice){
                                 case 0:
                                     System.out.println("\n\nExiting process");
-                                    return;
+                                    break;
                                 case 1:
                                     admin.addHospitalStaff();
                                     break;
