@@ -5,7 +5,7 @@ import sc2002.models.MedicalRecord;
 import sc2002.models.PatientAppointment;
 import sc2002.repositories.PatientDB;
 import sc2002.models.User;
-import sc2002.main.*;
+import sc2002.main.Main;
 
 /**
  * The Patient class represents a patient user with methods to manage personal information,
