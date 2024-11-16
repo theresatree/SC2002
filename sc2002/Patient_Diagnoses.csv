@@ -1,0 +1,8 @@
+PatientID,DiagnosisCode,DoctorID,DiagnosisDescription,Treatment,Notes
+P1001,1,D001,Allergic Reaction,Prescribed Medication,Take Medicine
+P1001,2,D002,0,ed Medication,rest more
+P1002,3,D001,Diabetes,Panadol,Eat less sweets
+P1002,4,D001,Fever,Panadol,Eat more panadol
+P1002,5,D001,Testing,Test,additionalnotesTest
+P1002,6,D001,dead,help,no
+P1002,7,D001,cool,car,man

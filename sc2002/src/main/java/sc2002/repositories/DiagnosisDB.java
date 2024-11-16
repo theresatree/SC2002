@@ -1,23 +1,19 @@
 package sc2002.repositories;
 
 import sc2002.models.Diagnosis;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Provides access to diagnosis data stored in an Excel file.
+ * Provides access to diagnosis data stored in a CSV file.
  */
 public class DiagnosisDB {
-    private static final String FILE_NAME = "Patient_Diagnoses.xlsx";
+    private static final String FILE_NAME = "Patient_Diagnoses.csv";
 
     /**
-     * Retrieves the diagnosis records for a specific patient from the Excel file.
+     * Retrieves the diagnosis records for a specific patient from the CSV file.
      * 
      * @param hospitalID the hospital ID of the patient
      * @return List of Diagnosis objects
@@ -25,20 +21,25 @@ public class DiagnosisDB {
      */
     public static List<Diagnosis> getDiagnosis(String hospitalID) throws IOException {
         List<Diagnosis> diagnoses = new ArrayList<>();
-        try (InputStream is = DiagnosisDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            boolean isHeader = true;
 
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue;  // Skip header row
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
+                }
 
-                Cell idCell = row.getCell(0);
-                if (idCell != null && idCell.getStringCellValue().equals(hospitalID)) {
-                    String patientID = idCell.getStringCellValue();
-                    int diagnosisCode = (int) row.getCell(1).getNumericCellValue();
-                    String doctorID = row.getCell(2).getStringCellValue();
-                    String diagnosisDescription = row.getCell(3).getStringCellValue();
-                    String treatment = row.getCell(4).getStringCellValue();
-                    String notes = row.getCell(5).getStringCellValue();
+                String[] fields = line.split(",");
+
+                if (fields[0].equals(hospitalID)) {
+                    String patientID = fields[0];
+                    int diagnosisCode = Integer.parseInt(fields[1]);
+                    String doctorID = fields[2];
+                    String diagnosisDescription = fields[3];
+                    String treatment = fields[4];
+                    String notes = fields[5];
 
                     Diagnosis diagnosis = new Diagnosis(patientID, diagnosisCode, doctorID, diagnosisDescription, treatment, notes);
                     diagnoses.add(diagnosis);
@@ -49,7 +50,7 @@ public class DiagnosisDB {
     }
 
     /**
-     * Adds a new diagnosis for a patient to the Excel file.
+     * Adds a new diagnosis for a patient to the CSV file.
      * 
      * @param patientID the patient ID
      * @param doctorID the doctor ID
@@ -58,29 +59,17 @@ public class DiagnosisDB {
      * @param notes additional notes
      */
     public static void addDiagnosis(String patientID, String doctorID, String diagnosis, String treatment, String notes) {
-        try (InputStream is = DiagnosisDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            int rowCount = sheet.getPhysicalNumberOfRows();
-            Row row = sheet.createRow(rowCount);
-
-            int newDiagnosisID = getNextDiagnosisID(sheet);
-            row.createCell(0).setCellValue(patientID);
-            row.createCell(1).setCellValue(newDiagnosisID);
-            row.createCell(2).setCellValue(doctorID);
-            row.createCell(3).setCellValue(diagnosis);
-            row.createCell(4).setCellValue(treatment);
-            row.createCell(5).setCellValue(notes);
-
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
-            }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            int newDiagnosisID = getNextDiagnosisID();
+            bw.write(String.join(",", patientID, String.valueOf(newDiagnosisID), doctorID, diagnosis, treatment, notes));
+            bw.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Updates an existing diagnosis in the Excel file based on diagnosis ID.
+     * Updates an existing diagnosis in the CSV file based on diagnosis ID.
      * 
      * @param diagnosisID the diagnosis ID to update
      * @param diagnosis new diagnosis description
@@ -89,37 +78,61 @@ public class DiagnosisDB {
      * @throws IOException if an I/O error occurs
      */
     public static void updateDiagnosis(int diagnosisID, String diagnosis, String treatment, String notes) throws IOException {
-        try (InputStream is = DiagnosisDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
+        File inputFile = new File(FILE_NAME);
+        File tempFile = new File("temp_" + FILE_NAME);
 
-            for (Row row : sheet) {
-                Cell diagnosisIDCell = row.getCell(1);
-                if (diagnosisIDCell != null && diagnosisIDCell.getCellType() == CellType.NUMERIC && (int) diagnosisIDCell.getNumericCellValue() == diagnosisID) {
-                    if (!diagnosis.isEmpty()) row.getCell(3).setCellValue(diagnosis);
-                    if (!treatment.isEmpty()) row.getCell(4).setCellValue(treatment);
-                    if (!notes.isEmpty()) row.getCell(5).setCellValue(notes);
-                    break;
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    bw.write(line);
+                    bw.newLine();
+                    continue; // Write header as is
                 }
-            }
 
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
+                String[] fields = line.split(",");
+                int currentDiagnosisID = Integer.parseInt(fields[1]);
+
+                if (currentDiagnosisID == diagnosisID) {
+                    if (!diagnosis.isEmpty()) fields[3] = diagnosis;
+                    if (!treatment.isEmpty()) fields[4] = treatment;
+                    if (!notes.isEmpty()) fields[5] = notes;
+                }
+
+                bw.write(String.join(",", fields));
+                bw.newLine();
             }
+        }
+
+        if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
+            throw new IOException("Could not update file.");
         }
     }
 
     /**
      * Retrieves the next available diagnosis ID.
      * 
-     * @param sheet the Excel sheet
      * @return the next diagnosis ID as an integer
      */
-    private static int getNextDiagnosisID(Sheet sheet) {
+    private static int getNextDiagnosisID() throws IOException {
         int maxID = 0;
-        for (Row row : sheet) {
-            Cell idCell = row.getCell(1);
-            if (idCell != null && idCell.getCellType() == CellType.NUMERIC) {
-                int currentID = (int) idCell.getNumericCellValue();
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
+                }
+
+                String[] fields = line.split(",");
+                int currentID = Integer.parseInt(fields[1]);
                 if (currentID > maxID) {
                     maxID = currentID;
                 }

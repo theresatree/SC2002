@@ -1,12 +1,8 @@
 package sc2002.repositories;
 
 import sc2002.models.MedicationInventory;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +12,7 @@ import java.util.List;
  */
 public class MedicationInventoryDB {
 
-    private static final String FILE_NAME = "Medicine_List.xlsx"; // Fixed file location for Medicine_List.xlsx
+    private static final String FILE_NAME = "Medicine_List.csv"; // CSV file for medicine inventory
 
     /**
      * Retrieves the list of all medications in the inventory.
@@ -26,28 +22,21 @@ public class MedicationInventoryDB {
      */
     public static List<MedicationInventory> getMedicationInventory() throws IOException {
         List<MedicationInventory> medicationInventory = new ArrayList<>();
-        try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
-            if (is == null) {
-                throw new IOException("File not found in resources: " + FILE_NAME);
-            }
 
-            try (Workbook workbook = new XSSFWorkbook(is)) {
-                Sheet sheet = workbook.getSheetAt(0);
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            boolean isHeader = true;
 
-                for (Row row : sheet) {
-                    if (row.getRowNum() == 0) continue; // Skip header row
-
-                    Cell medicineNameCell = row.getCell(0);
-                    Cell initialStockCell = row.getCell(1);
-                    Cell lowStockLevelAlertCell = row.getCell(2);
-
-                    if (medicineNameCell != null) {
-                        String medicineName = medicineNameCell.getStringCellValue().toUpperCase();
-                        int initialStock = (int) initialStockCell.getNumericCellValue();
-                        int lowStockLevelAlert = (int) lowStockLevelAlertCell.getNumericCellValue();
-                        medicationInventory.add(new MedicationInventory(medicineName, initialStock, lowStockLevelAlert));
-                    }
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
                 }
+                String[] fields = line.split(",");
+                String medicineName = fields[0].toUpperCase();
+                int initialStock = Integer.parseInt(fields[1]);
+                int lowStockLevelAlert = Integer.parseInt(fields[2]);
+                medicationInventory.add(new MedicationInventory(medicineName, initialStock, lowStockLevelAlert));
             }
         }
         return medicationInventory;
@@ -60,19 +49,12 @@ public class MedicationInventoryDB {
      * @throws IOException if an error occurs while updating the file
      */
     public static void addMedication(MedicationInventory newMedication) throws IOException {
-        try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            Row newRow = sheet.createRow(sheet.getLastRowNum() + 1);
-            newRow.createCell(0).setCellValue(newMedication.getMedicine());
-            newRow.createCell(1).setCellValue(newMedication.getStockLevel());
-            newRow.createCell(2).setCellValue(newMedication.getLowStockLevelAlert());
-
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
-            }
-        } catch (IOException e) {
-            System.out.println("An error occurred while adding the new medication: " + e.getMessage());
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            bw.write(String.join(",", 
+                newMedication.getMedicine(),
+                String.valueOf(newMedication.getStockLevel()),
+                String.valueOf(newMedication.getLowStockLevelAlert())));
+            bw.newLine();
         }
     }
 
@@ -84,32 +66,9 @@ public class MedicationInventoryDB {
      */
     public static void removeMedication(String medicineName) throws IOException {
         List<MedicationInventory> medicationInventory = getMedicationInventory();
-        medicationInventory.removeIf(medicine -> medicine.getMedicine().equals(medicineName));
+        medicationInventory.removeIf(medicine -> medicine.getMedicine().equalsIgnoreCase(medicineName));
 
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Medication");
-
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Medicine Name");
-            headerRow.createCell(1).setCellValue("Initial Stock");
-            headerRow.createCell(2).setCellValue("Low Stock Level Alert");
-
-            // Write existing medication to the new sheet
-            int rowNum = 1;
-            for (MedicationInventory medication : medicationInventory) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(medication.getMedicine());
-                row.createCell(1).setCellValue(medication.getStockLevel());
-                row.createCell(2).setCellValue(medication.getLowStockLevelAlert());
-            }
-
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
-            } catch (IOException e) {
-                System.err.println("Error writing to the file: " + e.getMessage());
-                throw e; // Re-throw to notify the caller
-            }
-        }
+        writeInventoryToFile(medicationInventory);
     }
 
     /**
@@ -120,29 +79,19 @@ public class MedicationInventoryDB {
      * @throws IOException if an error occurs while updating the file
      */
     public static void updateStockLevel(String medicineName, int restockAmount) throws IOException {
-        try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-            Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
+        List<MedicationInventory> medicationInventory = getMedicationInventory();
 
-            for (Row row : sheet) {
-                Cell medicineCell = row.getCell(0);
-                if (row.getRowNum() == 0) continue; // Skip header row
-
-                if (medicineCell.getStringCellValue().equals(medicineName)) {
-                    Cell stockLevelCell = row.getCell(1);
-                    int currentStock = (int) stockLevelCell.getNumericCellValue();
-                    stockLevelCell.setCellValue(currentStock + restockAmount);
-                    break;
-                }
+        for (MedicationInventory medication : medicationInventory) {
+            if (medication.getMedicine().equalsIgnoreCase(medicineName)) {
+                // Directly update the stock level
+                int currentStock = medication.getStockLevel();
+                medicationInventory.remove(medication);
+                medicationInventory.add(new MedicationInventory(medication.getMedicine(), currentStock + restockAmount, medication.getLowStockLevelAlert()));
+                break;
             }
-
-            // Write the updated workbook back to the file
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
-            }
-        } catch (IOException e) {
-            System.out.println("An error occurred while updating the stock level: " + e.getMessage());
         }
+
+        writeInventoryToFile(medicationInventory);
     }
 
     /**
@@ -153,24 +102,19 @@ public class MedicationInventoryDB {
      * @throws IOException if an error occurs while updating the file
      */
     public static void updateLowAlert(String medicineName, int updatedLowLevelAlert) throws IOException {
-        try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
+        List<MedicationInventory> medicationInventory = getMedicationInventory();
 
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue;
-                Cell medicineCell = row.getCell(0);
-                if (medicineCell.getStringCellValue().equals(medicineName)) {
-                    Cell lowLevelAlert = row.getCell(2);
-                    lowLevelAlert.setCellValue(updatedLowLevelAlert);
-                    break;
-                }
-            }
-
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
+        for (MedicationInventory medication : medicationInventory) {
+            if (medication.getMedicine().equalsIgnoreCase(medicineName)) {
+                // Directly update the low stock alert level
+                int currentStock = medication.getStockLevel();
+                medicationInventory.remove(medication);
+                medicationInventory.add(new MedicationInventory(medication.getMedicine(), currentStock, updatedLowLevelAlert));
+                break;
             }
         }
+
+        writeInventoryToFile(medicationInventory);
     }
 
     /**
@@ -179,25 +123,23 @@ public class MedicationInventoryDB {
      * @param medicine the name of the medicine to find
      * @return 1 if the medicine is found, 0 otherwise
      */
-    public static int findMedicine(String medicine){
-        try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-            Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
-
-            for (Row row : sheet) {
-                Cell medicineCell = row.getCell(0);
-                if (row.getRowNum() == 0) continue; // Skip header row
-
-                if (medicineCell.getStringCellValue().equals(medicine)) {
-                    return 1;
-                }
-            }
-
+    public static int findMedicine(String medicine) {
+        List<MedicationInventory> medicationInventory;
+        try {
+            medicationInventory = getMedicationInventory();
         } catch (IOException e) {
-            System.out.println("An error occurred while finding medicine: " + e.getMessage());
+            System.err.println("An error occurred while retrieving medication inventory: " + e.getMessage());
+            return 0; // Return 0 indicating that the medicine is not found due to an error
         }
-        System.out.println("Medicine not found. Please try again!\n");
-        return 0; //not found
+    
+        for (MedicationInventory medicationItem : medicationInventory) {
+            if (medicationItem.getMedicine().equalsIgnoreCase(medicine)) {
+                return 1;
+            }
+        }
+    
+        System.out.println("Medicine not found. Please try again!");
+        return 0;
     }
 
     /**
@@ -208,32 +150,35 @@ public class MedicationInventoryDB {
      */
     public static String lowStockLevelAlert() throws IOException {
         List<String> lowStockMedicines = new ArrayList<>();
-        
-        try (InputStream is = MedicationInventoryDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0); 
-            
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; 
-                
-                Cell medicineNameCell = row.getCell(0);
-                Cell initialStockCell = row.getCell(1);
-                Cell lowStockLevelCell = row.getCell(2);
-                
-                if (medicineNameCell != null && initialStockCell != null && lowStockLevelCell != null) {
-                    String medicineName = medicineNameCell.getStringCellValue();
-                    int initialStock = (int) initialStockCell.getNumericCellValue();
-                    int lowStockLevelAlert = (int) lowStockLevelCell.getNumericCellValue();
-                    
-                    if (initialStock <= lowStockLevelAlert) {
-                        lowStockMedicines.add(medicineName);
-                    }
-                }
+        List<MedicationInventory> medicationInventory = getMedicationInventory();
+
+        for (MedicationInventory medication : medicationInventory) {
+            if (medication.getStockLevel() <= medication.getLowStockLevelAlert()) {
+                lowStockMedicines.add(medication.getMedicine());
             }
-        } catch (IOException e) {
-            System.out.println("An error occurred while checking for low stock levels: " + e.getMessage());
-            throw e;
         }
+
         return lowStockMedicines.isEmpty() ? "NO" : String.join(", ", lowStockMedicines);
+    }
+
+    /**
+     * Writes the updated inventory list back to the CSV file.
+     *
+     * @param medicationInventory the updated list of medications
+     * @throws IOException if an error occurs while writing to the file
+     */
+    private static void writeInventoryToFile(List<MedicationInventory> medicationInventory) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+            bw.write("Medicine Name,Initial Stock,Low Stock Level Alert");
+            bw.newLine();
+
+            for (MedicationInventory medication : medicationInventory) {
+                bw.write(String.join(",",
+                        medication.getMedicine(),
+                        String.valueOf(medication.getStockLevel()),
+                        String.valueOf(medication.getLowStockLevelAlert())));
+                bw.newLine();
+            }
+        }
     }
 }

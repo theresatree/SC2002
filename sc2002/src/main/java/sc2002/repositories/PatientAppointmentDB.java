@@ -4,17 +4,12 @@ import sc2002.services.AvailableDatesToChoose;
 import sc2002.models.PatientScheduledAppointment;
 import sc2002.enums.AppointmentStatus;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * The PatientAppointmentDB class handles appointment scheduling and rescheduling
@@ -22,7 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class PatientAppointmentDB {
 
-    private static final String FILE_NAME = "Appointment.xlsx";
+    private static final String FILE_NAME = "Appointment.csv";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -34,42 +29,33 @@ public class PatientAppointmentDB {
      */
     public static List<AvailableDatesToChoose> getAvailableSlots() throws IOException {
         List<AvailableDatesToChoose> availableSlots = new ArrayList<>();
-        try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
-            if (is == null) {
-                throw new IOException("File not found in resources: " + FILE_NAME);
-            }
 
-            try (Workbook workbook = new XSSFWorkbook(is)) {
-                Sheet sheet = workbook.getSheetAt(0);
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            boolean isHeader = true;
 
-                for (Row row : sheet) {
-                    if (row.getRowNum() == 0) continue;  // Skip header row
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
+                }
 
-                    Cell patientIDCell = row.getCell(0);
-                    Cell doctorIDCell = row.getCell(1);
-                    Cell appointmentIDCell = row.getCell(2);
-                    Cell dateCell = row.getCell(3);
-                    Cell timeStartCell = row.getCell(4);
-                    Cell timeEndCell = row.getCell(5);
-                    Cell statusCell = row.getCell(6);
+                String[] fields = line.split(",");
+                String patientID = fields[0];
+                String doctorID = fields[1];
+                int appointmentID = Integer.parseInt(fields[2]);
+                LocalDate date = LocalDate.parse(fields[3], dateFormat);
+                LocalTime timeStart = LocalTime.parse(fields[4], timeFormat);
+                LocalTime timeEnd = LocalTime.parse(fields[5], timeFormat);
+                String status = fields[6];
 
-                    if (statusCell != null &&
-                        statusCell.getStringCellValue().equalsIgnoreCase("Available") &&
-                        patientIDCell.getStringCellValue().isEmpty()) {
-
-                        String doctorID = doctorIDCell.getStringCellValue();
-                        int appointmentID = (int) appointmentIDCell.getNumericCellValue();
-                        LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
-                        LocalTime timeStart = LocalTime.parse(timeStartCell.getStringCellValue(), timeFormat);
-                        LocalTime timeEnd = LocalTime.parse(timeEndCell.getStringCellValue(), timeFormat);
-
-                        AvailableDatesToChoose availableDate = new AvailableDatesToChoose(doctorID, appointmentID, date, timeStart, timeEnd);
-                        availableSlots.add(availableDate);
-                    }
+                if (status.equalsIgnoreCase("Available") && patientID.isEmpty()) {
+                    AvailableDatesToChoose availableDate = new AvailableDatesToChoose(doctorID, appointmentID, date, timeStart, timeEnd);
+                    availableSlots.add(availableDate);
                 }
             }
-            return availableSlots;
         }
+        return availableSlots;
     }
 
     /**
@@ -81,38 +67,38 @@ public class PatientAppointmentDB {
      */
     public static List<PatientScheduledAppointment> patientScheduledAppointments(String patientID) throws IOException {
         List<PatientScheduledAppointment> listOfSchedule = new ArrayList<>();
-        try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
 
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Skip header row
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            boolean isHeader = true;
 
-                Cell patientIDCell = row.getCell(0);
-                Cell doctorIDCell = row.getCell(1);
-                Cell appointmentIDCell = row.getCell(2);
-                Cell dateCell = row.getCell(3);
-                Cell timeStartCell = row.getCell(4);
-                Cell timeEndCell = row.getCell(5);
-                Cell statusCell = row.getCell(6);
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
+                }
 
-                if (patientIDCell != null && patientIDCell.getStringCellValue().equals(patientID)) {
-                    String status = statusCell.getStringCellValue();
-                    if (status.equals("Confirmed") || status.equals("Pending") || status.equals("Declined")) {
-                        int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
-                        String doctorID = doctorIDCell.getStringCellValue();
-                        LocalDate date = LocalDate.parse(dateCell.getStringCellValue(), dateFormat);
-                        LocalTime timeStart = LocalTime.parse(timeStartCell.getStringCellValue(), timeFormat);
-                        LocalTime timeEnd = LocalTime.parse(timeEndCell.getStringCellValue(), timeFormat);
-                        AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
+                String[] fields = line.split(",");
+                String currentPatientID = fields[0];
+                String doctorID = fields[1];
+                int appointmentID = Integer.parseInt(fields[2]);
+                LocalDate date = LocalDate.parse(fields[3], dateFormat);
+                LocalTime timeStart = LocalTime.parse(fields[4], timeFormat);
+                LocalTime timeEnd = LocalTime.parse(fields[5], timeFormat);
+                String status = fields[6];
 
-                        PatientScheduledAppointment schedule = new PatientScheduledAppointment(patientID, currentAppointmentID, doctorID, date, timeStart, timeEnd, appointmentStatus);
-                        listOfSchedule.add(schedule);
-                    }
+                if (currentPatientID.equals(patientID) &&
+                    (status.equalsIgnoreCase("Confirmed") ||
+                     status.equalsIgnoreCase("Pending") ||
+                     status.equalsIgnoreCase("Declined"))) {
+
+                    AppointmentStatus appointmentStatus = AppointmentStatus.valueOf(status.toUpperCase());
+                    PatientScheduledAppointment schedule = new PatientScheduledAppointment(patientID, appointmentID, doctorID, date, timeStart, timeEnd, appointmentStatus);
+                    listOfSchedule.add(schedule);
                 }
             }
-            return listOfSchedule;
         }
+        return listOfSchedule;
     }
 
     /**
@@ -123,28 +109,7 @@ public class PatientAppointmentDB {
      * @throws IOException if an error occurs while updating the file
      */
     public static void reschedulePatientAppointment(int appointmentID, String patientID) throws IOException {
-        try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            for (Row row : sheet) {
-                Cell patientIDCell = row.getCell(0);
-                Cell appointmentIDCell = row.getCell(2);
-
-                if (appointmentIDCell != null && appointmentIDCell.getCellType() == CellType.NUMERIC) {
-                    int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
-                    if (currentAppointmentID == appointmentID && patientIDCell.getStringCellValue().equals(patientID)) {
-                        row.getCell(0).setCellValue("");
-                        row.getCell(6).setCellValue("Available");
-                        break;
-                    }
-                }
-            }
-
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
-            }
-        }
+        updateAppointment(appointmentID, patientID, "", "Available");
     }
 
     /**
@@ -155,26 +120,53 @@ public class PatientAppointmentDB {
      * @throws IOException if an error occurs while updating the file
      */
     public static void updateScheduleForPatients(int appointmentID, String patientID) throws IOException {
-        try (InputStream is = PatientAppointmentDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
+        updateAppointment(appointmentID, "", patientID, "Pending");
+    }
 
-            for (Row row : sheet) {
-                Cell appointmentIDCell = row.getCell(2);
+    /**
+     * Updates an appointment record in the CSV file.
+     *
+     * @param appointmentID the appointment ID
+     * @param oldPatientID the current patient ID (use "" to skip validation)
+     * @param newPatientID the new patient ID to set
+     * @param newStatus the new status to set
+     * @throws IOException if an error occurs while updating the file
+     */
+    private static void updateAppointment(int appointmentID, String oldPatientID, String newPatientID, String newStatus) throws IOException {
+        File inputFile = new File(FILE_NAME);
+        File tempFile = new File("temp_" + FILE_NAME);
 
-                if (appointmentIDCell != null && appointmentIDCell.getCellType() == CellType.NUMERIC) {
-                    int currentAppointmentID = (int) appointmentIDCell.getNumericCellValue();
-                    if (currentAppointmentID == appointmentID) {
-                        row.getCell(0).setCellValue(patientID);
-                        row.getCell(6).setCellValue("Pending");
-                        break;
-                    }
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    bw.write(line);
+                    bw.newLine();
+                    continue; // Write header as is
                 }
-            }
 
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
+                String[] fields = line.split(",");
+                int currentAppointmentID = Integer.parseInt(fields[2]);
+
+                if (currentAppointmentID == appointmentID &&
+                    (oldPatientID.isEmpty() || fields[0].equals(oldPatientID))) {
+
+                    fields[0] = newPatientID; // Update patient ID
+                    fields[6] = newStatus;   // Update status
+                }
+
+                bw.write(String.join(",", fields));
+                bw.newLine();
             }
+        }
+
+        if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
+            throw new IOException("Failed to update the appointment.");
         }
     }
 }
