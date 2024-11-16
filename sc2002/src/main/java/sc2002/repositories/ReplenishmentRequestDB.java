@@ -134,10 +134,16 @@ public class ReplenishmentRequestDB {
      */
     public static int getLastRequestID() throws IOException {
         int lastRequestID = 0;
-
+        boolean isHeader = true; // Add this flag
+    
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
             while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false; // Skip header row
+                    continue;
+                }
+    
                 String[] fields = line.split(",");
                 lastRequestID = Integer.parseInt(fields[0]); // Update with the latest request ID
             }
