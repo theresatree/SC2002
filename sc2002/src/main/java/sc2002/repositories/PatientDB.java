@@ -149,6 +149,7 @@ public class PatientDB {
             bw.write(String.join(",", nextPatientID, patientName, patientDOB, gender, bloodType, String.valueOf(phoneNumber), email));
             bw.newLine();
         }
+        UserDB.createNewPatient(nextPatientID);
 
         return nextPatientID;
     }
@@ -161,13 +162,30 @@ public class PatientDB {
      */
     private static String getNextPatientID(List<String[]> patientData) {
         int maxId = 0;
+        
+        // Skip header row (assuming the first row is a header)
+        boolean isHeader = true;
+
         for (String[] fields : patientData) {
-            String idStr = fields[0];
-            if (idStr.startsWith("P")) {
-                int idNumber = Integer.parseInt(idStr.substring(1));
-                maxId = Math.max(maxId, idNumber);
+            // Skip header row
+            if (isHeader) {
+                isHeader = false;
+                continue;
+            }
+
+            try {
+                String idStr = fields[0];
+                if (idStr.startsWith("P")) {
+                    int idNumber = Integer.parseInt(idStr.substring(1));
+                    maxId = Math.max(maxId, idNumber);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Skipping invalid ID format: " + fields[0]);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Skipping invalid row: " + String.join(",", fields));
             }
         }
+        
         return "P" + (maxId + 1);
     }
 }

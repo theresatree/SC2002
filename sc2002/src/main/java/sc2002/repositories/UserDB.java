@@ -150,9 +150,16 @@ public class UserDB {
      * @param patientID The new patient's ID.
      */
     public static void createNewPatient(String patientID) {
+        if (patientID == null || patientID.isEmpty()) {
+            System.out.println("Invalid patient ID. Cannot create new patient.");
+            return;
+        }
+        
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(USER_FILE, true))) {
+            System.out.println("Adding new patient to file: " + patientID);
             bw.write(String.join(",", patientID, "password"));
             bw.newLine();
+            System.out.println("Patient added successfully.");
         } catch (IOException e) {
             System.out.println("An error occurred while creating a new patient: " + e.getMessage());
         }
