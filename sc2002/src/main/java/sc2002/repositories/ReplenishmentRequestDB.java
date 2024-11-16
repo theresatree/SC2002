@@ -118,6 +118,9 @@ public class ReplenishmentRequestDB {
 
                 if (currentRequestID == requestID && status == RequestStatus.PENDING) {
                     return 1;
+                } else {
+                    System.out.println("Invalid request ID! Request status is NOT pending!");
+                    return 0;
                 }
             }
         } catch (IOException e) {

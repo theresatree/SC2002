@@ -132,9 +132,12 @@ public class StaffDB {
             List<Staff> staffs = getStaff(staff -> true); // Get all staff
             for (Staff staff : staffs) {
                 if (staff.getStaffID().equals(staffID)) {
-                    return 1;
+                    return 1; // Staff found
                 }
             }
+            // Log message once after checking all records
+            System.out.println("Invalid Staff ID!");
+            return 0;
         } catch (IOException e) {
             System.err.println("An error occurred while finding staff: " + e.getMessage());
         }

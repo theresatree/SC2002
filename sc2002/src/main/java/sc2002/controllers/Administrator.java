@@ -1006,8 +1006,8 @@ int roleChoice = 0, genderChoice = 0, idNumber = 0, continueUpdate = 1, newAge =
 
             if (requestStatus == RequestStatus.PENDING) {
 
-                System.out.print("Enter the Request ID to approve or reject (or 0 to exit): ");
                 while(true){
+                    System.out.print("Enter the Request ID to approve or reject (or 0 to exit): ");
                     if (scanner.hasNextInt()) {
                         choice = scanner.nextInt();
                         scanner.nextLine(); // Consume the newline
