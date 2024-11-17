@@ -3,11 +3,26 @@ package sc2002.controllers;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
-import sc2002.StaffFiltering.*;
-import sc2002.models.*;
-import sc2002.enums.*;
+
+import sc2002.StaffFiltering.StaffAgeFilter;
+import sc2002.StaffFiltering.StaffFilter;
+import sc2002.StaffFiltering.StaffGenderFilter;
+import sc2002.StaffFiltering.StaffIDFilter;
+import sc2002.StaffFiltering.StaffNoFilter;
+import sc2002.StaffFiltering.StaffRoleFilter;
+import sc2002.enums.AppointmentStatus;
+import sc2002.enums.RequestStatus;
+import sc2002.enums.Role;
 import sc2002.main.Main;
-import sc2002.repositories.*;
+import sc2002.models.AppointmentDetails;
+import sc2002.models.MedicationInventory;
+import sc2002.models.ReplenishmentRequest;
+import sc2002.models.Staff;
+import sc2002.models.User;
+import sc2002.repositories.AppointmentDetailsDB;
+import sc2002.repositories.MedicationInventoryDB;
+import sc2002.repositories.ReplenishmentRequestDB;
+import sc2002.repositories.StaffDB;
 
 /**
  * The Administrator class represents an administrator user with abilities to manage
@@ -1074,7 +1089,6 @@ int roleChoice = 0, genderChoice = 0, idNumber = 0, continueUpdate = 1, newAge =
 
                 try {
                     ReplenishmentRequestDB.updateStatus(selectedRequest.getRequestID(), approval);
-                    MedicationInventoryDB.updateStockLevel(selectedRequest.getMedicine(), selectedRequest.getAmount());
 
                 } catch (IOException e) {
                     System.out.println("An error occurred while getting replenishment requests: " + e.getMessage());
@@ -1083,6 +1097,16 @@ int roleChoice = 0, genderChoice = 0, idNumber = 0, continueUpdate = 1, newAge =
                 }
 
                 if (choice == 1) {
+                    
+                    try {
+                        MedicationInventoryDB.updateStockLevel(selectedRequest.getMedicine(), selectedRequest.getAmount());
+    
+                    } catch (IOException e) {
+                        System.out.println("An error occurred while getting replenishment requests: " + e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("An unexpected error occurred: " + e.getMessage());
+                    }
+
                     System.out.println("\nUpdating Status and Stock Level. Please wait...");
                     for (int i = 5; i > 0; i--) {
                         System.out.print("*");
