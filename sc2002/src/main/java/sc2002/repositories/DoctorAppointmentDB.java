@@ -3,9 +3,12 @@ package sc2002.repositories;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -231,8 +234,22 @@ public class DoctorAppointmentDB {
         File inputFile = new File(FILE_NAME);
         File tempFile = new File("temp_" + FILE_NAME);
 
+        if (!inputFile.exists()) {
+            throw new FileNotFoundException("The file " + FILE_NAME + " does not exist.");
+        }
+
+        // Ensure the temporary file's parent directory exists
+        File parentDir = tempFile.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new IOException("Failed to create directory: " + parentDir);
+            }
+        }
+
+        boolean recordUpdated = false;
+
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
-             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
 
             String line;
             boolean isHeader = true;
@@ -244,18 +261,24 @@ public class DoctorAppointmentDB {
                     bw.newLine();
                     continue;
                 }
+
                 String[] fields = line.split(",");
-                if (fields[1].equals(doctorID) && Integer.parseInt(fields[2]) == appointmentID && fields[0].equals(patientID)) {
+                if (fields.length > 6 && fields[1].equals(doctorID) &&
+                    Integer.parseInt(fields[2]) == appointmentID && fields[0].equals(patientID)) {
                     fields[6] = newStatus;
+                    recordUpdated = true;
                 }
                 bw.write(String.join(",", fields));
                 bw.newLine();
             }
         }
 
-        if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
-            throw new IOException("Could not update file.");
+        if (!recordUpdated) {
+            throw new IOException("Appointment record not found.");
         }
+
+        // Replace original file atomically
+        Files.move(tempFile.toPath(), inputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
