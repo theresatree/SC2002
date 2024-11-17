@@ -4,7 +4,7 @@
 1. [About Us](#1-about-us)
 2. [Getting Started](#2-setup-instructions)
     2.1 [Compilation in Windows](#21-compilation-in-windows)
-    2.2 [Mac](#22-compilation-in-mac)
+    2.2 [Compilation in Mac](#22-compilation-in-mac)
 3. [JavaDoc](#3-javadoc)
     3.1 [Preview Javadoc in Windows](#31-preview-javadoc-in-windows)
     3.2 [Preview Javadoc in Mac](#31-preview-javadoc-in-mac)
