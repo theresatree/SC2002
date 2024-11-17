@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Provides access to appointment details data stored in a CSV file.
+ * Provides access to appointment details and appointment outcome data stored in CSV files.
  */
 public class AppointmentDetailsDB {
 
@@ -27,8 +27,8 @@ public class AppointmentDetailsDB {
     /**
      * Retrieves all appointment details from the CSV file.
      *
-     * @return List of AppointmentDetails objects
-     * @throws IOException if an I/O error occurs
+     * @return A list of {@link AppointmentDetails} objects containing details of all appointments.
+     * @throws IOException if an I/O error occurs while reading the file.
      */
     public static List<AppointmentDetails> getAppointmentDetails() throws IOException {
         List<AppointmentDetails> appointmentDetails = new ArrayList<>();
@@ -64,9 +64,9 @@ public class AppointmentDetailsDB {
     /**
      * Prints the appointment outcome record for a specific hospital ID and appointment ID.
      *
-     * @param hospitalID    the hospital ID of the patient
-     * @param appointmentID the appointment ID
-     * @throws IOException if an I/O error occurs
+     * @param hospitalID    The hospital ID of the patient.
+     * @param appointmentID The ID of the appointment whose outcome is to be printed.
+     * @throws IOException if an I/O error occurs while reading the file.
      */
     public static void printAppointmentOutcomeRecord(String hospitalID, int appointmentID) throws IOException {
         String fileName = "Appointment_Outcomes.csv";

@@ -136,6 +136,16 @@
                 </arguments>
             </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.3.2</version>
+          <configuration>
+              <failOnError>false</failOnError>
+              <quiet>true</quiet>
+              <show>protected</show> <!-- Include only public/protected methods -->
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
