@@ -16,7 +16,7 @@ import sc2002.models.MedicationInventory;
  */
 public class MedicationInventoryDB {
 
-    private static final String FILE_NAME = "Medicine_List.csv"; // CSV file for medicine inventory
+    private static final String FILE_NAME = "resources/Medicine_List.csv"; // CSV file for medicine inventory
 
     /**
      * Retrieves the list of all medications in the inventory.

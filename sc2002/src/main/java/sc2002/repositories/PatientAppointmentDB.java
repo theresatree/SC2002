@@ -1,15 +1,20 @@
 package sc2002.repositories;
 
-import sc2002.services.AvailableDatesToChoose;
-import sc2002.models.PatientScheduledAppointment;
-import sc2002.enums.AppointmentStatus;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import sc2002.enums.AppointmentStatus;
+import sc2002.models.PatientScheduledAppointment;
+import sc2002.services.AvailableDatesToChoose;
 
 /**
  * The PatientAppointmentDB class handles appointment scheduling and rescheduling
@@ -17,7 +22,7 @@ import java.util.List;
  */
 public class PatientAppointmentDB {
 
-    private static final String FILE_NAME = "Appointment.csv";
+    private static final String FILE_NAME = "resources/Appointment.csv";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 

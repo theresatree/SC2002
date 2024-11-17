@@ -1,11 +1,5 @@
 package sc2002.repositories;
 
-import sc2002.models.AppointmentDetails;
-import sc2002.enums.AppointmentStatus;
-import sc2002.enums.Service;
-import sc2002.enums.PrescriptionStatus;
-import sc2002.services.AppointmentOutcomeRecord;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,12 +9,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import sc2002.enums.AppointmentStatus;
+import sc2002.enums.PrescriptionStatus;
+import sc2002.enums.Service;
+import sc2002.models.AppointmentDetails;
+
 /**
  * Provides access to appointment details and appointment outcome data stored in CSV files.
  */
 public class AppointmentDetailsDB {
 
-    private static final String FILE_NAME = "Appointment.csv";
+    private static final String FILE_NAME = "resources/Appointment.csv";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 

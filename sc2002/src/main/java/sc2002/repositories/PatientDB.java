@@ -1,17 +1,22 @@
 package sc2002.repositories;
 
-import sc2002.models.ContactInformation;
-import sc2002.models.MedicalRecord;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import sc2002.models.ContactInformation;
+import sc2002.models.MedicalRecord;
 
 /**
  * Provides database operations related to patient information, including retrieval, updates, and creation of new patients.
  */
 public class PatientDB {
-    private static final String FILE_NAME = "Patient_List.csv"; // CSV file for patient information
+    private static final String FILE_NAME = "resources/Patient_List.csv"; // CSV file for patient information
 
     /**
      * Retrieves the basic details of a patient based on their hospital ID.

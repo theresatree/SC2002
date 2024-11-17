@@ -1,14 +1,19 @@
 package sc2002.repositories;
 
-import sc2002.services.AppointmentOutcomeRecord;
-import sc2002.enums.PrescriptionStatus;
-import sc2002.enums.Service;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import sc2002.enums.PrescriptionStatus;
+import sc2002.enums.Service;
+import sc2002.services.AppointmentOutcomeRecord;
 
 /**
  * The PatientAppointmentOutcomeDB class handles retrieving, setting, and updating
@@ -16,7 +21,7 @@ import java.util.List;
  */
 public class PatientAppointmentOutcomeDB {
 
-    private static final String FILE_NAME = "Appointment_Outcomes.csv";
+    private static final String FILE_NAME = "resources/Appointment_Outcomes.csv";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     /**

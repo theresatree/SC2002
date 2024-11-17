@@ -1,16 +1,21 @@
 package sc2002.repositories;
 
-import sc2002.models.Diagnosis;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import sc2002.models.Diagnosis;
 
 /**
  * Provides access to diagnosis data stored in a CSV file.
  */
 public class DiagnosisDB {
-    private static final String FILE_NAME = "Patient_Diagnoses.csv";
+    private static final String FILE_NAME = "resources/Patient_Diagnoses.csv";
 
     /**
      * Retrieves the diagnosis records for a specific patient from the CSV file.

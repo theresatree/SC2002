@@ -1,19 +1,28 @@
 package sc2002.repositories;
 
-import sc2002.enums.*;
-import sc2002.models.*;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import sc2002.enums.AppointmentStatus;
+import sc2002.models.DoctorScheduledDates;
+import sc2002.models.PatientScheduledAppointment;
 
 /**
  * Provides methods for managing doctor appointments and schedules stored in a CSV file.
  */
 public class DoctorAppointmentDB {
-    private static final String FILE_NAME = "Appointment.csv";
+    private static final String FILE_NAME = "resources/Appointment.csv";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 

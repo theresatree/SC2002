@@ -1,21 +1,25 @@
 package sc2002.repositories;
 
-import sc2002.models.Staff;
-import sc2002.models.UserAccount;
-import sc2002.enums.Role;
-import sc2002.StaffFiltering.StaffFilter;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import sc2002.StaffFiltering.StaffFilter;
+import sc2002.enums.Role;
+import sc2002.models.Staff;
+import sc2002.models.UserAccount;
 
 /**
  * Represents the database for managing staff records, including adding, updating,
  * retrieving, and removing staff members.
  */
 public class StaffDB {
-    private static final String STAFF_FILE = "Staff_List.csv";
-    private static final String USER_FILE = "User.csv";
+    private static final String STAFF_FILE = "resources/Staff_List.csv";
+    private static final String USER_FILE = "resources/User.csv";
 
     /**
      * Retrieves a list of staff members filtered by the specified criteria.

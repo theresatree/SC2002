@@ -1,17 +1,22 @@
 package sc2002.repositories;
 
-import sc2002.enums.Role;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
+
+import sc2002.enums.Role;
 
 /**
  * Represents the user database for handling user login and password management.
  */
 public class UserDB {
-    private static final String USER_FILE = "User.csv";
-    private static final String PATIENT_FILE = "Patient_List.csv";
-    private static final String STAFF_FILE = "Staff_List.csv";
+    private static final String USER_FILE = "resources/User.csv";
+    private static final String PATIENT_FILE = "resources/Patient_List.csv";
+    private static final String STAFF_FILE = "resources/Staff_List.csv";
 
     /**
      * Validates the login when the user enters ID and password.
