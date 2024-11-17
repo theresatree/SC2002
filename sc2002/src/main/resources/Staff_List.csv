@@ -1,6 +1,0 @@
-StaffID,Name,Role,Gender,Age,PhoneNumber,Email
-D001,John Smith,Doctor,Male,45,12345678,johnsmith@email.com
-D002,Emily Clarke,Doctor,Female,38,12345678,emilyclark@email.com
-P001,Mark Lee,Pharmacist,Male,29,12345678,marklee@email.com
-A001,Sarah Lee,Administrator,Female,39,12345678,sarahlee@email.com
-P002,Kenny Yeo,Pharmacist,Male,34,12345678,kennyyeo@email.com
