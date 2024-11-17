@@ -68,7 +68,7 @@ public class ReplenishmentRequestDB {
      */
     public static void updateStatus(int requestID, RequestStatus status) throws IOException {
         File inputFile = new File(FILE_NAME);
-        File tempFile = new File("temp_" + FILE_NAME);
+        File tempFile = new File("resources/Temp_Replenishment_Requests.csv");
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
              BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
