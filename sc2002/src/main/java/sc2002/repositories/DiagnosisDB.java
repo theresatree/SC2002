@@ -15,7 +15,8 @@ import sc2002.models.Diagnosis;
  * Provides access to diagnosis data stored in a CSV file.
  */
 public class DiagnosisDB {
-    private static final String FILE_NAME = "resources/Patient_Diagnoses.csv";
+    private static final String FILE_NAME = "Patient_Diagnoses.csv";
+    private static final String PATH_FILE = "resources/";
 
     /**
      * Retrieves the diagnosis records for a specific patient from the CSV file.
@@ -26,7 +27,7 @@ public class DiagnosisDB {
      */
     public static List<Diagnosis> getDiagnosis(String hospitalID) throws IOException {
         List<Diagnosis> diagnoses = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -64,7 +65,7 @@ public class DiagnosisDB {
      * @param notes additional notes
      */
     public static void addDiagnosis(String patientID, String doctorID, String diagnosis, String treatment, String notes) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+FILE_NAME, true))) {
             int newDiagnosisID = getNextDiagnosisID();
             bw.write(String.join(",", patientID, String.valueOf(newDiagnosisID), doctorID, diagnosis, treatment, notes));
             bw.newLine();
@@ -83,8 +84,8 @@ public class DiagnosisDB {
      * @throws IOException if an I/O error occurs
      */
     public static void updateDiagnosis(int diagnosisID, String diagnosis, String treatment, String notes) throws IOException {
-        File inputFile = new File(FILE_NAME);
-        File tempFile = new File("temp_" + FILE_NAME);
+        File inputFile = new File(PATH_FILE+FILE_NAME);
+        File tempFile = new File(PATH_FILE+"temp_" + FILE_NAME);
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
              BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
@@ -126,7 +127,7 @@ public class DiagnosisDB {
      */
     private static int getNextDiagnosisID() throws IOException {
         int maxID = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 

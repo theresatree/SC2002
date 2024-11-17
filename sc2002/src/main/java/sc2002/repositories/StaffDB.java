@@ -18,8 +18,10 @@ import sc2002.models.UserAccount;
  * retrieving, and removing staff members.
  */
 public class StaffDB {
-    private static final String STAFF_FILE = "resources/Staff_List.csv";
-    private static final String USER_FILE = "resources/User.csv";
+    private static final String STAFF_FILE = "Staff_List.csv";
+    private static final String USER_FILE = "User.csv";
+    private static final String PATH_FILE = "resources/";
+
 
     /**
      * Retrieves a list of staff members filtered by the specified criteria.
@@ -31,7 +33,7 @@ public class StaffDB {
     public static List<Staff> getStaff(StaffFilter selectedFilter) throws IOException {
         List<Staff> staffs = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(STAFF_FILE))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+STAFF_FILE))) {
             String line;
             boolean isHeader = true;
 
@@ -69,7 +71,7 @@ public class StaffDB {
      */
     public static void addStaff(Staff newStaff) throws IOException {
         // Add to Staff List
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(STAFF_FILE, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+STAFF_FILE, true))) {
             String formattedRole = newStaff.getRole().toString().charAt(0)
                     + newStaff.getRole().toString().substring(1).toLowerCase();
 
@@ -82,7 +84,7 @@ public class StaffDB {
         }
 
         // Add to User List with default password
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(USER_FILE, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+USER_FILE, true))) {
             bw.write(String.join(",", newStaff.getStaffID(), "password"));
             bw.newLine();
         }
@@ -155,7 +157,7 @@ public class StaffDB {
      * @throws IOException If there is an issue writing to the file.
      */
     private static void writeStaffListToFile(List<Staff> staffs) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(STAFF_FILE))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+STAFF_FILE))) {
             bw.write("StaffID,Name,Role,Gender,Age,PhoneNumber,Email");
             bw.newLine();
 
@@ -182,7 +184,7 @@ public class StaffDB {
     private static List<UserAccount> getUserAccounts() throws IOException {
         List<UserAccount> userAccounts = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(USER_FILE))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+USER_FILE))) {
             String line;
             boolean isHeader = true;
 
@@ -207,7 +209,7 @@ public class StaffDB {
      * @throws IOException If there is an issue writing to the file.
      */
     private static void writeUserAccountsToFile(List<UserAccount> userAccounts) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(USER_FILE))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+USER_FILE))) {
             bw.write("HospitalID,Password");
             bw.newLine();
 

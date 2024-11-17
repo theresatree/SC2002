@@ -21,7 +21,8 @@ import sc2002.services.AppointmentOutcomeRecord;
  */
 public class PatientAppointmentOutcomeDB {
 
-    private static final String FILE_NAME = "resources/Appointment_Outcomes.csv";
+    private static final String FILE_NAME = "Appointment_Outcomes.csv";
+    private static final String PATH_FILE = "resources/";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     /**
@@ -34,7 +35,7 @@ public class PatientAppointmentOutcomeDB {
     public static List<AppointmentOutcomeRecord> getAppointmentOutcome(String hospitalID) throws IOException {
         List<AppointmentOutcomeRecord> appointmentOutcome = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -74,7 +75,7 @@ public class PatientAppointmentOutcomeDB {
      * @param notes additional notes on the appointment outcome
      */
     public static void setAppointmentOutcome(String patientID, String doctorID, int appointmentID, LocalDate date, Service services, String medication, String notes) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+FILE_NAME, true))) {
             bw.write(String.join(",",
                 patientID,
                 doctorID,
@@ -95,8 +96,8 @@ public class PatientAppointmentOutcomeDB {
      * @throws IOException if an error occurs while updating the file
      */
     public static void updateAppointmentOutcome(List<AppointmentOutcomeRecord> updatedStatus) throws IOException {
-        File inputFile = new File(FILE_NAME);
-        File tempFile = new File("temp_" + FILE_NAME);
+        File inputFile = new File(PATH_FILE+FILE_NAME);
+        File tempFile = new File(PATH_FILE+"temp_" + FILE_NAME);
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
              BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
@@ -141,7 +142,7 @@ public class PatientAppointmentOutcomeDB {
     public static List<AppointmentOutcomeRecord> getAllAppointmentOutcomes() throws IOException {
         List<AppointmentOutcomeRecord> appointmentOutcome = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 

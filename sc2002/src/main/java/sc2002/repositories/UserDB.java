@@ -14,9 +14,11 @@ import sc2002.enums.Role;
  * Represents the user database for handling user login and password management.
  */
 public class UserDB {
-    private static final String USER_FILE = "resources/User.csv";
-    private static final String PATIENT_FILE = "resources/Patient_List.csv";
-    private static final String STAFF_FILE = "resources/Staff_List.csv";
+    private static final String USER_FILE = "User.csv";
+    private static final String PATIENT_FILE = "Patient_List.csv";
+    private static final String STAFF_FILE = "Staff_List.csv";
+    private static final String PATH_FILE = "resources/";
+
 
     /**
      * Validates the login when the user enters ID and password.
@@ -27,7 +29,7 @@ public class UserDB {
      * @throws IOException if there is an error accessing the file.
      */
     public static boolean validateLogin(String hospitalID, String password) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(USER_FILE))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+USER_FILE))) {
             String line;
             boolean isHeader = true;
 
@@ -83,8 +85,8 @@ public class UserDB {
      * @param newPassword The new password.
      */
     private static void updatePasswordInFile(String hospitalID, String newPassword) {
-        File inputFile = new File(USER_FILE);
-        File tempFile = new File("temp_" + USER_FILE);
+        File inputFile = new File(PATH_FILE+USER_FILE);
+        File tempFile = new File(PATH_FILE+"temp_" + USER_FILE);
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
              BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
@@ -125,7 +127,7 @@ public class UserDB {
      * @return The name associated with the ID, or null if not found.
      */
     public static String getNameByHospitalID(String hospitalID, Role role) {
-        String filePath = role == Role.PATIENT ? PATIENT_FILE : STAFF_FILE;
+        String filePath = role == Role.PATIENT ? PATH_FILE+PATIENT_FILE : PATH_FILE+STAFF_FILE;
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -160,7 +162,7 @@ public class UserDB {
             return;
         }
         
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(USER_FILE, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+USER_FILE, true))) {
             System.out.println("Adding new patient to file: " + patientID);
             bw.write(String.join(",", patientID, "password"));
             bw.newLine();

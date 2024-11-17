@@ -25,7 +25,8 @@ import sc2002.models.PatientScheduledAppointment;
  * Provides methods for managing doctor appointments and schedules stored in a CSV file.
  */
 public class DoctorAppointmentDB {
-    private static final String FILE_NAME = "resources/Appointment.csv";
+    private static final String FILE_NAME = "Appointment.csv";
+    private static final String PATH_FILE = "resources/";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -39,7 +40,7 @@ public class DoctorAppointmentDB {
      */
     public static List<DoctorScheduledDates> getScheduledDates(String hospitalID, LocalDate filterDate) throws IOException {
         List<DoctorScheduledDates> scheduledDates = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -70,7 +71,7 @@ public class DoctorAppointmentDB {
      * @param endTime   The end time of the schedule.
      */
     public static void setDoctorSchedule(String doctorID, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+FILE_NAME, true))) {
             int newAppointmentID = getNextAppointmentID();
             bw.write(String.join(",", "", doctorID, String.valueOf(newAppointmentID), date.format(dateFormat), startTime.format(timeFormat), endTime.format(timeFormat), "Available"));
             bw.newLine();
@@ -87,7 +88,7 @@ public class DoctorAppointmentDB {
      */
     private static int getNextAppointmentID() throws IOException {
         int maxID = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -112,7 +113,7 @@ public class DoctorAppointmentDB {
      */
     public static List<String> getPatients(String doctorID) throws IOException {
         Set<String> patientIDs = new HashSet<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -139,7 +140,7 @@ public class DoctorAppointmentDB {
      */
     public static List<DoctorScheduledDates> getAllPersonalSchedule(String hospitalID) throws IOException {
         List<DoctorScheduledDates> scheduledDates = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -171,7 +172,7 @@ public class DoctorAppointmentDB {
      */
     public static List<PatientScheduledAppointment> doctorListOfAllAppointments(String doctorID) throws IOException {
         List<PatientScheduledAppointment> listOfSchedule = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -231,11 +232,11 @@ public class DoctorAppointmentDB {
      * @throws IOException If an error occurs while updating the file.
      */
     private static void updateAppointmentStatus(String doctorID, int appointmentID, String patientID, String newStatus) throws IOException {
-        File inputFile = new File(FILE_NAME);
-        File tempFile = new File("temp_" + FILE_NAME);
+        File inputFile = new File(PATH_FILE+FILE_NAME);
+        File tempFile = new File(PATH_FILE+"temp_" + FILE_NAME);
 
         if (!inputFile.exists()) {
-            throw new FileNotFoundException("The file " + FILE_NAME + " does not exist.");
+            throw new FileNotFoundException("The file " + PATH_FILE+FILE_NAME + " does not exist.");
         }
 
         // Ensure the temporary file's parent directory exists
@@ -290,7 +291,7 @@ public class DoctorAppointmentDB {
      */
     public static String numberOfPending(String doctorID) throws IOException {
         int pendingAppointments = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 

@@ -19,7 +19,8 @@ import sc2002.models.AppointmentDetails;
  */
 public class AppointmentDetailsDB {
 
-    private static final String FILE_NAME = "resources/Appointment.csv";
+    private static final String FILE_NAME = "Appointment.csv";
+    private static final String PATH_FILE = "resources/";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -32,7 +33,7 @@ public class AppointmentDetailsDB {
     public static List<AppointmentDetails> getAppointmentDetails() throws IOException {
         List<AppointmentDetails> appointmentDetails = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 

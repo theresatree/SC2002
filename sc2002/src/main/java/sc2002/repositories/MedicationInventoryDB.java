@@ -16,7 +16,9 @@ import sc2002.models.MedicationInventory;
  */
 public class MedicationInventoryDB {
 
-    private static final String FILE_NAME = "resources/Medicine_List.csv"; // CSV file for medicine inventory
+    private static final String FILE_NAME = "Medicine_List.csv"; // CSV file for medicine inventory
+    private static final String PATH_FILE = "resources/";
+
 
     /**
      * Retrieves the list of all medications in the inventory.
@@ -27,7 +29,7 @@ public class MedicationInventoryDB {
     public static List<MedicationInventory> getMedicationInventory() throws IOException {
         List<MedicationInventory> medicationInventory = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -54,7 +56,7 @@ public class MedicationInventoryDB {
      * @throws IOException if an error occurs while updating the file
      */
     public static void addMedication(MedicationInventory newMedication) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+FILE_NAME, true))) {
             bw.write(String.join(",", 
                 newMedication.getMedicine(),
                 String.valueOf(newMedication.getStockLevel()),
@@ -170,7 +172,7 @@ public class MedicationInventoryDB {
      * @throws IOException if an error occurs while writing to the file
      */
     private static void writeInventoryToFile(List<MedicationInventory> medicationInventory) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+FILE_NAME))) {
             bw.write("Medicine Name,Initial Stock,Low Stock Level Alert");
             bw.newLine();
 

@@ -16,7 +16,8 @@ import sc2002.models.MedicalRecord;
  * Provides database operations related to patient information, including retrieval, updates, and creation of new patients.
  */
 public class PatientDB {
-    private static final String FILE_NAME = "resources/Patient_List.csv"; // CSV file for patient information
+    private static final String FILE_NAME = "Patient_List.csv"; // CSV file for patient information
+    private static final String PATH_FILE = "resources/";
 
     /**
      * Retrieves the basic details of a patient based on their hospital ID.
@@ -26,7 +27,7 @@ public class PatientDB {
      * @throws IOException If there is an issue accessing the file.
      */
     public static MedicalRecord getPatientDetails(String hospitalID) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -58,7 +59,7 @@ public class PatientDB {
      * @throws IOException If there is an issue accessing the file.
      */
     public static ContactInformation getPatientContactDetails(String hospitalID) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -88,8 +89,8 @@ public class PatientDB {
      * @throws IOException If there is an issue accessing the file.
      */
     public static void updateContactInformation(String hospitalID, String email, int phoneNumber) {
-        File inputFile = new File(FILE_NAME);
-        File tempFile = new File("temp_" + FILE_NAME);
+        File inputFile = new File(PATH_FILE+FILE_NAME);
+        File tempFile = new File(PATH_FILE+"temp_" + FILE_NAME);
     
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
              BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
@@ -139,7 +140,7 @@ public class PatientDB {
     public static String createNewPatient(String patientName, String patientDOB, String gender, String bloodType, int phoneNumber, String email) throws IOException {
         List<String[]> patientData = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             while ((line = br.readLine()) != null) {
                 patientData.add(line.split(","));
@@ -150,7 +151,7 @@ public class PatientDB {
         if (gender.equalsIgnoreCase("M")) gender = "Male";
         else if (gender.equalsIgnoreCase("F")) gender = "Female";
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+FILE_NAME, true))) {
             bw.write(String.join(",", nextPatientID, patientName, patientDOB, gender, bloodType, String.valueOf(phoneNumber), email));
             bw.newLine();
         }

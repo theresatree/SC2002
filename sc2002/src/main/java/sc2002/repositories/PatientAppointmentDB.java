@@ -22,7 +22,9 @@ import sc2002.services.AvailableDatesToChoose;
  */
 public class PatientAppointmentDB {
 
-    private static final String FILE_NAME = "resources/Appointment.csv";
+    private static final String FILE_NAME = "Appointment.csv";
+    private static final String PATH_FILE = "resources/";
+
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -35,7 +37,7 @@ public class PatientAppointmentDB {
     public static List<AvailableDatesToChoose> getAvailableSlots() throws IOException {
         List<AvailableDatesToChoose> availableSlots = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -73,7 +75,7 @@ public class PatientAppointmentDB {
     public static List<PatientScheduledAppointment> patientScheduledAppointments(String patientID) throws IOException {
         List<PatientScheduledAppointment> listOfSchedule = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -138,8 +140,8 @@ public class PatientAppointmentDB {
      * @throws IOException if an error occurs while updating the file
      */
     private static void updateAppointment(int appointmentID, String oldPatientID, String newPatientID, String newStatus) throws IOException {
-        File inputFile = new File(FILE_NAME);
-        File tempFile = new File("temp_" + FILE_NAME);
+        File inputFile = new File(PATH_FILE+FILE_NAME);
+        File tempFile = new File(PATH_FILE+"temp_" + FILE_NAME);
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
              BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {

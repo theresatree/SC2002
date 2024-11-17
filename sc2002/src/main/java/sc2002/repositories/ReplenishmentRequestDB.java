@@ -20,7 +20,8 @@ import sc2002.models.ReplenishmentRequest;
  */
 public class ReplenishmentRequestDB {
 
-    private static final String FILE_NAME = "resources/Replenishment_Requests.csv"; // CSV file for Replenishment Requests
+    private static final String FILE_NAME = "Replenishment_Requests.csv"; // CSV file for Replenishment Requests
+    private static final String PATH_FILE = "resources/";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     /**
@@ -33,7 +34,7 @@ public class ReplenishmentRequestDB {
     public static List<ReplenishmentRequest> getReplenishmentRequest(RequestStatus requestStatus) throws IOException {
         List<ReplenishmentRequest> replenishmentRequests = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -67,7 +68,7 @@ public class ReplenishmentRequestDB {
      * @throws IOException If there is an issue updating the file.
      */
     public static void updateStatus(int requestID, RequestStatus status) throws IOException {
-        File inputFile = new File(FILE_NAME);
+        File inputFile = new File(PATH_FILE+FILE_NAME);
         File tempFile = new File("resources/Temp_Replenishment_Requests.csv");
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
@@ -107,7 +108,7 @@ public class ReplenishmentRequestDB {
      * @return 1 if the request is pending, 0 otherwise.
      */
     public static int findPendingRequest(int requestID) {
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
@@ -142,7 +143,7 @@ public class ReplenishmentRequestDB {
         int lastRequestID = 0;
         boolean isHeader = true; // Add this flag
     
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (isHeader) {
@@ -164,7 +165,7 @@ public class ReplenishmentRequestDB {
      * @throws IOException If there is an issue writing to the file.
      */
     public static void saveReplenishmentRequest(ReplenishmentRequest request) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+FILE_NAME, true))) {
             bw.write(String.join(",",
                 String.valueOf(request.getRequestID()),
                 request.getPharmacistID(),
@@ -184,7 +185,7 @@ public class ReplenishmentRequestDB {
     public static int numPending() {
         int count = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+FILE_NAME))) {
             String line;
             boolean isHeader = true;
 
