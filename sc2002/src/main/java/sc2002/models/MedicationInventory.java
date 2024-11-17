@@ -42,12 +42,30 @@ public class MedicationInventory {
     }
 
     /**
+     * Sets the stock level.
+     * 
+     * @param stockLevel The new stock level.
+     */
+    public void setStockLevel(int stockLevel) {
+        this.stockLevel = stockLevel;
+    }
+    
+    /**
      * Gets the low stock level alert threshold.
      *
      * @return the low stock level alert
      */
     public int getLowStockLevelAlert() {
         return this.lowStockLevelAlert;
+    }
+
+    /**
+     * Sets the low stock level alert.
+     * 
+     * @param lowStockLevelAlert The new low stock level alert.
+     */
+    public void setLowStockLevelAlert(int lowStockLevelAlert) {
+        this.lowStockLevelAlert = lowStockLevelAlert;
     }
 
     /**

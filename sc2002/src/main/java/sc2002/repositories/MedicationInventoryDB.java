@@ -1,10 +1,14 @@
 package sc2002.repositories;
 
-import sc2002.models.MedicationInventory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import sc2002.models.MedicationInventory;
 
 /**
  * The MedicationInventoryDB class provides methods for managing medication inventory,
@@ -39,6 +43,7 @@ public class MedicationInventoryDB {
                 medicationInventory.add(new MedicationInventory(medicineName, initialStock, lowStockLevelAlert));
             }
         }
+            
         return medicationInventory;
     }
 
@@ -84,15 +89,14 @@ public class MedicationInventoryDB {
         for (MedicationInventory medication : medicationInventory) {
             if (medication.getMedicine().equalsIgnoreCase(medicineName)) {
                 // Directly update the stock level
-                int currentStock = medication.getStockLevel();
-                medicationInventory.remove(medication);
-                medicationInventory.add(new MedicationInventory(medication.getMedicine(), currentStock + restockAmount, medication.getLowStockLevelAlert()));
+                medication.setStockLevel(medication.getStockLevel() + restockAmount);
                 break;
             }
         }
 
         writeInventoryToFile(medicationInventory);
     }
+    
 
     /**
      * Updates the low stock alert level of a specified medication.
@@ -107,9 +111,7 @@ public class MedicationInventoryDB {
         for (MedicationInventory medication : medicationInventory) {
             if (medication.getMedicine().equalsIgnoreCase(medicineName)) {
                 // Directly update the low stock alert level
-                int currentStock = medication.getStockLevel();
-                medicationInventory.remove(medication);
-                medicationInventory.add(new MedicationInventory(medication.getMedicine(), currentStock, updatedLowLevelAlert));
+                medication.setLowStockLevelAlert(medication.getLowStockLevelAlert() + updatedLowLevelAlert);
                 break;
             }
         }
