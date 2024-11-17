@@ -68,7 +68,7 @@ public class AppointmentDetailsDB {
      * @throws IOException if an I/O error occurs while reading the file.
      */
     public static void printAppointmentOutcomeRecord(String hospitalID, int appointmentID) throws IOException {
-        String fileName = "Appointment_Outcomes.csv";
+        String fileName = "resources/Appointment_Outcomes.csv";
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
