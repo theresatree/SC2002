@@ -7,28 +7,58 @@ import sc2002.repositories.PatientDB;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Represents a user in the hospital system, with functionality for login, logout, 
+ * and patient registration.
+ */
 public class User {
     private String hospitalID;
     private Role role;
 
+    /**
+     * Constructs a User object with the specified hospital ID.
+     *
+     * @param hospitalID The unique hospital ID of the user.
+     */
     public User(String hospitalID) {
         this.hospitalID = hospitalID;
         this.role = determineRole(hospitalID);
     }
 
+    /**
+     * Gets the hospital ID of the user.
+     *
+     * @return The hospital ID of the user.
+     */
     public String getHospitalID() {
         return this.hospitalID;
     }
 
+    /**
+     * Gets the role of the user.
+     *
+     * @return The role of the user.
+     */
     public Role getRole() {
         return this.role;
     }
 
+    /**
+     * Logs the user out of the system.
+     *
+     * @return True indicating a successful logout.
+     */
     public boolean logOut() {
         System.out.println("\nLogout successful!");
         return true;
     }
 
+    /**
+     * Determines the role of a user based on their hospital ID.
+     *
+     * @param hospitalID The hospital ID of the user.
+     * @return The role associated with the hospital ID.
+     */
     private Role determineRole(String hospitalID) {
         if (hospitalID.matches("[PDA]\\d{3}")) {
             if (hospitalID.startsWith("P")) {
@@ -43,6 +73,12 @@ public class User {
         }
     }
 
+    /**
+     * Checks if the user input is "EXIT" to terminate a process.
+     *
+     * @param exit The user input string.
+     * @return True if the input is "EXIT"; otherwise, false.
+     */
     public static boolean checkForExit(String exit) {
         if (exit.equalsIgnoreCase("EXIT")) {
             System.out.println("\n\nExiting process!");
@@ -52,6 +88,12 @@ public class User {
         }
     }
 
+    /**
+     * Logs a user into the system by validating their credentials.
+     *
+     * @param scanner The Scanner object for user input.
+     * @return The logged-in User object or null if login fails.
+     */
     public User login(Scanner scanner) {
         while (true) {
             try {
@@ -100,6 +142,11 @@ public class User {
         }
     }
 
+    /**
+     * Registers a new patient in the hospital system.
+     *
+     * @param scanner The Scanner object for user input.
+     */
     public static void register(Scanner scanner) {
         try {
             String patientName;
@@ -113,7 +160,7 @@ public class User {
             String patientEmail;
 
             System.out.println("\n\n=========================================");
-            System.out.println("        Registering as  a patient");
+            System.out.println("        Registering as a patient");
             System.out.println("          Enter 'exit' to exit");
             System.out.println("=========================================");
             System.out.print("Enter your full name: ");
@@ -196,12 +243,12 @@ public class User {
     }
 
     /**
-     * Checks if a numeric input meets specified requirements.
+     * Validates numeric input based on length and range requirements.
      *
-     * @param scanner The scanner for input.
-     * @param digits Expected number of digits.
-     * @param max Max value for the input.
-     * @return A valid digit string.
+     * @param scanner The Scanner object for user input.
+     * @param digits The required number of digits.
+     * @param max The maximum value allowed (-1 for no max).
+     * @return The valid numeric input as a String.
      */
     public static String digitChecker(Scanner scanner, int digits, int max) {
         while (true) {

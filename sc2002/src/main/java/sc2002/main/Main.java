@@ -12,9 +12,18 @@ import sc2002.repositories.DoctorAppointmentDB;
 import sc2002.repositories.MedicationInventoryDB;
 import sc2002.repositories.ReplenishmentRequestDB;
 
+
+/**
+ * The main entry point for the hospital management system.
+ * Handles user login, registration, and role-specific dashboards.
+ */
 public class Main {
-    public static void main(String[] args) {
-////////////////////////////////////// LOGIN ////////////////////////////////////// 
+    /**
+     * Main method to initialize and manage the application's workflow.
+     *
+     * @param args Command-line arguments (not used).
+     */
+    public static void main(String[] args) { 
     while (true){
         boolean mainMenuExit = false;
         Scanner inputScanner = new Scanner(System.in);
@@ -24,7 +33,6 @@ public class Main {
         int choice; // This is for all the selection choices.
 
         while (!mainMenuExit){
- //////////////////////////////////////////// MAIN MENU SECTION (LOGIN + REGISTER) /////////////////////////////////////////////////
             System.out.println("=========================================");
             System.out.println("                Main Menu");
             System.out.println("=========================================");
@@ -344,7 +352,11 @@ public class Main {
         }
     }
 
-///////////////////////////////////// Function to wait after displaying information ////////////////////////////////////
+    /**
+     * Waits for the user to press Enter to continue.
+     *
+     * @param scanner Scanner object for user input.
+     */
     public static void waitForEnter(Scanner scanner) {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
@@ -352,7 +364,14 @@ public class Main {
 
 
 
-///////////////////////////////////// Number of digits Checker ////////////////////////////////////
+    /**
+     * Validates a numeric input string for digit length and range.
+     *
+     * @param scanner  Scanner object for user input.
+     * @param maxDigit Expected number of digits in the input.
+     * @param range    Maximum allowed range for the input.
+     * @return A valid numeric input string.
+     */
     public static String digitChecker(Scanner scanner, int maxDigit, int range){
         while (true){
             String number = scanner.nextLine();

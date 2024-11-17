@@ -10,13 +10,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * Provides methods for handling doctor appointments and schedules stored in a CSV file.
+ * Provides methods for managing doctor appointments and schedules stored in a CSV file.
  */
 public class DoctorAppointmentDB {
     private static final String FILE_NAME = "Appointment.csv";
     static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
+    /**
+     * Retrieves scheduled dates for a specific doctor filtered by a given date.
+     *
+     * @param hospitalID The hospital ID of the doctor.
+     * @param filterDate The date to filter appointments by.
+     * @return A list of scheduled dates matching the criteria.
+     * @throws IOException If an error occurs while reading the file.
+     */
     public static List<DoctorScheduledDates> getScheduledDates(String hospitalID, LocalDate filterDate) throws IOException {
         List<DoctorScheduledDates> scheduledDates = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -41,6 +49,14 @@ public class DoctorAppointmentDB {
         return scheduledDates;
     }
 
+    /**
+     * Adds a new schedule for a doctor.
+     *
+     * @param doctorID  The ID of the doctor.
+     * @param date      The date of the schedule.
+     * @param startTime The start time of the schedule.
+     * @param endTime   The end time of the schedule.
+     */
     public static void setDoctorSchedule(String doctorID, LocalDate date, LocalTime startTime, LocalTime endTime) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
             int newAppointmentID = getNextAppointmentID();
@@ -51,6 +67,12 @@ public class DoctorAppointmentDB {
         }
     }
 
+    /**
+     * Retrieves the next available appointment ID.
+     *
+     * @return The next appointment ID.
+     * @throws IOException If an error occurs while reading the file.
+     */
     private static int getNextAppointmentID() throws IOException {
         int maxID = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -69,6 +91,13 @@ public class DoctorAppointmentDB {
         return maxID + 1;
     }
 
+    /**
+     * Retrieves a list of patients associated with a doctor.
+     *
+     * @param doctorID The doctor's ID.
+     * @return A list of unique patient IDs.
+     * @throws IOException If an error occurs while reading the file.
+     */
     public static List<String> getPatients(String doctorID) throws IOException {
         Set<String> patientIDs = new HashSet<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -89,6 +118,13 @@ public class DoctorAppointmentDB {
         return new ArrayList<>(patientIDs);
     }
 
+    /**
+     * Retrieves the full personal schedule for a doctor.
+     *
+     * @param hospitalID The hospital ID of the doctor.
+     * @return A list of all scheduled dates for the doctor.
+     * @throws IOException If an error occurs while reading the file.
+     */
     public static List<DoctorScheduledDates> getAllPersonalSchedule(String hospitalID) throws IOException {
         List<DoctorScheduledDates> scheduledDates = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -114,6 +150,13 @@ public class DoctorAppointmentDB {
         return scheduledDates;
     }
 
+    /**
+     * Retrieves a list of all scheduled appointments for a doctor.
+     *
+     * @param doctorID The doctor's ID.
+     * @return A list of scheduled appointments.
+     * @throws IOException If an error occurs while reading the file.
+     */
     public static List<PatientScheduledAppointment> doctorListOfAllAppointments(String doctorID) throws IOException {
         List<PatientScheduledAppointment> listOfSchedule = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -141,14 +184,40 @@ public class DoctorAppointmentDB {
         return listOfSchedule;
     }
 
+    /**
+     * Updates the status of an appointment to "Confirmed" or "Declined".
+     *
+     * @param doctorID      The ID of the doctor.
+     * @param appointmentID The ID of the appointment.
+     * @param patientID     The ID of the patient.
+     * @param status        True to confirm, false to decline.
+     * @throws IOException If an error occurs while updating the file.
+     */
     public static void acceptDeclineAppointment(String doctorID, int appointmentID, String patientID, boolean status) throws IOException {
         updateAppointmentStatus(doctorID, appointmentID, patientID, status ? "Confirmed" : "Declined");
     }
 
+    /**
+     * Updates the status of an appointment to "Completed".
+     *
+     * @param doctorID      The ID of the doctor.
+     * @param appointmentID The ID of the appointment.
+     * @param patientID     The ID of the patient.
+     * @throws IOException If an error occurs while updating the file.
+     */
     public static void completeAppointment(String doctorID, int appointmentID, String patientID) throws IOException {
         updateAppointmentStatus(doctorID, appointmentID, patientID, "Completed");
     }
 
+    /**
+     * Updates the status of a specific appointment.
+     *
+     * @param doctorID      The ID of the doctor.
+     * @param appointmentID The ID of the appointment.
+     * @param patientID     The ID of the patient.
+     * @param newStatus     The new status to set for the appointment.
+     * @throws IOException If an error occurs while updating the file.
+     */
     private static void updateAppointmentStatus(String doctorID, int appointmentID, String patientID, String newStatus) throws IOException {
         File inputFile = new File(FILE_NAME);
         File tempFile = new File("temp_" + FILE_NAME);
@@ -180,6 +249,13 @@ public class DoctorAppointmentDB {
         }
     }
 
+    /**
+     * Counts the number of pending appointments for a doctor.
+     *
+     * @param doctorID The ID of the doctor.
+     * @return A string indicating the number of pending appointments.
+     * @throws IOException If an error occurs while reading the file.
+     */
     public static String numberOfPending(String doctorID) throws IOException {
         int pendingAppointments = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
