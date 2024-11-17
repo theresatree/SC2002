@@ -1,8 +1,1 @@
 PatientID,DoctorID,AppointmentID,Date,Services,Medication,PrescriptionStatus,Notes
-P1001,D001,1,10/10/2024,Consultation,Ibuprofen,DISPENSED,Less phyiscal activity
-P1001,D002,2,10/10/2024,Consultation,PARACETAMOL,DISPENSED,Rest well
-P1002,D001,3,10/10/2024,BloodTest,Amoxicillin,DISPENSED,Eat less sweets
-P1001,D001,8,19/10/2024,CONSULTATION,IBUPROFEN,DISPENSED,Take care of your health
-P1002,D001,9,19/10/2024,CONSULTATION,Paracetamol,DISPENSED,Exercise more
-P1001,D001,10,26/10/2024,BLOODTEST,IBUPROFEN,PENDING,Drink more water
-P1001,D001,13,10/11/2024,BLOODTEST,AMOXICILLIN,PENDING,Eat more vegetables
