@@ -1,68 +1,55 @@
 package sc2002.repositories;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import sc2002.enums.Role;
+
+import java.io.*;
+import java.util.Scanner;
 
 /**
  * Represents the user database for handling user login and password management.
  */
 public class UserDB {
-    private static final String FILE_NAME = "User.xlsx"; // Fixed file location for User.xlsx
+    private static final String USER_FILE = "User.csv";
+    private static final String PATIENT_FILE = "Patient_List.csv";
+    private static final String STAFF_FILE = "Staff_List.csv";
 
     /**
      * Validates the login when the user enters ID and password.
-     * 
+     *
      * @param hospitalID The user's hospital ID.
-     * @param password The user's password.
+     * @param password   The user's password.
      * @return true if the login is valid; otherwise, false.
      * @throws IOException if there is an error accessing the file.
      */
     public static boolean validateLogin(String hospitalID, String password) throws IOException {
-        try (InputStream is = UserDB.class.getClassLoader().getResourceAsStream(FILE_NAME)) {
-            if (is == null) {
-                throw new IOException("File not found in resources: " + FILE_NAME);
-            }
+        try (BufferedReader br = new BufferedReader(new FileReader(USER_FILE))) {
+            String line;
+            boolean isHeader = true;
 
-            try (Workbook workbook = new XSSFWorkbook(is)) {
-                Sheet sheet = workbook.getSheetAt(0);
-                boolean isValid = false;
-
-                for (Row row : sheet) {
-                    Cell idCell = row.getCell(0);
-                    Cell passwordCell = row.getCell(1);
-                    if (row.getRowNum() == 0) continue; // Skip header row
-
-                    if (idCell != null && passwordCell != null) {
-                        String id = idCell.getStringCellValue();
-                        String pass = passwordCell.getStringCellValue();
-
-                        if (id.equals(hospitalID) && pass.equals(password)) {
-                            isValid = true;
-                            if (pass.equals("password")) {
-                                changePassword(id);
-                            }
-                            break;
-                        }
-                    }
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
                 }
-                return isValid;
+
+                String[] fields = line.split(",");
+                String id = fields[0];
+                String pass = fields[1];
+
+                if (id.equals(hospitalID) && pass.equals(password)) {
+                    if (pass.equals("password")) {
+                        changePassword(id);
+                    }
+                    return true;
+                }
             }
         }
+        return false;
     }
 
     /**
      * Prompts the user to change their password if it is set to "password".
-     * 
+     *
      * @param hospitalID The user's hospital ID.
      */
     private static void changePassword(String hospitalID) {
@@ -85,60 +72,69 @@ public class UserDB {
     }
 
     /**
-     * Updates the password in User.xlsx after a change.
-     * 
-     * @param hospitalID The user's hospital ID.
+     * Updates the password in User.csv after a change.
+     *
+     * @param hospitalID  The user's hospital ID.
      * @param newPassword The new password.
      */
     private static void updatePasswordInFile(String hospitalID, String newPassword) {
-        try (InputStream is = UserDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
+        File inputFile = new File(USER_FILE);
+        File tempFile = new File("temp_" + USER_FILE);
 
-            for (Row row : sheet) {
-                Cell idCell = row.getCell(0);
-                if (row.getRowNum() == 0) continue; // Skip header row
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
 
-                if (idCell.getStringCellValue().equals(hospitalID)) {
-                    Cell passwordCell = row.getCell(1);
-                    passwordCell.setCellValue(newPassword);
-                    break;
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    bw.write(line);
+                    bw.newLine();
+                    continue; // Write header row as is
                 }
-            }
 
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
+                String[] fields = line.split(",");
+                if (fields[0].equals(hospitalID)) {
+                    fields[1] = newPassword; // Update password
+                }
+
+                bw.write(String.join(",", fields));
+                bw.newLine();
             }
         } catch (IOException e) {
             System.out.println("An error occurred while updating the password: " + e.getMessage());
+        }
+
+        if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
+            System.out.println("Error: Could not update the user file.");
         }
     }
 
     /**
      * Retrieves the name associated with a hospital ID from the appropriate file.
-     * 
+     *
      * @param hospitalID The user's hospital ID.
-     * @param role The role of the user.
+     * @param role       The role of the user.
      * @return The name associated with the ID, or null if not found.
      */
     public static String getNameByHospitalID(String hospitalID, Role role) {
-        String filePath = role == Role.PATIENT ? "Patient_List.xlsx" : "Staff_List.xlsx";
+        String filePath = role == Role.PATIENT ? PATIENT_FILE : STAFF_FILE;
 
-        try (InputStream is = UserDB.class.getClassLoader().getResourceAsStream(filePath);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            if (is == null) {
-                System.out.println("Error: Could not find file " + filePath);
-                return null;
-            }
-            Sheet sheet = workbook.getSheetAt(0);
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean isHeader = true;
 
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Skip header row
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
+                }
 
-                Cell idCell = row.getCell(0);
-                Cell nameCell = row.getCell(1);
-                if (idCell != null && nameCell != null && idCell.getStringCellValue().equals(hospitalID)) {
-                    return nameCell.getStringCellValue();
+                String[] fields = line.split(",");
+                if (fields[0].equals(hospitalID)) {
+                    return fields[1]; // Return the name
                 }
             }
         } catch (IOException e) {
@@ -149,26 +145,23 @@ public class UserDB {
     }
 
     /**
-     * Creates a new patient entry in User.xlsx with a default password.
-     * 
+     * Creates a new patient entry in User.csv with a default password.
+     *
      * @param patientID The new patient's ID.
      */
     public static void createNewPatient(String patientID) {
-        try (InputStream is = UserDB.class.getClassLoader().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            int rowCount = sheet.getPhysicalNumberOfRows();
-            Row row = sheet.createRow(rowCount);
-
-            row.createCell(0).setCellValue(patientID);
-            row.createCell(1).setCellValue("password");
-
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
-            }
+        if (patientID == null || patientID.isEmpty()) {
+            System.out.println("Invalid patient ID. Cannot create new patient.");
+            return;
+        }
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(USER_FILE, true))) {
+            System.out.println("Adding new patient to file: " + patientID);
+            bw.write(String.join(",", patientID, "password"));
+            bw.newLine();
+            System.out.println("Patient added successfully.");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("An error occurred while creating a new patient: " + e.getMessage());
         }
     }
 }

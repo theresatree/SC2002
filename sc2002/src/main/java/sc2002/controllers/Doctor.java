@@ -66,8 +66,8 @@ public class Doctor extends User {
         System.out.println("\n\n==========================================");
         System.out.println("      Patients under " + UserDB.getNameByHospitalID(this.doctorID, Role.DOCTOR));
         System.out.println("==========================================");
-        for (int i = 0; i < patientIDs.size(); i++) {
-            System.out.println((i + 1) + ". " + patientIDs.get(i) + " (" + UserDB.getNameByHospitalID(patientIDs.get(i), Role.PATIENT) + ")");
+        for (int i = 1; i < patientIDs.size(); i++) {
+            System.out.println((i) + ". " + patientIDs.get(i) + " (" + UserDB.getNameByHospitalID(patientIDs.get(i), Role.PATIENT) + ")");
         }
         System.out.println("==========================================");
         while (true) {
@@ -83,7 +83,7 @@ public class Doctor extends User {
                 System.out.println("Invalid choice. Please select a valid Patient.\n");
             } else {
                 scanner.nextLine();
-                return patientIDs.get(choice - 1);
+                return patientIDs.get(choice);
             }
         }
     }

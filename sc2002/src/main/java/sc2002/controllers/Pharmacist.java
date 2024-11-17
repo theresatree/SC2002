@@ -19,6 +19,11 @@ import sc2002.enums.RequestStatus;
 import sc2002.models.User;
 import sc2002.models.ReplenishmentRequest;
 
+/**
+ * Represents a Pharmacist in the hospital system, responsible for managing 
+ * medication inventory, handling prescription statuses, and submitting 
+ * replenishment requests.
+ */
 public class Pharmacist extends User {
     private String pharmacistID;
     private List<MedicationInventory> medicationInventory;
@@ -27,7 +32,7 @@ public class Pharmacist extends User {
     /**
      * Constructs a Pharmacist object with the specified pharmacist ID.
      *
-     * @param pharmacistID the unique identifier for the pharmacist
+     * @param pharmacistID the unique identifier for the pharmacist.
      */
     public Pharmacist(String pharmacistID) {
         super(pharmacistID);
@@ -37,7 +42,7 @@ public class Pharmacist extends User {
     /**
      * Fetches and displays the past appointment outcomes for a specific patient.
      *
-     * @param scanner the Scanner object to receive user input
+     * @param scanner the Scanner object for user input.
      */
     public void viewPastAppointmentOutcome(Scanner scanner) {
         try {
@@ -67,7 +72,7 @@ public class Pharmacist extends User {
     /**
      * Updates the prescription status for a specific patient's appointment.
      *
-     * @param scanner the Scanner object to receive user input
+     * @param scanner the Scanner object for user input.
      */
     public void updatePrescriptionStatus(Scanner scanner) {
         try {
@@ -126,10 +131,10 @@ public class Pharmacist extends User {
     }
 
     /**
-     * Validates the patient ID input by the user.
+     * Validates the patient ID input by the user and ensures it exists in the database.
      *
-     * @param scanner the Scanner object to receive user input
-     * @return the valid patient ID or "Exit" if the user chooses to exit
+     * @param scanner the Scanner object for user input.
+     * @return the valid patient ID, or "Exit" if the user chooses to exit.
      */
     private String isValidPatientID(Scanner scanner) {
         try {
@@ -181,9 +186,9 @@ public class Pharmacist extends User {
     /**
      * Validates the appointment ID for a given patient.
      *
-     * @param patientID the ID of the patient
-     * @param scanner   the Scanner object to receive user input
-     * @return the valid appointment ID or -1 if the user chooses to exit
+     * @param patientID the ID of the patient whose appointment is being validated.
+     * @param scanner   the Scanner object for user input.
+     * @return the valid appointment ID, or -1 if the user chooses to exit.
      */
     private int isValidAppointmentID(String patientID, Scanner scanner) {
         int choice = -1;
@@ -226,7 +231,7 @@ public class Pharmacist extends User {
     }
 
     /**
-     * Displays the current medication inventory.
+     * Displays the current medication inventory managed by the pharmacist.
      */
     public void viewMedicationInventory() {
         try {
@@ -252,9 +257,9 @@ public class Pharmacist extends User {
     }
 
     /**
-     * Submits a replenishment request for a specific medication.
+     * Submits a replenishment request for a specific medication to update stock levels.
      *
-     * @param scanner the Scanner object to receive user input
+     * @param scanner the Scanner object for user input.
      */
     public void submitReplenishmentRequest(Scanner scanner) {
         try {

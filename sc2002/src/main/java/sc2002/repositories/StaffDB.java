@@ -4,23 +4,18 @@ import sc2002.models.Staff;
 import sc2002.models.UserAccount;
 import sc2002.enums.Role;
 import sc2002.StaffFiltering.StaffFilter;
-import sc2002.StaffFiltering.StaffNoFilter;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Represents the database for managing staff records, including adding, updating,
  * retrieving, and removing staff members.
  */
 public class StaffDB {
-    private static final String FILE_NAME = "Staff_List.xlsx";
+    private static final String STAFF_FILE = "Staff_List.csv";
+    private static final String USER_FILE = "User.csv";
 
     /**
      * Retrieves a list of staff members filtered by the specified criteria.
@@ -31,20 +26,26 @@ public class StaffDB {
      */
     public static List<Staff> getStaff(StaffFilter selectedFilter) throws IOException {
         List<Staff> staffs = new ArrayList<>();
-        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream(FILE_NAME); 
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
 
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Skip header row
-                
-                String staffID = row.getCell(0).getStringCellValue();
-                String name = row.getCell(1).getStringCellValue();
-                Role role = Role.valueOf(row.getCell(2).getStringCellValue().toUpperCase());
-                String gender = row.getCell(3).getStringCellValue();
-                int age = (int) row.getCell(4).getNumericCellValue();
-                int phoneNumber = (int) row.getCell(5).getNumericCellValue();
-                String email = row.getCell(6).getStringCellValue();
+        try (BufferedReader br = new BufferedReader(new FileReader(STAFF_FILE))) {
+            String line;
+            boolean isHeader = true;
+
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
+                    continue; // Skip header row
+                }
+
+                String[] fields = line.split(",");
+                String staffID = fields[0];
+                String name = fields[1];
+                Role role = Role.valueOf(fields[2].toUpperCase());
+                String gender = fields[3];
+                int age = Integer.parseInt(fields[4]);
+                int phoneNumber = Integer.parseInt(fields[5]);
+                String email = fields[6];
+
                 Staff staff = new Staff(staffID, name, role, gender, age, phoneNumber, email);
 
                 if (selectedFilter.filter(staff)) {
@@ -52,6 +53,7 @@ public class StaffDB {
                 }
             }
         }
+
         return staffs;
     }
 
@@ -63,36 +65,22 @@ public class StaffDB {
      */
     public static void addStaff(Staff newStaff) throws IOException {
         // Add to Staff List
-        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream(FILE_NAME); 
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            Row newRow = sheet.createRow(sheet.getLastRowNum() + 1);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(STAFF_FILE, true))) {
             String formattedRole = newStaff.getRole().toString().charAt(0)
                     + newStaff.getRole().toString().substring(1).toLowerCase();
-            newRow.createCell(0).setCellValue(newStaff.getStaffID());
-            newRow.createCell(1).setCellValue(newStaff.getName());
-            newRow.createCell(2).setCellValue(formattedRole);
-            newRow.createCell(3).setCellValue(newStaff.getGender());
-            newRow.createCell(4).setCellValue(newStaff.getAge());
-            newRow.createCell(5).setCellValue(newStaff.getPhoneNumber());
-            newRow.createCell(6).setCellValue(newStaff.getEmail());
 
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
-            }
+            String newStaffEntry = String.join(",", newStaff.getStaffID(), newStaff.getName(), formattedRole,
+                    newStaff.getGender(), String.valueOf(newStaff.getAge()), String.valueOf(newStaff.getPhoneNumber()),
+                    newStaff.getEmail());
+
+            bw.write(newStaffEntry);
+            bw.newLine();
         }
 
         // Add to User List with default password
-        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx"); 
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            Row newRow = sheet.createRow(sheet.getLastRowNum() + 1);
-            newRow.createCell(0).setCellValue(newStaff.getStaffID());
-            newRow.createCell(1).setCellValue("password");
-
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/User.xlsx")) {
-                workbook.write(fos);
-            }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(USER_FILE, true))) {
+            bw.write(String.join(",", newStaff.getStaffID(), "password"));
+            bw.newLine();
         }
     }
 
@@ -104,15 +92,16 @@ public class StaffDB {
      * @throws IOException If there is an issue updating the file.
      */
     public static void updateStaff(String staffID, Staff updatedStaff) throws IOException {
-        StaffFilter noFilter = new StaffNoFilter();
-        List<Staff> staffs = getStaff(noFilter);
+        List<Staff> staffs = getStaff(staff -> true); // Get all staff
+
         for (int i = 0; i < staffs.size(); i++) {
             if (staffs.get(i).getStaffID().equals(staffID)) {
                 staffs.set(i, updatedStaff);
-                newStaffFile(staffs);
-                return;
+                break;
             }
         }
+
+        writeStaffListToFile(staffs);
     }
 
     /**
@@ -122,112 +111,106 @@ public class StaffDB {
      * @throws IOException If there is an issue updating the file.
      */
     public static void removeStaff(String staffID) throws IOException {
-        StaffFilter noFilter = new StaffNoFilter();
-        List<Staff> staffs = getStaff(noFilter);
+        List<Staff> staffs = getStaff(staff -> true); // Get all staff
         staffs.removeIf(staff -> staff.getStaffID().equals(staffID));
-        newStaffFile(staffs);
+        writeStaffListToFile(staffs);
 
         // Update User List by removing the staff member's account
-        List<UserAccount> userAccs = new ArrayList<>();
-        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream("User.xlsx"); 
-             Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; // Skip header row
-                String hospitalID = row.getCell(0).getStringCellValue();
-                String password = row.getCell(1).getStringCellValue();
-                userAccs.add(new UserAccount(hospitalID, password));
-            }
-            userAccs.removeIf(userAcc -> userAcc.getHospitalID().equals(staffID));
-            newUserAccFile(userAccs);
-        }
+        List<UserAccount> userAccounts = getUserAccounts();
+        userAccounts.removeIf(user -> user.getHospitalID().equals(staffID));
+        writeUserAccountsToFile(userAccounts);
     }
 
     /**
-     * Saves the updated staff list back to the Staff file.
+     * Finds if a staff member exists in the database.
      * 
-     * @param staffs The list of updated staff.
+     * @param staffID The ID of the staff member.
+     * @return 1 if the staff member exists; otherwise, 0.
+     */
+    public static int findStaff(String staffID) {
+        try {
+            List<Staff> staffs = getStaff(staff -> true); // Get all staff
+            for (Staff staff : staffs) {
+                if (staff.getStaffID().equals(staffID)) {
+                    return 1; // Staff found
+                }
+            }
+            // Log message once after checking all records
+            System.out.println("Invalid Staff ID!");
+            return 0;
+        } catch (IOException e) {
+            System.err.println("An error occurred while finding staff: " + e.getMessage());
+        }
+        return 0; // Staff not found
+    }
+
+    /**
+     * Helper method to write the updated staff list back to the file.
+     * 
+     * @param staffs The updated staff list.
      * @throws IOException If there is an issue writing to the file.
      */
-    private static void newStaffFile(List<Staff> staffs) throws IOException {
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Staff");
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Staff ID");
-            headerRow.createCell(1).setCellValue("Name");
-            headerRow.createCell(2).setCellValue("Role");
-            headerRow.createCell(3).setCellValue("Gender");
-            headerRow.createCell(4).setCellValue("Age");
-            headerRow.createCell(5).setCellValue("Phone Number");
-            headerRow.createCell(6).setCellValue("Email");
+    private static void writeStaffListToFile(List<Staff> staffs) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(STAFF_FILE))) {
+            bw.write("StaffID,Name,Role,Gender,Age,PhoneNumber,Email");
+            bw.newLine();
 
-            int rowNum = 1;
             for (Staff staff : staffs) {
-                Row row = sheet.createRow(rowNum++);
                 String formattedRole = staff.getRole().toString().charAt(0)
                         + staff.getRole().toString().substring(1).toLowerCase();
-                row.createCell(0).setCellValue(staff.getStaffID());
-                row.createCell(1).setCellValue(staff.getName());
-                row.createCell(2).setCellValue(formattedRole);
-                row.createCell(3).setCellValue(staff.getGender());
-                row.createCell(4).setCellValue(staff.getAge());
-                row.createCell(5).setCellValue(staff.getPhoneNumber());
-                row.createCell(6).setCellValue(staff.getEmail());
-            }
 
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/" + FILE_NAME)) {
-                workbook.write(fos);
+                String staffEntry = String.join(",", staff.getStaffID(), staff.getName(), formattedRole,
+                        staff.getGender(), String.valueOf(staff.getAge()), String.valueOf(staff.getPhoneNumber()),
+                        staff.getEmail());
+
+                bw.write(staffEntry);
+                bw.newLine();
             }
         }
     }
 
     /**
-     * Saves the updated user account list back to the User file.
+     * Retrieves all user accounts from the User file.
      * 
-     * @param userAccs The list of updated user accounts.
-     * @throws IOException If there is an issue writing to the file.
+     * @return A list of UserAccount objects.
+     * @throws IOException If there is an issue reading the file.
      */
-    private static void newUserAccFile(List<UserAccount> userAccs) throws IOException {
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("User");
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Hospital ID");
-            headerRow.createCell(1).setCellValue("Password");
+    private static List<UserAccount> getUserAccounts() throws IOException {
+        List<UserAccount> userAccounts = new ArrayList<>();
 
-            int rowNum = 1;
-            for (UserAccount userAcc : userAccs) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(userAcc.getHospitalID());
-                row.createCell(1).setCellValue(userAcc.getPassword());
-            }
+        try (BufferedReader br = new BufferedReader(new FileReader(USER_FILE))) {
+            String line;
+            boolean isHeader = true;
 
-            try (FileOutputStream fos = new FileOutputStream("src/main/resources/User.xlsx")) {
-                workbook.write(fos);
-            } catch (IOException e) {
-                System.err.println("Error writing to the file: " + e.getMessage());
-                throw e; // Re-throw to notify the caller
-            }
-        }
-    }
-
-    public static int findStaff(String staffID) {
-        try (InputStream is = StaffDB.class.getClassLoader().getResourceAsStream(FILE_NAME); Workbook workbook = new XSSFWorkbook(is)) {
-            Sheet sheet = workbook.getSheetAt(0); // Get the first sheet
-
-            for (Row row : sheet) {
-                Cell staffIDCell = row.getCell(0);
-                if (row.getRowNum() == 0) {
+            while ((line = br.readLine()) != null) {
+                if (isHeader) {
+                    isHeader = false;
                     continue; // Skip header row
                 }
-                if (staffIDCell.getStringCellValue().equals(staffID)) {
-                    return 1;
-                }
-            }
 
-        } catch (IOException e) {
-            System.out.println("An error occurred while finding staff: " + e.getMessage());
+                String[] fields = line.split(",");
+                userAccounts.add(new UserAccount(fields[0], fields[1]));
+            }
         }
-        System.out.println("Staff not found. Please try again!\n");
-        return 0; //not found
+
+        return userAccounts;
+    }
+
+    /**
+     * Helper method to write the updated user accounts back to the file.
+     * 
+     * @param userAccounts The updated user account list.
+     * @throws IOException If there is an issue writing to the file.
+     */
+    private static void writeUserAccountsToFile(List<UserAccount> userAccounts) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(USER_FILE))) {
+            bw.write("HospitalID,Password");
+            bw.newLine();
+
+            for (UserAccount user : userAccounts) {
+                bw.write(String.join(",", user.getHospitalID(), user.getPassword()));
+                bw.newLine();
+            }
+        }
     }
 }

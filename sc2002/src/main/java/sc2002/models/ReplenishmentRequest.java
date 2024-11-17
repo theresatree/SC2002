@@ -38,22 +38,64 @@ public class ReplenishmentRequest {
         this.status = status;
     }
 
-    public int getRequestID() { return requestID; }
-
-    public String getPharmacistID() { return pharmacistID; }
-
-    public LocalDate getDateOfRequest() { return dateOfRequest; }
-
-    public String getMedicine() { return medicine; }
-
-    public int getAmount() { return amount; }
-
-    public RequestStatus getStatus() { return status; }
+    /**
+     * Gets the unique ID of the replenishment request.
+     *
+     * @return the request ID
+     */
+    public int getRequestID() {
+        return requestID;
+    }
 
     /**
-     * Prints the details of the replenishment request.
+     * Gets the ID of the pharmacist who made the request.
      *
-     * @return the formatted string of replenishment request details
+     * @return the pharmacist ID
+     */
+    public String getPharmacistID() {
+        return pharmacistID;
+    }
+
+    /**
+     * Gets the date when the replenishment request was made.
+     *
+     * @return the date of the request
+     */
+    public LocalDate getDateOfRequest() {
+        return dateOfRequest;
+    }
+
+    /**
+     * Gets the name of the medicine requested for replenishment.
+     *
+     * @return the medicine name
+     */
+    public String getMedicine() {
+        return medicine;
+    }
+
+    /**
+     * Gets the amount of the medicine requested for replenishment.
+     *
+     * @return the quantity of the medicine
+     */
+    public int getAmount() {
+        return amount;
+    }
+
+    /**
+     * Gets the status of the replenishment request.
+     *
+     * @return the request status
+     */
+    public RequestStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Prints the details of the replenishment request in a formatted string.
+     *
+     * @return a string containing the replenishment request details
      */
     public String printReplenishmentRequest() {
         return ("Request ID: " + requestID + "\n"
