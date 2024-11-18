@@ -143,7 +143,7 @@ public class Administrator extends User {
             this.staffs = StaffDB.getStaff(selectedFilter);
 
             if (staffs == null || staffs.isEmpty()) {
-                System.out.println("\nNo staff found!\n\n");
+                System.out.println("\nNo staff found!");
                 return;
             }
 
@@ -572,8 +572,8 @@ int roleChoice = 0, genderChoice = 0, idNumber = 0, continueUpdate = 1, newAge =
             this.appointmentDetails = AppointmentDetailsDB.getAppointmentDetails();
 
             if (appointmentDetails.isEmpty()) {
-                System.out.println("No appointment found\n\n");
-
+                System.out.println("\nNo appointment found");
+                return;
             }
             System.out.println("\n===========================================");
             System.out.println("        List of Appointment Details");
@@ -603,8 +603,8 @@ int roleChoice = 0, genderChoice = 0, idNumber = 0, continueUpdate = 1, newAge =
             this.medicationInventory = MedicationInventoryDB.getMedicationInventory();
 
             if (medicationInventory.isEmpty()) {
-                System.out.println("No Medications found\n\n");
-
+                System.out.println("\nNo Medications found");
+                return;
             }
             System.out.println("\n============================");
             System.out.println("    Medication Inventory");
@@ -1004,6 +1004,11 @@ int roleChoice = 0, genderChoice = 0, idNumber = 0, continueUpdate = 1, newAge =
             try {
                 this.replenishmentRequests = ReplenishmentRequestDB.getReplenishmentRequest(requestStatus);
 
+                if(replenishmentRequests.isEmpty()){
+                    System.out.println("\nNo " + requestStatus + " Replenishment Requests found!\n");
+                    return;
+                }
+                
                 System.out.println("\n===========================================");
                 System.out.println("      " + requestStatus + " Replenishment Requests");
                 System.out.println("===========================================");
