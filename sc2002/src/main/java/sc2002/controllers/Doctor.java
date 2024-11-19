@@ -1,13 +1,26 @@
 package sc2002.controllers;
 
-import sc2002.models.*;
-import sc2002.enums.*;
-import sc2002.repositories.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import sc2002.enums.AppointmentStatus;
+import sc2002.enums.Role;
+import sc2002.enums.Service;
+import sc2002.models.Diagnosis;
+import sc2002.models.DoctorAppointment;
+import sc2002.models.MedicalRecord;
+import sc2002.models.MedicationInventory;
+import sc2002.models.PatientScheduledAppointment;
+import sc2002.models.User;
+import sc2002.repositories.DiagnosisDB;
+import sc2002.repositories.DoctorAppointmentDB;
+import sc2002.repositories.MedicationInventoryDB;
+import sc2002.repositories.PatientAppointmentOutcomeDB;
+import sc2002.repositories.PatientDB;
+import sc2002.repositories.UserDB;
 
 /**
  * Represents a doctor in the system who can manage appointments, view medical records,
@@ -62,7 +75,6 @@ public class Doctor extends User {
      * @return The selected patient ID.
      */
     private String choosePatientString(List<String> patientIDs, Scanner scanner) {
-        int choice;
         System.out.println("\n\n==========================================");
         System.out.println("      Patients under " + UserDB.getNameByHospitalID(this.doctorID, Role.DOCTOR));
         System.out.println("==========================================");
@@ -72,18 +84,23 @@ public class Doctor extends User {
         System.out.println("==========================================");
         while (true) {
             System.out.print("Choose a Patient (or enter 0 to exit): ");
-            choice = scanner.nextInt();
-
-            if (choice == 0) {
-                System.out.println("Exiting viewing process.\n\n");
-                return null;
-            }
-
-            if (choice < 1 || choice > patientIDs.size()) {
-                System.out.println("Invalid choice. Please select a valid Patient.\n");
+            if (scanner.hasNextInt()) { // Check if the input is an integer
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+    
+                if (choice == 0) {
+                    System.out.println("Exiting viewing process.\n\n");
+                    return null;
+                }
+    
+                if (choice < 1 || choice >= patientIDs.size()) {
+                    System.out.println("Invalid choice. Please select a valid Patient.\n");
+                } else {
+                    return patientIDs.get(choice);
+                }
             } else {
-                scanner.nextLine();
-                return patientIDs.get(choice);
+                System.out.println("Invalid input. Please enter a number.\n");
+                scanner.nextLine(); // Consume the invalid input to avoid an infinite loop
             }
         }
     }
