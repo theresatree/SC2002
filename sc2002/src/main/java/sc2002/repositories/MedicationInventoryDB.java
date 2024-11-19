@@ -113,7 +113,7 @@ public class MedicationInventoryDB {
         for (MedicationInventory medication : medicationInventory) {
             if (medication.getMedicine().equalsIgnoreCase(medicineName)) {
                 // Directly update the low stock alert level
-                medication.setLowStockLevelAlert(medication.getLowStockLevelAlert() + updatedLowLevelAlert);
+                medication.setLowStockLevelAlert(updatedLowLevelAlert);
                 break;
             }
         }
