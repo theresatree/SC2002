@@ -343,17 +343,17 @@ public class Doctor extends User {
                 }
 
                 if (confirmedAppointments.isEmpty()) {
-                    System.out.println("\n\n==============================================");
+                    System.out.println("\n\n==========================================");
                     System.out.println("Select Appointment ID with " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
-                    System.out.println("==============================================");
+                    System.out.println("==========================================");
                     System.out.println("\nThere is no available appointments to record!\n\n");
                     System.out.println("Press Enter to continue...");
                     scanner.nextLine();
                     break;
                 }
-                System.out.println("\n\n==============================================");
+                System.out.println("\n\n==========================================");
                 System.out.println("Select Appointment ID with " + patientID + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
-                System.out.println("==============================================");
+                System.out.println("==========================================");
 
                 for (PatientScheduledAppointment appointment : confirmedAppointments) {
                     System.out.println("ID: " + appointment.getAppointmentID());
