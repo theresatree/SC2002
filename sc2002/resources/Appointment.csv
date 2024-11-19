@@ -1,3 +1,1 @@
 Patient ID,Doctor ID,Appointment ID,Date,Time Start,Time End,Status
-P1004,D001,1,19/11/2024,10:00,11:00,Confirmed
-P1004,D001,2,19/11/2024,11:00,12:00,Completed

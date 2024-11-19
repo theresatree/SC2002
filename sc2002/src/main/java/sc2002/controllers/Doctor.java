@@ -158,11 +158,12 @@ public class Doctor extends User {
         if (scanner.hasNextLine()) {
             scanner.nextLine();
         }
-        System.out.println("Description of Diagnosis");
+
+        System.out.print("\nDescription of Diagnosis: ");
         String descriptionOfDiagnosis = scanner.nextLine();
-        System.out.println("Description of Treatment given");
+        System.out.print("Description of Treatment given: ");
         String descriptionOfTreatment = scanner.nextLine();
-        System.out.println("Additional Notes for " + " (" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + ")");
+        System.out.print("Additional Notes for " + "(" + UserDB.getNameByHospitalID(patientID, Role.PATIENT) + "): ");
         String additionalNotes = scanner.nextLine();
 
         DiagnosisDB.addDiagnosis(patientID, this.doctorID, descriptionOfDiagnosis, descriptionOfTreatment, additionalNotes);
