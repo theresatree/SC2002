@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"sc2002.controllers"},{"l":"sc2002.enums"},{"l":"sc2002.main"},{"l":"sc2002.models"},{"l":"sc2002.repositories"},{"l":"sc2002.services"},{"l":"sc2002.StaffFiltering"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"sc2002.controllers"},{"l":"sc2002.enums"},{"l":"sc2002.main"},{"l":"sc2002.models"},{"l":"sc2002.repositories"},{"l":"sc2002.services"},{"l":"sc2002.services.StaffFiltering"}];updateSearchResults();

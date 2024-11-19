@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-import sc2002.StaffFiltering.StaffAgeFilter;
-import sc2002.StaffFiltering.StaffFilter;
-import sc2002.StaffFiltering.StaffGenderFilter;
-import sc2002.StaffFiltering.StaffIDFilter;
-import sc2002.StaffFiltering.StaffNoFilter;
-import sc2002.StaffFiltering.StaffRoleFilter;
+import sc2002.services.StaffFiltering.StaffAgeFilter;
+import sc2002.services.StaffFiltering.StaffFilter;
+import sc2002.services.StaffFiltering.StaffGenderFilter;
+import sc2002.services.StaffFiltering.StaffIDFilter;
+import sc2002.services.StaffFiltering.StaffNoFilter;
+import sc2002.services.StaffFiltering.StaffRoleFilter;
 import sc2002.enums.AppointmentStatus;
 import sc2002.enums.RequestStatus;
 import sc2002.enums.Role;

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sc2002.StaffFiltering.StaffFilter;
+import sc2002.services.StaffFiltering.StaffFilter;
 import sc2002.enums.Role;
 import sc2002.models.Staff;
 import sc2002.models.UserAccount;

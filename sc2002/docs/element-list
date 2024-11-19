@@ -4,4 +4,4 @@ sc2002.main
 sc2002.models
 sc2002.repositories
 sc2002.services
-sc2002.StaffFiltering
+sc2002.services.StaffFiltering

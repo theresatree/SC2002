@@ -1,5 +1,4 @@
-package sc2002.StaffFiltering;
-
+package sc2002.services.StaffFiltering;
 import sc2002.models.Staff;
 
 /**
