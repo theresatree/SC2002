@@ -2,9 +2,7 @@
 
 ## Table of Contents
 1. [About Us](#1-about-us)
-2. [Getting Started](#2-setup-instructions)
-    2.1 [Compilation in Windows](#21-compilation-in-windows)
-    2.2 [Compilation in Mac](#22-compilation-in-mac)
+2. [Setup Instructions](#2-setup-instructions)
 3. [JavaDoc](#3-javadoc)
     3.1 [Preview Javadoc in Windows](#31-preview-javadoc-in-windows)
     3.2 [Preview Javadoc in Mac](#31-preview-javadoc-in-mac)
@@ -34,7 +32,7 @@
 >.../GitHub/sc2002/sc2002
 
 
-### 2.1 Compilation in Windows
+<b>Compile and run</b>
 To compile, run the following command
 ```bash
 javac -d bin "@sources.txt"
@@ -44,17 +42,7 @@ To run, run the following command
 ```bash
 java -cp bin sc2002.main.Main
 ```
-
-### 2.2 Compilation in Mac
-To compile, run the following command
-```bash
-javac -d bin src/main/java/sc2002/**/*.java
-```
-
-To run, run the following command
-```bash
-java -cp bin sc2002.main.Main
-```
+<br>
 <hr>
 
 ## 3. JavaDoc
