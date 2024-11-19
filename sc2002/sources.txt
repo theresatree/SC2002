@@ -34,11 +34,11 @@ src/main/java/sc2002/controllers/Doctor.java
 src/main/java/sc2002/controllers/Administrator.java
 src/main/java/sc2002/controllers/Pharmacist.java
 src/main/java/sc2002/controllers/Patient.java
-src/main/java/sc2002/StaffFiltering/StaffAgeFilter.java
-src/main/java/sc2002/StaffFiltering/StaffGenderFilter.java
-src/main/java/sc2002/StaffFiltering/StaffFilter.java
-src/main/java/sc2002/StaffFiltering/StaffIDFilter.java
-src/main/java/sc2002/StaffFiltering/StaffRoleFilter.java
-src/main/java/sc2002/StaffFiltering/StaffNoFilter.java
+src/main/java/sc2002/services/StaffFiltering/StaffAgeFilter.java
+src/main/java/sc2002/services/StaffFiltering/StaffGenderFilter.java
+src/main/java/sc2002/services/StaffFiltering/StaffFilter.java
+src/main/java/sc2002/services/StaffFiltering/StaffIDFilter.java
+src/main/java/sc2002/services/StaffFiltering/StaffRoleFilter.java
+src/main/java/sc2002/services/StaffFiltering/StaffNoFilter.java
 src/main/java/sc2002/services/AvailableDatesToChoose.java
 src/main/java/sc2002/services/AppointmentOutcomeRecord.java
