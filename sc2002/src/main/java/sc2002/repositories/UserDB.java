@@ -2,10 +2,11 @@ package sc2002.repositories;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 import sc2002.enums.Role;
@@ -19,7 +20,6 @@ public class UserDB {
     private static final String STAFF_FILE = "Staff_List.csv";
     private static final String PATH_FILE = "resources/";
 
-
     /**
      * Validates the login when the user enters ID and password.
      *
@@ -29,7 +29,13 @@ public class UserDB {
      * @throws IOException if there is an error accessing the file.
      */
     public static boolean validateLogin(String hospitalID, String password) throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(PATH_FILE+USER_FILE))) {
+        Path filePath = Paths.get(PATH_FILE, USER_FILE);
+        if (!Files.exists(filePath)) {
+            System.out.println("Error: User file not found.");
+            return false;
+        }
+
+        try (BufferedReader br = Files.newBufferedReader(filePath)) {
             String line;
             boolean isHeader = true;
 
@@ -39,13 +45,10 @@ public class UserDB {
                     continue; // Skip header row
                 }
 
-                String[] fields = line.split(",");
-                String id = fields[0];
-                String pass = fields[1];
-
-                if (id.equals(hospitalID) && pass.equals(password)) {
-                    if (pass.equals("password")) {
-                        changePassword(id);
+                String[] fields = line.trim().split(",");
+                if (fields[0].equals(hospitalID) && fields[1].equals(password)) {
+                    if (password.equals("password")) {
+                        changePassword(hospitalID);
                     }
                     return true;
                 }
@@ -61,7 +64,7 @@ public class UserDB {
      */
     private static void changePassword(String hospitalID) {
         Scanner scanner = new Scanner(System.in);
-        String newPassword = "";
+        String newPassword;
 
         System.out.print("\nFirst time login detected! ");
         while (true) {
@@ -69,7 +72,11 @@ public class UserDB {
             newPassword = scanner.nextLine().trim();
 
             if (!newPassword.equals("password") && !newPassword.isEmpty()) {
-                updatePasswordInFile(hospitalID, newPassword);
+                try {
+                    updatePasswordInFile(hospitalID, newPassword);
+                } catch (IOException e) {
+                    System.out.println("Error updating password: " + e.getMessage());
+                }
                 System.out.println("Password changed successfully.");
                 break;
             } else {
@@ -83,13 +90,18 @@ public class UserDB {
      *
      * @param hospitalID  The user's hospital ID.
      * @param newPassword The new password.
+     * @throws IOException if there is an error updating the file.
      */
-    private static void updatePasswordInFile(String hospitalID, String newPassword) {
-        File inputFile = new File(PATH_FILE+USER_FILE);
-        File tempFile = new File(PATH_FILE+"temp_" + USER_FILE);
+    private static void updatePasswordInFile(String hospitalID, String newPassword) throws IOException {
+        Path inputFilePath = Paths.get(PATH_FILE, USER_FILE);
+        Path tempFilePath = Paths.get(PATH_FILE, "temp_" + USER_FILE);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
-             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
+        if (!Files.exists(inputFilePath)) {
+            throw new IOException("User file not found.");
+        }
+
+        try (BufferedReader br = Files.newBufferedReader(inputFilePath);
+             BufferedWriter bw = Files.newBufferedWriter(tempFilePath)) {
 
             String line;
             boolean isHeader = true;
@@ -102,7 +114,7 @@ public class UserDB {
                     continue; // Write header row as is
                 }
 
-                String[] fields = line.split(",");
+                String[] fields = line.trim().split(",");
                 if (fields[0].equals(hospitalID)) {
                     fields[1] = newPassword; // Update password
                 }
@@ -110,13 +122,11 @@ public class UserDB {
                 bw.write(String.join(",", fields));
                 bw.newLine();
             }
-        } catch (IOException e) {
-            System.out.println("An error occurred while updating the password: " + e.getMessage());
         }
 
-        if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
-            System.out.println("Error: Could not update the user file.");
-        }
+        // Ensure atomic operation for renaming the temp file
+        Files.deleteIfExists(inputFilePath); // Delete original file
+        Files.move(tempFilePath, inputFilePath); // Rename temp file to original name
     }
 
     /**
@@ -127,9 +137,15 @@ public class UserDB {
      * @return The name associated with the ID, or null if not found.
      */
     public static String getNameByHospitalID(String hospitalID, Role role) {
-        String filePath = role == Role.PATIENT ? PATH_FILE+PATIENT_FILE : PATH_FILE+STAFF_FILE;
+        String fileName = role == Role.PATIENT ? PATIENT_FILE : STAFF_FILE;
+        Path filePath = Paths.get(PATH_FILE, fileName);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        if (!Files.exists(filePath)) {
+            System.out.println("Error: File not found - " + fileName);
+            return null;
+        }
+
+        try (BufferedReader br = Files.newBufferedReader(filePath)) {
             String line;
             boolean isHeader = true;
 
@@ -139,13 +155,13 @@ public class UserDB {
                     continue; // Skip header row
                 }
 
-                String[] fields = line.split(",");
+                String[] fields = line.trim().split(",");
                 if (fields[0].equals(hospitalID)) {
                     return fields[1]; // Return the name
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error: Could not read from file " + filePath);
+            System.out.println("Error reading file: " + fileName);
             System.out.println("Error details: " + e.getMessage());
         }
         return null;
@@ -161,8 +177,9 @@ public class UserDB {
             System.out.println("Invalid patient ID. Cannot create new patient.");
             return;
         }
-        
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_FILE+USER_FILE, true))) {
+
+        Path filePath = Paths.get(PATH_FILE, USER_FILE);
+        try (BufferedWriter bw = Files.newBufferedWriter(filePath, StandardOpenOption.APPEND)) {
             System.out.println("Adding new patient to file: " + patientID);
             bw.write(String.join(",", patientID, "password"));
             bw.newLine();
