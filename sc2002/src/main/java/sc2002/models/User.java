@@ -5,13 +5,17 @@ import sc2002.repositories.UserDB;
 import sc2002.repositories.PatientDB;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Represents a user in the hospital system, with functionality for login, logout, 
  * and patient registration.
  */
 public class User {
+    private static final Set<String> VALID_BLOOD_TYPES = new HashSet<>(Arrays.asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"));
     private String hospitalID;
     private Role role;
 
@@ -200,10 +204,20 @@ public class User {
                 }
             }
 
-            System.out.print("Enter your blood type: ");
-            patientBloodType = scanner.nextLine().toUpperCase();
-            if (checkForExit(patientBloodType)) {
-                return;
+            
+            while (true) {
+                System.out.print("Enter your blood type: ");
+                patientBloodType = scanner.nextLine().toUpperCase();
+                if (checkForExit(patientBloodType)) {
+                    return;
+                }
+            
+                // Check if the input is a valid blood type
+                if (VALID_BLOOD_TYPES.contains(patientBloodType)) {
+                    break; // Valid blood type entered
+                } else {
+                    System.out.println("Invalid blood type. Please enter a valid blood type (e.g., A+, O-, AB+, etc.): ");
+                }
             }
 
             System.out.print("Enter Phone Number: ");
@@ -252,14 +266,25 @@ public class User {
      */
     public static String digitChecker(Scanner scanner, int digits, int max) {
         while (true) {
+            //System.out.print("Enter a " + digits + "-digit number or type 'EXIT' to quit: ");
             String input = scanner.nextLine();
+    
+            // Check for 'EXIT' input
+            if (input.equalsIgnoreCase("EXIT")) {
+                return input;
+            }
+    
+            // Check if the input is numeric and has the correct number of digits
             if (input.matches("\\d{" + digits + "}")) {
                 int num = Integer.parseInt(input);
+                // Validate against the max value if max is not -1
                 if (max == -1 || num <= max) {
                     return input;
                 }
             }
-            System.out.println("Please enter a valid " + digits + "-digit number.");
+            
+            // Prompt the user again if the input is invalid
+            System.out.println("Invalid input. Please enter a valid " + digits + "-digit number.");
         }
     }
 }

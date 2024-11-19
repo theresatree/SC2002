@@ -3,7 +3,6 @@ src/main/java/sc2002/enums/PrescriptionStatus.java
 src/main/java/sc2002/enums/Service.java
 src/main/java/sc2002/enums/Role.java
 src/main/java/sc2002/enums/RequestStatus.java
-src/main/java/sc2002/enums/Medicine.java
 src/main/java/sc2002/repositories/DoctorAppointmentDB.java
 src/main/java/sc2002/repositories/StaffDB.java
 src/main/java/sc2002/repositories/ReplenishmentRequestDB.java
